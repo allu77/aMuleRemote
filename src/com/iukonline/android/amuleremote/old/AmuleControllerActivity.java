@@ -1,4 +1,4 @@
-package com.iukonline.android.amuleremote;
+package com.iukonline.android.amuleremote.old;
 
 import java.util.ArrayList;
 
@@ -21,10 +21,10 @@ import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.AmuleControllerPreferences;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
-import com.iukonline.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
-import com.iukonline.android.amuleremote.echelper.tasks.AddEd2kAsyncTask;
-import com.iukonline.android.amuleremote.echelper.tasks.AmuleAsyncTask.TaskScheduleMode;
-import com.iukonline.android.amuleremote.echelper.tasks.GetDlQueueAsyncTask;
+import com.iukonline.android.amuleremote.old.echelper.AmuleWatcher.ClientStatusWatcher;
+import com.iukonline.android.amuleremote.old.echelper.tasks.AddEd2kAsyncTask;
+import com.iukonline.android.amuleremote.old.echelper.tasks.GetDlQueueAsyncTask;
+import com.iukonline.android.amuleremote.old.echelper.tasks.AmuleAsyncTask.TaskScheduleMode;
 
 
 

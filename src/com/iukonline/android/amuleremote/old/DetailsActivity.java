@@ -1,4 +1,4 @@
-package com.iukonline.android.amuleremote;
+package com.iukonline.android.amuleremote.old;
 
 import java.util.ArrayList;
 
@@ -26,12 +26,12 @@ import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.GUIUtils;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComment;
-import com.iukonline.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
-import com.iukonline.android.amuleremote.echelper.AmuleWatcher.ECPartFileWatcher;
-import com.iukonline.android.amuleremote.echelper.tasks.AmuleAsyncTask.TaskScheduleMode;
-import com.iukonline.android.amuleremote.echelper.tasks.ECPartFileActionAsyncTask;
-import com.iukonline.android.amuleremote.echelper.tasks.ECPartFileActionAsyncTask.ECPartFileAction;
-import com.iukonline.android.amuleremote.echelper.tasks.ECPartFileGetDetailsAsyncTask;
+import com.iukonline.android.amuleremote.old.echelper.AmuleWatcher.ClientStatusWatcher;
+import com.iukonline.android.amuleremote.old.echelper.AmuleWatcher.ECPartFileWatcher;
+import com.iukonline.android.amuleremote.old.echelper.tasks.ECPartFileActionAsyncTask;
+import com.iukonline.android.amuleremote.old.echelper.tasks.ECPartFileGetDetailsAsyncTask;
+import com.iukonline.android.amuleremote.old.echelper.tasks.AmuleAsyncTask.TaskScheduleMode;
+import com.iukonline.android.amuleremote.old.echelper.tasks.ECPartFileActionAsyncTask.ECPartFileAction;
 
 public class DetailsActivity extends Activity implements ClientStatusWatcher, ECPartFileWatcher {
     
