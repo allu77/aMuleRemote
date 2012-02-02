@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+    <TextView android:layout_height="wrap_content" android:text="Author" android:layout_width="wrap_content" android:id="@+id/amuledl_comments_row_author" android:layout_alignParentTop="true" android:layout_alignParentLeft="true"></TextView>
+    <TextView android:layout_height="wrap_content" android:text="Rating" android:layout_width="wrap_content" android:id="@+id/amuledl_comments_row_rating" android:layout_alignParentTop="true" android:layout_alignParentRight="true"></TextView>
+    <TextView android:layout_height="wrap_content" android:text="Filename" android:layout_width="wrap_content" android:id="@+id/amuledl_comments_row_filename" android:layout_below="@+id/amuledl_comments_row_author" android:layout_alignParentLeft="true"></TextView>
+    <TextView android:layout_height="wrap_content" android:text="Comment" android:layout_width="wrap_content" android:id="@+id/amuledl_comments_row_comment" android:layout_below="@+id/amuledl_comments_row_filename" android:layout_alignParentLeft="true"></TextView>
+    
+</RelativeLayout>

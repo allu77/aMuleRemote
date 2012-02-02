@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent" android:paddingTop="10dip">
+
+<LinearLayout
+	android:id="@+id/amuledl_row_titlebar"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:orientation="horizontal">
+	
+  <TextView 
+  	android:text="FileName" 
+  	android:layout_height="wrap_content" 
+  	android:id="@+id/amuledl_row_filename" 
+  	android:layout_width="0dip"
+  	android:layout_weight="1" 
+  	android:singleLine="true" 
+  	android:layout_alignParentLeft="true" 
+  	android:layout_alignParentTop="true" 
+  	android:textStyle="bold"/>
+
+  <ImageView 
+  	android:layout_height="wrap_content" 
+  	android:layout_width="wrap_content" 
+  	android:id="@+id/amuledl_row_hascomments" 
+  	android:src="@drawable/rate_star_small_off"
+  	android:layout_alignBottom="@+id/amuledl_row_filename" 
+  	android:layout_alignParentRight="true"
+  	/>
+</LinearLayout>
+  <TextView 
+  	android:text="10MB / 200MB (5.0%)" 
+  	android:layout_height="wrap_content" 
+  	android:id="@+id/amuledl_row_transferred" 
+  	android:layout_width="wrap_content"
+  	android:layout_below="@+id/amuledl_row_titlebar"
+  	/>
+
+  <TextView 
+  	android:text="ETA" 
+  	android:layout_height="wrap_content" 
+  	android:id="@+id/amuledl_row_eta" 
+  	android:layout_width="wrap_content"
+  	android:layout_alignBaseline="@+id/amuledl_row_transferred"
+  	android:layout_toLeftOf="@+id/amuledl_row_prio"
+  	android:layout_marginRight="10dp"/>
+
+  <TextView 
+  	android:text="Priority" 
+  	android:layout_height="wrap_content" 
+  	android:id="@+id/amuledl_row_prio" 
+  	android:layout_width="wrap_content"
+  	android:layout_alignBaseline="@+id/amuledl_row_transferred"
+  	android:layout_alignParentRight="true"
+  	/>
+
+  <ProgressBar 
+  	style="?android:attr/progressBarStyleHorizontal" 
+  	android:id="@+id/amuledl_row_progress" 
+  	android:scrollbarStyle="insideInset" 
+  	android:layout_height="5dip" 
+  	android:layout_width="wrap_content" 
+  	android:layout_below="@+id/amuledl_row_transferred"
+  	android:layout_alignParentLeft="true" 
+  	android:layout_alignParentRight="true" />
+  	
+  <TextView 
+  	android:layout_height="wrap_content" 
+  	android:id="@+id/amuledl_row_label_sources" 
+  	android:layout_width="wrap_content"
+  	android:layout_below="@+id/amuledl_row_progress"
+  	android:layout_alignParentLeft="true"
+  	android:text="@string/label_sources"/>
+
+  <TextView 
+  	android:layout_width="wrap_content" 
+  	android:layout_height="wrap_content" 
+  	android:id="@+id/amuledl_row_sources" 
+  	android:text="10+2/20 (2)" 
+  	android:layout_alignBaseline="@+id/amuledl_row_label_sources" 
+  	android:layout_toRightOf="@+id/amuledl_row_label_sources"
+	/>  	 
+
+
+  <TextView 
+  	android:text="Status (Speed)" 
+  	android:layout_height="wrap_content" 
+  	android:id="@+id/amuledl_row_status" 
+  	android:layout_width="wrap_content" 
+  	android:layout_alignParentRight="true"
+  	android:layout_alignBaseline="@+id/amuledl_row_sources"
+	/>
+	
+  	
+  	
+   
+</RelativeLayout>

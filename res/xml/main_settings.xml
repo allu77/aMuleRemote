@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/settings_label_server" android:key="amule_server">
+    	<EditTextPreference android:key="amule_server_host" android:title="@string/settings_label_server_host" android:summary="@string/settings_summary_server_host"/>
+    	<EditTextPreference android:key="amule_server_port" android:title="@string/settings_label_server_port" android:defaultValue="4712" android:summary="@string/settings_summary_server_port" android:numeric="integer"/>
+    	<EditTextPreference android:key="amule_server_password" android:title="@string/settings_label_server_password" android:password="true" android:summary="@string/settings_summary_server_password"/>
+   	</PreferenceCategory>
+    <PreferenceCategory android:key="amule_client" android:title="@string/settings_label_client">
+        <CheckBoxPreference android:key="amule_client_autorefresh" android:title="@string/settings_label_client_autorefresh" android:summary="@string/settings_summary_client_autorefresh"></CheckBoxPreference>
+        <EditTextPreference android:key="amule_client_connect_timeout" android:title="@string/settings_label_client_connect_timeout" android:defaultValue="10" android:summary="@string/settings_summary_client_connect_timeout" android:numeric="integer"/>
+        <EditTextPreference android:key="amule_client_read_timeout" android:title="@string/settings_label_client_read_timeout" android:defaultValue="30" android:summary="@string/settings_summary_client_read_timeout" android:numeric="integer"/>
+    </PreferenceCategory>
+    
+</PreferenceScreen>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/menu_opt_settings" android:id="@+id/menu_opt_settings" android:icon="@drawable/ic_menu_preferences"></item>
+    <item android:title="@string/menu_opt_refresh" android:id="@+id/menu_opt_refresh" android:icon="@drawable/ic_menu_refresh"></item>
+    <item android:id="@+id/menu_opt_reset" android:title="@string/menu_opt_reset" android:icon="@drawable/ic_menu_revert" android:visible="false" android:enabled="false"></item>
+    <item android:id="@+id/menu_opt_added2k" android:title="@string/menu_opt_added2k" android:icon="@drawable/ic_menu_add"></item>
+    <item android:id="@+id/menu_opt_sort" android:title="@string/menu_opt_sort" android:icon="@drawable/ic_menu_sort_alphabetically">
+        <menu>
+            <item android:id="@+id/menu_opt_sort_filename" android:title="@string/menu_opt_sort_filename"></item>
+            <item android:id="@+id/menu_opt_sort_status" android:title="@string/menu_opt_sort_status"></item>
+            <item android:title="@string/menu_opt_sort_transfered" android:id="@+id/menu_opt_sort_transfered"></item>
+            <item android:id="@+id/menu_opt_sort_progress" android:title="@string/menu_opt_sort_progress"></item>
+        </menu>
+    </item>
+    
+    
+</menu>

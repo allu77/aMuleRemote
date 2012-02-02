@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="progressRunningStart">#FF00FA00</color>
+    <color name="progressRunningMid">#FF00DD00</color>
+    <color name="progressRunningEnd">#FF00F200</color>
+    <color name="progressStoppedStart">#FF505050</color>
+    <color name="progressStoppedMid">#FF333333</color>
+    <color name="progressStoppedEnd">#FF484848</color>
+    <color name="progressWaitingStart">#ffffd300</color>
+    <color name="progressWaitingMid">#ffffb600</color>
+    <color name="progressWaitingEnd">#ffffcb00</color>
+    <color name="progressBlockedStart">#FFFA0000</color>
+    <color name="progressBlockedMid">#FFDD0000</color>
+    <color name="progressBlockedEnd">#FFF20000</color>
+    <color name="detailTitle">#ffffffff</color>
+    
+</resources>

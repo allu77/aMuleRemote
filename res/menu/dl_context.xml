@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/menu_dl_resume" android:id="@+id/dl_ctx_resume"></item>
+    <item android:title="@string/menu_dl_pause" android:id="@+id/dl_ctx_pause"></item>
+    <item android:title="@string/menu_dl_delete" android:id="@+id/dl_ctx_delete"></item>
+    
+</menu>
