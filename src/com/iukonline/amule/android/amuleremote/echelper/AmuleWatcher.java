@@ -28,6 +28,6 @@ public abstract interface AmuleWatcher {
         void updateECPartFile(ECPartFile newECPartFile);
     }
 
-    int getWatcherId();
+    String getWatcherId();
 }
 

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+ 
+	<TextView 
+		android:text="FILENAME" 
+		android:layout_height="wrap_content" 
+		android:layout_width="wrap_content" 
+		android:id="@+id/partfile_filename" 
+		android:textColor="@color/detailTitle">
+	</TextView>
+	
+	<FrameLayout
+		android:id="@+id/partfile_tabcontent"
+		android:layout_width="match_parent"
+		android:layout_height="1dip"
+		android:layout_weight="1">
+	</FrameLayout>
+	
+	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/partfile_detail_control_buttons">	
+	  <Button android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_weight="1" android:id="@+id/partfile_button_pause" android:text="@string/partfile_detail_button_pause"></Button>
+	  <Button android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_weight="1" android:id="@+id/partfile_button_resume" android:text="@string/partfile_detail_button_resume"></Button>
+	  <Button android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_weight="1" android:id="@+id/partfile_button_delete" android:text="@string/partfile_detail_button_delete"></Button>
+	 </LinearLayout>
+
+  
+    
+</LinearLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">AmuleController</string>
-    <string name="empty_dl_list">No file in dowload queue</string>
+    <string name="app_name">Amule Remote</string>
+    <string name="dlqueue_empty">No file in dowload queue</string>
     <string name="status_label">Status:</string>
     <string name="menu_dl_pause">Pause</string>
     <string name="menu_dl_resume">Resume</string>
@@ -85,5 +85,5 @@
     <string name="settings_summary_client_read_timeout">Max seconds to wait for a reply</string>
     <string name="partfile_detail_label_comments">Comments</string>
     <string name="partfile_detail_label_sorucenames">Source names</string>
-    <string name="main_server_not_queried">Amule server not queried yet</string>
+    <string name="dlqueue_server_not_queried">Amule server not queried yet</string>
 </resources>

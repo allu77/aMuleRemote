@@ -3,6 +3,8 @@
 	<name>AmuleRemote</name>
 	<comment></comment>
 	<projects>
+		<project>ActionBarSherlock</project>
+		<project>JavaAmuleEC</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

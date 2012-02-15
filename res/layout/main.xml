@@ -11,11 +11,6 @@
         <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="--" android:layout_alignParentTop="true" android:layout_toRightOf="@+id/textView1" android:id="@+id/main_ul_rate" android:layout_centerVertical="true"></TextView>
         <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/label_total_dl_rate" android:id="@+id/main_label_dl_rate" android:layout_centerVertical="true" android:layout_alignParentLeft="true"></TextView>
         
-        <RelativeLayout android:layout_width="35dip" android:layout_height="35dip" android:id="@+id/main_refresh_container" android:layout_alignParentTop="true" android:layout_alignParentRight="true">
-	        <ProgressBar android:id="@+id/main_refresh" android:layout_height="fill_parent" android:layout_width="fill_parent" android:visibility="gone"></ProgressBar> 
-	        <ImageView android:id="@+id/main_button_refresh_new" android:src="@drawable/ic_menu_refresh" android:layout_height="fill_parent" android:layout_width="fill_parent" ></ImageView>
-        </RelativeLayout>
-        
     </RelativeLayout>
     
         <fragment android:name="com.iukonline.amule.android.amuleremote.DlQueueFragment"

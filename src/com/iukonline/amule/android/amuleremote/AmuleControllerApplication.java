@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.iukonline.amule.android.amuleremote.echelper.ECHelper;
+import com.iukonline.amule.android.amuleremote.echelper.ECHelperFakeClient;
+import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 
 
 public class AmuleControllerApplication extends Application {
@@ -18,12 +20,21 @@ public class AmuleControllerApplication extends Application {
     public static final String AC_SETTING_AUTOREFRESH = "amule_client_autorefresh";
     
     public static final String AC_SETTING_SORT          = "amule_client_sort";
+    public static final byte AC_SETTING_SORT_FILENAME = 0x0;
+    public static final byte AC_SETTING_SORT_STATUS = 0x1;
+    public static final byte AC_SETTING_SORT_TRANSFERED = 0x2;
+    public static final byte AC_SETTING_SORT_PROGRESS = 0x3;
     
     public static final String AC_SETTING_CONNECT_TIMEOUT = "amule_client_connect_timeout";
     public static final String AC_SETTING_READ_TIMEOUT = "amule_client_read_timeout";
     
+
+    
+    
+    
     SharedPreferences mSettings;
     ECHelper mECHelper = new ECHelper(this);
+    //ECHelper mECHelper = new ECHelperFakeClient(this);
     
     public boolean mainNeedsRefresh = true;
     
@@ -68,10 +79,19 @@ public class AmuleControllerApplication extends Application {
         super.onLowMemory();
     }
     
+    static ECPartFileComparator.ComparatorType getDlComparatorTypeFromSortSetting (byte sortSetting) {
+        switch (sortSetting) {
+        case AC_SETTING_SORT_FILENAME:
+            return ECPartFileComparator.ComparatorType.FILENAME;
+        case AC_SETTING_SORT_STATUS:
+            return ECPartFileComparator.ComparatorType.STATUS;
+        case AC_SETTING_SORT_TRANSFERED:
+            return ECPartFileComparator.ComparatorType.TRANSFERED;
+        case AC_SETTING_SORT_PROGRESS:
+            return ECPartFileComparator.ComparatorType.PROGRESS;
+        }
+        return null;
+    }
     
-    
-    final static int AMULE_ACTIVITY_ID_MAIN = 1;
-    final static int AMULE_ACTIVITY_ID_DETAILS = 2;
-    final static int AMULE_FRAGMENT_DL_QUEUE = 3;
 
 }

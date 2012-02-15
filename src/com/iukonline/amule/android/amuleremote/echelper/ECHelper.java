@@ -45,7 +45,7 @@ public class ECHelper {
     private String mServerPassword;
 
     private Socket mAmuleSocket;
-    private ECClient mECClient;
+    protected ECClient mECClient;
     private AmuleClientStatus mECClientStatus = ClientStatusWatcher.AmuleClientStatus.NOT_CONNECTED;
 
     // TODO: BONIFICARE QUESTO
@@ -57,10 +57,10 @@ public class ECHelper {
     ECStats mStats;
 
     // Watchers
-    HashMap<Integer, DlQueueWatcher> mDlQueueWatchers = new HashMap<Integer, DlQueueWatcher>();
-    HashMap<Integer, ECStatsWatcher> mECStatsWatchers = new HashMap<Integer, ECStatsWatcher>();
-    HashMap<Integer, ClientStatusWatcher> mAmuleStatusWatchers = new HashMap<Integer, ClientStatusWatcher>();
-    HashMap<String, HashMap<Integer, ECPartFileWatcher>> mECPartFileWatchers = new HashMap<String, HashMap<Integer, ECPartFileWatcher>>();
+    HashMap<String, DlQueueWatcher> mDlQueueWatchers = new HashMap<String, DlQueueWatcher>();
+    HashMap<String, ECStatsWatcher> mECStatsWatchers = new HashMap<String, ECStatsWatcher>();
+    HashMap<String, ClientStatusWatcher> mAmuleStatusWatchers = new HashMap<String, ClientStatusWatcher>();
+    HashMap<String, HashMap<String, ECPartFileWatcher>> mECPartFileWatchers = new HashMap<String, HashMap<String, ECPartFileWatcher>>();
     
     ConcurrentLinkedQueue <AmuleAsyncTask> mTaskQueue = new ConcurrentLinkedQueue<AmuleAsyncTask>();
     
@@ -171,7 +171,7 @@ public class ECHelper {
     
     public ECPartFile registerForECPartFileUpdates (ECPartFileWatcher watcher, byte[] hash) {
         String hashString = ECUtils.byteArrayToHexString(hash);
-        if (! mECPartFileWatchers.containsKey(hashString)) mECPartFileWatchers.put(hashString, new HashMap <Integer, ECPartFileWatcher>());
+        if (! mECPartFileWatchers.containsKey(hashString)) mECPartFileWatchers.put(hashString, new HashMap <String, ECPartFileWatcher>());
         registerWatcher(watcher, mECPartFileWatchers.get(hashString));
         return getPartFileFromHash(hash);
     }
@@ -308,54 +308,10 @@ public class ECHelper {
         return mECClient;
     }
 
-    /*
-    public ECClient getECClient(AmuleAsyncTask forTask, AmuleAsyncTask.TaskScheduleMode mode) throws UnknownHostException, IOException {
-        
-        switch (mode) {
-        case BEST_EFFORT:
-            return getECClient(forTask, AC_GET_CLIENT_MODE_BESTEFFORT);
-        case PREEMPTIVE:
-            return getECClient(forTask, AC_GET_CLIENT_MODE_PREEMPTIVE);
-        case QUEUE:
-            return null;
-        }
-        
-        return null;
-    
-    }
-
-    public ECClient getECClient(@SuppressWarnings("rawtypes") AsyncTask forTask, byte mode) throws UnknownHostException, IOException {
-        
-        if (mLatestTask != null) {
-            if (mode == AC_GET_CLIENT_MODE_PREEMPTIVE) {
-                mLatestTask.cancel(true);
-                resetClient();
-            } else {
-                return null;
-            }
-        }
-        mLatestTask = forTask;
-        //notifyAmuleClientStatusWatchers(ClientStatusWatcher.AMULE_CLIENT_STATUS_WORKING);
-        return getECClient();
-    }
-    */
-    
     public String getServerHost() {
         return mServerHost;
     }
 
-    /*
-    public void releaseECClient(@SuppressWarnings("rawtypes") AsyncTask forTask, boolean reset) {
-        if (mLatestTask == forTask) {
-            mLatestTask = null;
-            if (reset) {
-                resetClient();
-            } else {
-                //notifyAmuleClientStatusWatchers(ClientStatusWatcher.AMULE_CLIENT_STATUS_IDLE);
-            }
-        }
-    }
-    */
 
     public void resetClient() {
         //Toast.makeText(getApplication(), "Resetting client", Toast.LENGTH_LONG).show();

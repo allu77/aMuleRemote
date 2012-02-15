@@ -11,33 +11,46 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.DlQueueWatcher;
-import com.iukonline.amule.android.amuleremote.echelper.tasks.AmuleAsyncTask.TaskScheduleMode;
-import com.iukonline.amule.android.amuleremote.echelper.tasks.GetDlQueueAsyncTask;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 import com.iukonline.amule.ec.ECStats;
 
 public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
     
+    public interface DlQueueFragmentContainer {
+        public void partFileSelected(byte[] hash);
+    }
+    
+    private final static String BUNDLE_SORT_BY = "sort";
+
+
     AmuleControllerApplication mApp;
-//    ImageView mRefresh;
-//    ProgressBar mProgress;
+
     
     ArrayList <ECPartFile> mDlQueue;
+    DownloadListAdapter mDlAdapter;
+    byte mSortBy;
+    ECPartFileComparator mDlQueueComparator;
+    
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         mApp = (AmuleControllerApplication) getActivity().getApplication();
-        //setContentView(R.layout.amuledl_list);    
-        //registerForContextMenu(getListView());    
+        
+        if (savedInstanceState == null) {
+            mSortBy = (byte) mApp.mSettings.getLong(AmuleControllerApplication.AC_SETTING_SORT, AmuleControllerApplication.AC_SETTING_SORT_FILENAME);
+            //mSortBy = AmuleControllerApplication.AC_SETTING_SORT_FILENAME;
+        } else {
+            mSortBy = savedInstanceState.getByte(BUNDLE_SORT_BY, AmuleControllerApplication.AC_SETTING_SORT_FILENAME);
+        }
+        mDlQueueComparator = new ECPartFileComparator(AmuleControllerApplication.getDlComparatorTypeFromSortSetting(mSortBy));
 
     }
     
@@ -55,19 +68,15 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
         }
         
         View v = inflater.inflate(R.layout.dlqueue_fragment, container, false);
+        
         return v;
 
     }
     
     @Override
     public void onResume() {
-
         super.onResume();
-        
         updateDlQueue(mApp.mECHelper.registerForDlQueueUpdates(this));
-        if (mDlQueue == null) mApp.mainNeedsRefresh = true;
-        
-        autoRefreshView();
     }
     
     @Override
@@ -76,12 +85,23 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
         mApp.mECHelper.unRegisterFromDlQueueUpdates(this);
         super.onPause();
     }
-
-    public void autoRefreshView() {
-        if (mApp.mainNeedsRefresh && mApp.mSettings.getBoolean(AmuleControllerApplication.AC_SETTING_AUTOREFRESH, false)) updateDlList();
-        refreshView();
+    
+    
+    @Override
+    public void onSaveInstanceState (Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putByte(BUNDLE_SORT_BY, mSortBy);
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
+
 
     public void refreshView() {
         
@@ -91,48 +111,64 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
             ((TextView) getView().findViewById(R.id.main_ul_rate)).setText(GUIUtils.longToBytesFormatted(stats.getSpeedUl()) + "/s");
         }
         
-        if (mDlQueue != null) {
+        if (mDlAdapter != null) {
+            mDlAdapter.notifyDataSetChanged();
+        }
+        
+/*        if (mDlQueue != null) {
             ECPartFileComparator c = new ECPartFileComparator((byte) mApp.mSettings.getLong(AmuleControllerApplication.AC_SETTING_SORT, ECPartFileComparator.AC_SETTING_SORT_FILENAME));
-            
-            //Collections.sort(mApp.getDlList(), c);
-            //DownloadListAdapter dlListAdapter = new DownloadListAdapter(this, R.layout.amuledl_list, mApp.getDlList() );
-            
             Collections.sort(mDlQueue, c);
             DownloadListAdapter dlListAdapter = new DownloadListAdapter(getActivity(), R.layout.dlqueue_fragment, mDlQueue );
             
             setListAdapter(dlListAdapter);
-        }
+        } else {
+            ((TextView) getView().findViewById(android.R.id.empty)).setText(R.string.dlqueue_server_not_queried);
+        }*/
     }   
     
-    public void updateDlList()  {
-        GetDlQueueAsyncTask dlQueueTask = (GetDlQueueAsyncTask) mApp.mECHelper.getNewTask(GetDlQueueAsyncTask.class);
-        mApp.mECHelper.executeTask(dlQueueTask, TaskScheduleMode.BEST_EFFORT);
-    }
     
     @Override
     public void updateDlQueue(ArrayList<ECPartFile> newDlQueue) {
-        // TODO Auto-generated method stub
+
+        boolean createAdapter = false;
+
+        if (newDlQueue != null) {
+            //setEmptyText(getString(R.string.dlqueue_empty));
+            
+            ((TextView) getListView().getEmptyView()).setText(R.string.dlqueue_empty);
+            
+            if (mDlQueue == null) {
+                createAdapter = true;
+            }
+            
+        }
         mDlQueue = newDlQueue;
-        refreshView();
         
+        
+        if (mDlQueue != null) {
+            Collections.sort(mDlQueue, mDlQueueComparator);
+            
+            if (createAdapter) {
+                mDlAdapter = new DownloadListAdapter(getActivity(), R.layout.dlqueue_fragment, mDlQueue );
+                setListAdapter(mDlAdapter);
+            }
+        }
+
+        refreshView();
     }
     
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        // TODO Auto-generated method stub
-        super.onListItemClick(l, v, position, id);
+       
+        ((DlQueueFragmentContainer) getActivity()).partFileSelected(mDlQueue.get(position).getHash());
         
-        /*
-        Intent i = new Intent(this, DetailsActivity.class);
-        i.putExtra(DetailsActivity.BUNDLE_PARAM_HASH, mDlQueue.get(position).getHash());
-        startActivity(i);
-        */
     }
     
     @Override
-    public int getWatcherId() {
-        return AmuleControllerApplication.AMULE_FRAGMENT_DL_QUEUE;
+    public String getWatcherId() {
+        return this.getClass().getName();
     }
+
     
 
     private class DownloadListAdapter extends ArrayAdapter<ECPartFile> {
@@ -247,16 +283,8 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
                             break;
                         case ECPartFile.PS_EMPTY:
                             // TODO: Check why this happens...
-                            if (sourceXfer > 0) {
-                                tvStatus.setText(R.string.partfile_status_downloading);
-                                barResource = R.drawable.file_progress_running;
-                            } else if (sourceCount > 0) {
-                                tvStatus.setText(R.string.partfile_status_waiting);
-                                barResource = R.drawable.file_progress_waiting;
-                            } else {
-                                tvStatus.setText(R.string.partfile_status_empty);
-                                barResource = R.drawable.file_progress_blocked;
-                            }
+                            tvStatus.setText(R.string.partfile_status_empty);
+                            barResource = R.drawable.file_progress_blocked;
                             break;
                         case ECPartFile.PS_ERROR:
                             tvStatus.setText(R.string.partfile_status_error);
@@ -276,7 +304,6 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
                             barResource = R.drawable.file_progress_stopped;
                             break;
                         case ECPartFile.PS_READY:
-                            // TODO Check why this happens
                             if (sourceXfer > 0) {
                                 tvStatus.setText(R.string.partfile_status_downloading);
                                 tvStatus.append( " " + GUIUtils.longToBytesFormatted(o.getSpeed()) + "/s");
