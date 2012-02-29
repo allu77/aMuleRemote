@@ -1,34 +1,31 @@
 package com.iukonline.amule.android.amuleremote;
 
-import java.util.ArrayList;
-
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
-import android.support.v4.view.Window;
 import android.view.MenuInflater;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
+import android.widget.EditText;
+import android.widget.TextView;
 
+import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.DlQueueFragment.DlQueueFragmentContainer;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
+import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECStatsWatcher;
+import com.iukonline.amule.android.amuleremote.echelper.tasks.AddEd2kAsyncTask;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.AmuleAsyncTask.TaskScheduleMode;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.GetDlQueueAsyncTask;
-import com.iukonline.amule.ec.ECPartFile;
-import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
+import com.iukonline.amule.android.amuleremote.echelper.tasks.GetECStatsAsyncTask;
+import com.iukonline.amule.ec.ECStats;
 
 
-
-
-public class AmuleRemoteActivity extends FragmentActivity implements ClientStatusWatcher, DlQueueFragmentContainer {
+public class AmuleRemoteActivity extends FragmentActivity implements ClientStatusWatcher, DlQueueFragmentContainer, ECStatsWatcher, RefreshingActivity  {
     
     
-    private final static int ID_DIALOG_ADD_ED2K            = 3;
-
+    
     public final static String BUNDLE_PARAM_ERRSTR          = "errstr";
     public final static String BUNDLE_PARAM_URI_TO_HANDLE   = "uri_to_handle";
     
@@ -38,8 +35,6 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     private String mHandleURI;
     
     String mED2KUrl;
-    
-    ArrayList <ECPartFile> mDlQueue;
     
     private boolean mIsProgressShown = false;
     
@@ -56,8 +51,6 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
         
         mHandleURI = a.equals(Intent.ACTION_VIEW) ? i.getData().toString() : NO_URI_TO_HANDLE; 
         
-        
-        
     }
     
     @Override
@@ -73,22 +66,23 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
         }
         
         notifyStatusChange(mApp.mECHelper.registerForAmuleClientStatusUpdates(this));
-        if (mDlQueue == null) refreshDlQueue();
+        updateECStats(mApp.mECHelper.registerForECStatsUpdates(this));
         
-
+        mApp.registerRefreshActivity(this);
         
         if (! mHandleURI.equals(NO_URI_TO_HANDLE)) {
-            Bundle b = new Bundle();
-            b.putString(BUNDLE_PARAM_URI_TO_HANDLE, mHandleURI);
-            mHandleURI = NO_URI_TO_HANDLE;
-            showDialog(ID_DIALOG_ADD_ED2K, b);
+            showAddED2KDialog(mHandleURI);
         }
+        
+        if (! mApp.mECHelper.isDlQueueValid()) this.refreshDlQueue();
+        
     }
     
     @Override
     protected void onPause() {
         
         mApp.mECHelper.unRegisterFromAmuleClientStatusUpdates(this);
+        mApp.registerRefreshActivity(null);
         
         super.onPause();
     }
@@ -110,21 +104,21 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
         
         if (refreshItem != null) {
             if (mIsProgressShown) {
-                refreshItem.setActionView(getRefreshProgressBar());
+                //Toast.makeText(this, "Showing progressbar", Toast.LENGTH_LONG).show();
+                //refreshItem.setActionView((View) getRefreshProgressBar());
+                
+                refreshItem.setActionView(R.layout.refresh_progress);
             } else {
+                //Toast.makeText(this, "Showing button", Toast.LENGTH_LONG).show();
                 refreshItem.setActionView(null);
+                
             }
 
         }
 
         return super.onPrepareOptionsMenu(menu);
     }
-    
-    private ProgressBar getRefreshProgressBar() {
-        ProgressBar refreshProgressBar = new ProgressBar(this);
-        refreshProgressBar.setIndeterminate(true);
-        return refreshProgressBar;
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -140,31 +134,7 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
             mApp.mECHelper.resetClient();
             return true;
         case R.id.menu_opt_added2k:
-            showDialog(ID_DIALOG_ADD_ED2K);
-            return true;
-        case R.id.menu_opt_sort_filename:
-            SharedPreferences.Editor e1 = mApp.mSettings.edit();
-            e1.putLong(AmuleControllerApplication.AC_SETTING_SORT, AmuleControllerApplication.AC_SETTING_SORT_FILENAME);
-            e1.commit();
-            //refreshView();
-            return true;
-        case R.id.menu_opt_sort_status:
-            SharedPreferences.Editor e2 = mApp.mSettings.edit();
-            e2.putLong(AmuleControllerApplication.AC_SETTING_SORT, AmuleControllerApplication.AC_SETTING_SORT_STATUS);
-            e2.commit();
-            //refreshView();
-            return true;
-        case R.id.menu_opt_sort_transfered:
-            SharedPreferences.Editor e3 = mApp.mSettings.edit();
-            e3.putLong(AmuleControllerApplication.AC_SETTING_SORT, AmuleControllerApplication.AC_SETTING_SORT_TRANSFERED);
-            e3.commit();
-            //refreshView();
-            return true;
-        case R.id.menu_opt_sort_progress:
-            SharedPreferences.Editor e4 = mApp.mSettings.edit();
-            e4.putLong(AmuleControllerApplication.AC_SETTING_SORT, AmuleControllerApplication.AC_SETTING_SORT_PROGRESS);
-            e4.commit();
-            //refreshView();
+            showAddED2KDialog(null);
             return true;
         default:
             return super.onOptionsItemSelected(item);
@@ -172,15 +142,46 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     }
 
     
-    
-    
-    
     public void refreshDlQueue()  {
-        mApp.mECHelper.executeTask(
-                (GetDlQueueAsyncTask) mApp.mECHelper.getNewTask(GetDlQueueAsyncTask.class), 
-                TaskScheduleMode.BEST_EFFORT
-        );
+        refreshDlQueue(TaskScheduleMode.BEST_EFFORT);
     }
+
+    public void refreshDlQueue(TaskScheduleMode mode)  {
+        if (mApp.mECHelper.executeTask(mApp.mECHelper.getNewTask(GetECStatsAsyncTask.class), mode)) {
+            mApp.mECHelper.executeTask(mApp.mECHelper.getNewTask(GetDlQueueAsyncTask.class), TaskScheduleMode.QUEUE);
+        }
+    }
+    
+    
+    public void showAddED2KDialog(String url) {
+        MyAlertDialogFragment dialogFrag = MyAlertDialogFragment.newInstance();
+        AlertDialog.Builder builder = dialogFrag.getAlertDialogBuilder(this);
+        
+        // TODO Create string resource
+        builder.setTitle("Provide ED2K link");
+        final EditText input = new EditText(this);
+        input.setText(url);
+        builder.setView(input);
+        builder.setPositiveButton(R.string.alert_dialog_ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                
+                AddEd2kAsyncTask ed2kTask = (AddEd2kAsyncTask) mApp.mECHelper.getNewTask(AddEd2kAsyncTask.class);
+                ed2kTask.setEd2kUrl(input.getText().toString());
+                
+                if (mApp.mECHelper.executeTask(ed2kTask, TaskScheduleMode.QUEUE)) {
+                    refreshDlQueue(TaskScheduleMode.QUEUE);
+                }
+            }
+        });
+        builder.setNegativeButton(R.string.alert_dialog_cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+              }
+            });
+        
+        dialogFrag.show(getSupportFragmentManager(), "rename_dialog");
+    }
+    
     
     
     // DlQueueFragmentContainer
@@ -201,6 +202,7 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
 
     @Override
     public void notifyStatusChange(AmuleClientStatus status) {
+        //Toast.makeText(mApp, "Notification received - " + status, Toast.LENGTH_LONG).show();
         
         switch (status) {
         case WORKING:
@@ -214,8 +216,24 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     public void showProgress(boolean show) {
         if (show == mIsProgressShown) return;
         
+        //Toast.makeText(mApp, "Changing status - " + show, Toast.LENGTH_LONG).show();
         mIsProgressShown = show;
         invalidateOptionsMenu();
         
+    }
+
+    @Override
+    public void updateECStats(ECStats newStats) {
+        if (newStats != null) {
+            ((TextView) findViewById(R.id.main_dl_rate)).setText(GUIUtils.longToBytesFormatted(newStats.getSpeedDl()) + "/s");
+            ((TextView) findViewById(R.id.main_ul_rate)).setText(GUIUtils.longToBytesFormatted(newStats.getSpeedUl()) + "/s");
+        }
+    }
+    
+    // RefreshingActivity Interface
+    
+    @Override
+    public void refreshContent() {
+        refreshDlQueue();
     }
 }

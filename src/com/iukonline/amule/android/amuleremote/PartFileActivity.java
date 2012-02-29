@@ -1,6 +1,8 @@
 package com.iukonline.amule.android.amuleremote;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.ActionBar;
 import android.support.v4.app.ActionBar.Tab;
@@ -14,10 +16,14 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ProgressBar;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
+import com.iukonline.amule.android.amuleremote.MyAlertDialogFragment.DialogFragmentCaller;
+import com.iukonline.amule.android.amuleremote.PartFileSourceNamesFragment.RenameDialogContainer;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
+import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileActionWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.AmuleAsyncTask.TaskScheduleMode;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.ECPartFileActionAsyncTask;
@@ -25,9 +31,10 @@ import com.iukonline.amule.android.amuleremote.echelper.tasks.ECPartFileActionAs
 import com.iukonline.amule.android.amuleremote.echelper.tasks.ECPartFileGetDetailsAsyncTask;
 import com.iukonline.amule.ec.ECPartFile;
 
-public class PartFileActivity extends FragmentActivity implements ClientStatusWatcher, ECPartFileWatcher {
+public class PartFileActivity extends FragmentActivity implements ClientStatusWatcher, ECPartFileWatcher, ECPartFileActionWatcher, DialogFragmentCaller, RenameDialogContainer, RefreshingActivity {
     final static String BUNDLE_PARAM_HASH = "hash";
     final static String BUNDLE_SELECTED_TAB = "tab";
+    final static String BUNDLE_NEEDS_REFRESH = "needs_refresh";
     
     private AmuleControllerApplication mApp;
     
@@ -44,6 +51,7 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
     Button bDelete;
     
     private boolean mIsProgressShown = false;
+    private boolean mNeedsRefresh = true;
     
     
     @Override
@@ -69,6 +77,12 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
         mTabSourceNames.setTabListener(new TabListener<PartFileSourceNamesFragment>(this, "names", PartFileSourceNamesFragment.class, mHash));
         mBar.addTab(mTabSourceNames);
         
+        mTabComments = mBar.newTab();
+        mTabComments.setText("Comments"); //TODO Provide string resource
+        mTabComments.setTabListener(new TabListener<PartFileCommentsFragment>(this, "comments", PartFileCommentsFragment.class, mHash));
+        mBar.addTab(mTabComments);
+
+        
         if (savedInstanceState != null) {
             String selectedTab = savedInstanceState.getString(BUNDLE_SELECTED_TAB);
             if (selectedTab == null) {
@@ -76,10 +90,12 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
             } else if (selectedTab.equals("names")) {
                 mBar.selectTab(mTabSourceNames);
             } else if (selectedTab.equals("comments")) {
-                
+                if (mBar.getTabCount() == 3) {
+                    mBar.selectTab(mTabComments);
+                }
             }
+            mNeedsRefresh = savedInstanceState.getBoolean(BUNDLE_NEEDS_REFRESH, true);
         }
-        
         
         bPause = (Button) findViewById(R.id.partfile_button_pause);
         bResume = (Button) findViewById(R.id.partfile_button_resume);
@@ -90,8 +106,7 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
         bResume.setOnClickListener(new OnClickListener() { public void onClick(View v) { doPartFileAction(ECPartFileAction.RESUME); } });
         
         
-        // TODO IMPLEMENT DELETE
-        //bDelete.setOnClickListener(new View.OnClickListener() { public void onClick(View v) { /*showDialog(ID_DIALOG_DELETE);*/ } });
+        bDelete.setOnClickListener(new View.OnClickListener() { public void onClick(View v) { showDeleteConfirmDialog(); } });
         
 
     }
@@ -101,6 +116,8 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
         super.onResume();
         notifyStatusChange(mApp.mECHelper.registerForAmuleClientStatusUpdates(this));
         updateECPartFile(mApp.mECHelper.registerForECPartFileUpdates(this, mHash));
+        mApp.registerRefreshActivity(this);
+        
     }
     
     @Override
@@ -108,6 +125,8 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
         super.onPause();
         mApp.mECHelper.unRegisterFromAmuleClientStatusUpdates(this);
         mApp.mECHelper.unRegisterFromECPartFileUpdates(this, mHash);
+        mApp.mECHelper.unRegisterFromECPartFileActions(this, mHash);
+        mApp.registerRefreshActivity(null);
     }
     
     
@@ -125,18 +144,10 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
                 }
             }
         }
+        
+        outState.putBoolean(BUNDLE_NEEDS_REFRESH, mNeedsRefresh);
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     @Override
@@ -155,7 +166,7 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
         
         if (refreshItem != null) {
             if (mIsProgressShown) {
-                refreshItem.setActionView(getRefreshProgressBar());
+                refreshItem.setActionView(R.layout.refresh_progress);
             } else {
                 refreshItem.setActionView(null);
             }
@@ -164,18 +175,38 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
         return super.onPrepareOptionsMenu(menu);
     }
     
-    private ProgressBar getRefreshProgressBar() {
-        ProgressBar refreshProgressBar = new ProgressBar(this);
-        refreshProgressBar.setIndeterminate(true);
-        return refreshProgressBar;
-    }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.menu_detail_opt_refresh:
             refreshPartFileDetails();
             return true;
+        case R.id.menu_detail_opt_a4af_auto:
+            doPartFileAction(ECPartFileAction.A4AF_AUTO);
+            return true;
+        case R.id.menu_detail_opt_a4af_now:
+            doPartFileAction(ECPartFileAction.A4AF_NOW);
+            return true;
+        case R.id.menu_detail_opt_a4af_away:
+            doPartFileAction(ECPartFileAction.A4AF_AWAY);
+            return true;
+        case R.id.menu_detail_opt_prio_auto:
+            doPartFileAction(ECPartFileAction.PRIO_AUTO);
+            return true;
+        case R.id.menu_detail_opt_prio_low:
+            doPartFileAction(ECPartFileAction.PRIO_LOW);
+            return true;
+        case R.id.menu_detail_opt_prio_normal:
+            doPartFileAction(ECPartFileAction.PRIO_NORMAL);
+            return true;
+        case R.id.menu_detail_opt_prio_high:
+            doPartFileAction(ECPartFileAction.PRIO_HIGH);
+            return true;
+        case R.id.menu_detail_opt_rename:
+            showRenameDialog(mPartFile.getFileName());
+            return true;
+            
         }
         
         return super.onOptionsItemSelected(item);
@@ -184,27 +215,65 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
     
     
     
+    public void showRenameDialog(String fileName) {
+        MyAlertDialogFragment dialogFrag = MyAlertDialogFragment.newInstance();
+        AlertDialog.Builder builder = dialogFrag.getAlertDialogBuilder(this);
+        
+        // TODO Create string resource
+        builder.setTitle("Provide new name");
+        final EditText input = new EditText(this);
+        input.setText(fileName);
+        builder.setView(input);
+        builder.setPositiveButton(R.string.alert_dialog_ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                doPartFileAction(ECPartFileAction.RENAME, true, input.getText().toString());
+            }
+        });
+        builder.setNegativeButton(R.string.alert_dialog_cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+              }
+            });
+        
+        dialogFrag.show(getSupportFragmentManager(), "rename_dialog");
+    }
     
     
-    
-    
+    private void showDeleteConfirmDialog() {
+        MyAlertDialogFragment.newInstance(R.string.partfile_dialog_delete_confirm, this).show(getSupportFragmentManager(), "delete_confirm");
+    }
     
     
     
     private void refreshPartFileDetails() {
         ECPartFileGetDetailsAsyncTask refreshTask = (ECPartFileGetDetailsAsyncTask) mApp.mECHelper.getNewTask(ECPartFileGetDetailsAsyncTask.class);
         refreshTask.setECPartFile(mPartFile);
-        mApp.mECHelper.executeTask(refreshTask, TaskScheduleMode.BEST_EFFORT); 
+        if (mApp.mECHelper.executeTask(refreshTask, TaskScheduleMode.BEST_EFFORT)) {
+            // Refresh is queued...
+            mNeedsRefresh = false;
+        }
+            
     }
     
-    private void doPartFileAction(ECPartFileAction actionType ) {
+    
+    private void doPartFileAction(ECPartFileAction actionType) {
+        doPartFileAction(actionType, true);
+    }
+    
+    private void doPartFileAction(ECPartFileAction actionType, boolean refreshAfter) {
+        doPartFileAction(actionType, refreshAfter, null);
+        
+    }
+    
+    private void doPartFileAction(ECPartFileAction actionType, boolean refreshAfter, String stringParam ) {
         ECPartFileActionAsyncTask actionTask = (ECPartFileActionAsyncTask) mApp.mECHelper.getNewTask(ECPartFileActionAsyncTask.class);
         actionTask.setECPartFile(mPartFile).setAction(actionType);
-        ECPartFileGetDetailsAsyncTask detailsTask = (ECPartFileGetDetailsAsyncTask) mApp.mECHelper.getNewTask(ECPartFileGetDetailsAsyncTask.class);
-        detailsTask.setECPartFile(mPartFile);
-        
-        mApp.mECHelper.executeTask(actionTask, TaskScheduleMode.QUEUE);
-        mApp.mECHelper.executeTask(detailsTask, TaskScheduleMode.QUEUE);
+        if (stringParam != null) actionTask.setStringParam(stringParam);
+        if (mApp.mECHelper.executeTask(actionTask, TaskScheduleMode.QUEUE) && refreshAfter) {
+            ECPartFileGetDetailsAsyncTask detailsTask = (ECPartFileGetDetailsAsyncTask) mApp.mECHelper.getNewTask(ECPartFileGetDetailsAsyncTask.class);
+            detailsTask.setECPartFile(mPartFile);
+            mApp.mECHelper.executeTask(detailsTask, TaskScheduleMode.QUEUE);
+        }
     }
 
     
@@ -216,6 +285,19 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
         boolean deleteEnabled = false;
 
         if (mPartFile != null) {
+            
+            if (mPartFile.getCommentCount() == 0) {
+                if (mBar.getTabCount() == 3) {
+                    Tab prevSelected = mBar.getSelectedTab();
+                    mBar.removeTab(mTabComments);
+                    if (prevSelected == mTabComments) prevSelected = mTabDetails;
+                    mBar.selectTab(prevSelected);
+                }
+            } else {
+                if (mBar.getTabCount() == 2) {
+                    mBar.addTab(mTabComments);
+                }
+            }
             
             ((TextView) findViewById(R.id.partfile_filename)).setText(mPartFile.getFileName());
             
@@ -293,7 +375,7 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
         // TODO: Check if hash is the same...
         if (mPartFile == null && newECPartFile != null) {
             mPartFile = newECPartFile;
-            refreshPartFileDetails();
+            if (mNeedsRefresh) refreshPartFileDetails();
         }
         // We shouldn't need to re-assign mPartFile, since this should be the same modified...)
         
@@ -301,6 +383,41 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
         
     }
 
+    
+    // ECPartFileActionWatcher Interface
+    
+    @Override
+    public void notifyECPartFileActionDone(ECPartFileAction action) {
+        if (action == ECPartFileAction.DELETE) {
+            mApp.mECHelper.invalidateDlQueue();
+            finish();
+        }
+        
+    }
+
+    
+    
+    // DialogFragmentCaller Interface
+    
+    @Override
+    public void myAlertDialogPositiveClick() {
+        // TODO Delete PartFile
+        mApp.mECHelper.registerForECPartFileActions(this, mHash);
+        doPartFileAction(ECPartFileAction.DELETE, false);
+    }
+
+    @Override
+    public void myAlertDialogNegativeClick() {
+        // Do nothing
+
+    }
+    
+    // RefreshingActivity Interface
+    
+    @Override
+    public void refreshContent() {
+        refreshPartFileDetails();
+    }
 
 
     public static class TabListener<T extends Fragment> implements ActionBar.TabListener {
@@ -376,6 +493,15 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
             
         }
     }
+
+
+ 
+
+
+
+
+
+
 
 
 

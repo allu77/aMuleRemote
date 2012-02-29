@@ -17,5 +17,6 @@
             <item android:title="@string/menu_detail_opt_a4af_away" android:id="@+id/menu_detail_opt_a4af_away"></item>
         </menu>
     </item>
+    <item android:id="@+id/menu_detail_opt_rename" android:title="@string/menu_detail_opt_rename"></item>
     
 </menu>

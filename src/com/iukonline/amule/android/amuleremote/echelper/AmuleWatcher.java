@@ -2,6 +2,7 @@ package com.iukonline.amule.android.amuleremote.echelper;
 
 import java.util.ArrayList;
 
+import com.iukonline.amule.android.amuleremote.echelper.tasks.ECPartFileActionAsyncTask.ECPartFileAction;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.ECStats;
 
@@ -28,6 +29,11 @@ public abstract interface AmuleWatcher {
         void updateECPartFile(ECPartFile newECPartFile);
     }
 
+    public interface ECPartFileActionWatcher extends AmuleWatcher {
+        void notifyECPartFileActionDone(ECPartFileAction action);
+    }
+
+    
     String getWatcherId();
 }
 

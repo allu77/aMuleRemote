@@ -25,6 +25,8 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
         
         mHash = getArguments().getByteArray(PartFileActivity.BUNDLE_PARAM_HASH);
         mApp = (AmuleControllerApplication) getActivity().getApplication();
+        
+        setHasOptionsMenu(true);
 
     }
     

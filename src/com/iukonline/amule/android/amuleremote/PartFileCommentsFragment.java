@@ -5,47 +5,35 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.support.v4.view.MenuItem;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileWatcher;
 import com.iukonline.amule.ec.ECPartFile;
+import com.iukonline.amule.ec.ECPartFile.ECPartFileComment;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileSourceName;
 
 
 
-public class PartFileSourceNamesFragment extends ListFragment implements ECPartFileWatcher {
+public class PartFileCommentsFragment extends ListFragment implements ECPartFileWatcher {
 
-    
-    interface RenameDialogContainer {
-        public void showRenameDialog(String fileName);
-    }
-
-    
     byte[] mHash;
     ECPartFile mPartFile;
     AmuleControllerApplication mApp;
     
-    SourceNamesAdapter mSourceNamesAdpater;
-    
-    String mLastSelected = null;
+    CommentsAdapter mCommentsAdpater;
 
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         mHash = getArguments().getByteArray(PartFileActivity.BUNDLE_PARAM_HASH);
         mApp = (AmuleControllerApplication) getActivity().getApplication();
-        
+
     }
     
     @Override
@@ -61,18 +49,9 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
             //return null;
         }
         
-        View v = inflater.inflate(R.layout.partfile_sourcenames_fragment, container, false);
+        View v = inflater.inflate(R.layout.partfile_comments_fragment, container, false);
         return v;
     }
-    
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        
-        registerForContextMenu(getListView());
-    }
-
-    
 
     @Override
     public void onResume() {
@@ -86,41 +65,9 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
         mApp.mECHelper.unRegisterFromECPartFileUpdates(this, mHash);
     }
     
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        
-        MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.sourcenames_context, menu);
-        
-        AdapterView.AdapterContextMenuInfo aMenuInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        mLastSelected = mPartFile.getSourceNames().get(aMenuInfo.position).name;
-
-    } 
-    
-    
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
-        
-        switch (item.getItemId()) {
-        case R.id.sourcenames_context_rename:
-            ((RenameDialogContainer) getActivity()).showRenameDialog(mLastSelected);
-            break;
-        }
-        
-        return super.onContextItemSelected(item);
-    }
-    
-    
-    
-    
     
     // Interface ECPartFileWatcher
-
-
-
-
+    
     @Override
     public String getWatcherId() {
         return this.getClass().getName();
@@ -132,8 +79,8 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
         // TODO: Check if hash is the same...
         if (mPartFile == null && newECPartFile != null) {
             mPartFile = newECPartFile;
-            mSourceNamesAdpater = new SourceNamesAdapter(getActivity(), R.layout.partfile_sourcenames_fragment, mPartFile.getSourceNames() );
-            setListAdapter(mSourceNamesAdpater);
+            mCommentsAdpater = new CommentsAdapter(getActivity(), R.layout.partfile_sourcenames_fragment, mPartFile.getComments() );
+            setListAdapter(mCommentsAdpater);
         }
         // We shouldn't need to re-assign mPartFile, since this should be the same modified...
         
@@ -144,16 +91,16 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
     
     public void refreshView() {
         
-        if (mSourceNamesAdpater != null) {
-            mSourceNamesAdpater.notifyDataSetChanged();
+        if (mCommentsAdpater != null) {
+            mCommentsAdpater.notifyDataSetChanged();
         }
     }
     
     
-    private class SourceNamesAdapter extends ArrayAdapter<ECPartFileSourceName> {
-        private ArrayList<ECPartFileSourceName> items;
+    private class CommentsAdapter extends ArrayAdapter<ECPartFileComment> {
+        private ArrayList<ECPartFileComment> items;
         
-        public SourceNamesAdapter(Context context, int textViewResourceId, ArrayList<ECPartFileSourceName> items) {
+        public CommentsAdapter(Context context, int textViewResourceId, ArrayList<ECPartFileComment> items) {
             super(context, textViewResourceId, items);
             this.items = items;
         }
@@ -163,12 +110,14 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
                 View v = convertView;
                 if (v == null) {
                     LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    v = vi.inflate(R.layout.amuledl_sourcenames_row, null);
+                    v = vi.inflate(R.layout.amuledl_comments_row, null);
                 }
-                ECPartFileSourceName o = items.get(position);
+                ECPartFileComment o = items.get(position);
                 if (o != null) {
-                    ((TextView) v.findViewById(R.id.amuledl_sourcenames_count)).setText(Integer.toString(o.count));
-                    ((TextView) v.findViewById(R.id.amuledl_sourcenames_name)).setText(o.name);
+                    ((TextView) v.findViewById(R.id.amuledl_comments_row_rating)).setText(Integer.toString(o.rating));
+                    ((TextView) v.findViewById(R.id.amuledl_comments_row_author)).setText(o.author);
+                    ((TextView) v.findViewById(R.id.amuledl_comments_row_filename)).setText(o.sourceName);
+                    ((TextView) v.findViewById(R.id.amuledl_comments_row_comment)).setText(o.comment);
                 }
                 return v;
         }

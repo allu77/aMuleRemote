@@ -16,5 +16,7 @@
         <fragment android:name="com.iukonline.amule.android.amuleremote.DlQueueFragment"
             android:id="@+id/fragment_dlqueue"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content" >
+            <!-- Preview: layout=@layout/dlqueue_fragment -->
+        </fragment>
 </LinearLayout>

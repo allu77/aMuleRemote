@@ -17,11 +17,13 @@ import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher.AmuleClientStatus;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.DlQueueWatcher;
+import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileActionWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECStatsWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.AmuleAsyncTask;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.AmuleAsyncTask.TaskScheduleMode;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.AmuleAsyncTask.TaskScheduleQueueStatus;
+import com.iukonline.amule.android.amuleremote.echelper.tasks.ECPartFileActionAsyncTask.ECPartFileAction;
 import com.iukonline.amule.ec.ECClient;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.ECStats;
@@ -54,6 +56,8 @@ public class ECHelper {
 
     // Data
     ArrayList<ECPartFile> mDlQueue ;
+    long mDlQueueAge = -1;
+    
     ECStats mStats;
 
     // Watchers
@@ -61,6 +65,7 @@ public class ECHelper {
     HashMap<String, ECStatsWatcher> mECStatsWatchers = new HashMap<String, ECStatsWatcher>();
     HashMap<String, ClientStatusWatcher> mAmuleStatusWatchers = new HashMap<String, ClientStatusWatcher>();
     HashMap<String, HashMap<String, ECPartFileWatcher>> mECPartFileWatchers = new HashMap<String, HashMap<String, ECPartFileWatcher>>();
+    HashMap<String, HashMap<String, ECPartFileActionWatcher>> mECPartFileActionWatchers = new HashMap<String, HashMap<String, ECPartFileActionWatcher>>();
     
     ConcurrentLinkedQueue <AmuleAsyncTask> mTaskQueue = new ConcurrentLinkedQueue<AmuleAsyncTask>();
     
@@ -154,7 +159,8 @@ public class ECHelper {
     }
     
     
-    public ClientStatusWatcher.AmuleClientStatus registerForAmuleClientStatusUpdates (ClientStatusWatcher watcher) { 
+    public ClientStatusWatcher.AmuleClientStatus registerForAmuleClientStatusUpdates (ClientStatusWatcher watcher) {
+        //Toast.makeText(getApplication(), "Registering watcher " + watcher.getWatcherId() + " to status changes", Toast.LENGTH_LONG).show();
         registerWatcher(watcher, mAmuleStatusWatchers);
         return mECClientStatus;
     }
@@ -164,7 +170,7 @@ public class ECHelper {
         return getDlQueue();
     }
     
-    public ECStats registerForECStatsUpdates (ECStatsWatcher watcher) { 
+    public ECStats registerForECStatsUpdates (ECStatsWatcher watcher) {
         registerWatcher(watcher, mECStatsWatchers);
         return this.getStats();
     }
@@ -174,6 +180,12 @@ public class ECHelper {
         if (! mECPartFileWatchers.containsKey(hashString)) mECPartFileWatchers.put(hashString, new HashMap <String, ECPartFileWatcher>());
         registerWatcher(watcher, mECPartFileWatchers.get(hashString));
         return getPartFileFromHash(hash);
+    }
+    
+    public void registerForECPartFileActions (ECPartFileActionWatcher watcher, byte[] hash) {
+        String hashString = ECUtils.byteArrayToHexString(hash);
+        if (! mECPartFileActionWatchers.containsKey(hashString)) mECPartFileActionWatchers.put(hashString, new HashMap <String, ECPartFileActionWatcher>());
+        registerWatcher(watcher, mECPartFileActionWatchers.get(hashString));
     }
     
     @SuppressWarnings("unchecked")
@@ -198,6 +210,13 @@ public class ECHelper {
         String hashString = ECUtils.byteArrayToHexString(hash);
         if (mECPartFileWatchers.containsKey(hashString)) {
             unRegisterWatcher(watcher, mECPartFileWatchers.get(hashString));
+        }
+    }
+    
+    public void unRegisterFromECPartFileActions (ECPartFileActionWatcher watcher, byte[] hash) {
+        String hashString = ECUtils.byteArrayToHexString(hash);
+        if (mECPartFileActionWatchers.containsKey(hashString)) {
+            unRegisterWatcher(watcher, mECPartFileActionWatchers.get(hashString));
         }
     }
     
@@ -231,9 +250,13 @@ public class ECHelper {
             }
         }
         
-        
+        //Toast.makeText(getApplication(), "Notifying status wachers", Toast.LENGTH_LONG).show();
         Iterator <ClientStatusWatcher> i = mAmuleStatusWatchers.values().iterator();
-        while (i.hasNext()) i.next().notifyStatusChange(status);
+        while (i.hasNext()) {
+            ClientStatusWatcher n = i.next();
+            //Toast.makeText(getApplication(), "Notifying " + n.getWatcherId(), Toast.LENGTH_LONG).show();
+            n.notifyStatusChange(status);
+        }
     }
 
     public void notifyDlQueueWatchers (ArrayList<ECPartFile> dlQueue) {
@@ -243,9 +266,12 @@ public class ECHelper {
     }
     
     public void notifyECStatsWatchers (ECStats stats) {
+        
         setStats(stats);
         Iterator <ECStatsWatcher> i = mECStatsWatchers.values().iterator();
-        while (i.hasNext()) i.next().updateECStats(stats);
+        while (i.hasNext()) {
+            i.next().updateECStats(stats);
+        }
     }
     
     public void notifyECPartFileWatchers (ECPartFile file) {
@@ -256,13 +282,29 @@ public class ECHelper {
         }
     }
     
+    public void notifyECPartFileActionWatchers (ECPartFile file, ECPartFileAction action) {
+        String hashString = ECUtils.byteArrayToHexString(file.getHash());
+        if (mECPartFileActionWatchers.containsKey(hashString)) {
+            Iterator <ECPartFileActionWatcher> i = mECPartFileActionWatchers.get(hashString).values().iterator();
+            while (i.hasNext()) i.next().notifyECPartFileActionDone(action);
+        }
+    }
 
     public ArrayList<ECPartFile> getDlQueue() {
         return mDlQueue;
     }
 
     public void setDlQueue(ArrayList<ECPartFile> mdlList) {
-        this.mDlQueue = mdlList;
+        mDlQueue = mdlList;
+        mDlQueueAge = System.currentTimeMillis();
+    }
+    
+    public void invalidateDlQueue() {
+        mDlQueueAge = -1;
+    }
+    
+    public boolean isDlQueueValid() {
+        return mDlQueueAge > 0 ? true : false;
     }
 
     /*

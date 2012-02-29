@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_opt_sort" android:title="@string/menu_opt_sort" android:icon="@drawable/ic_menu_sort_alphabetically">
+        <menu>
+            <item android:id="@+id/menu_dlqueue_opt_sort_filename" android:title="@string/menu_opt_sort_filename"></item>
+            <item android:id="@+id/menu_dlqueue_opt_sort_status" android:title="@string/menu_opt_sort_status"></item>
+            <item android:id="@+id/menu_dlqueue_opt_sort_transfered" android:title="@string/menu_opt_sort_transfered"></item>
+            <item android:id="@+id/menu_dlqueue_opt_sort_progress" android:title="@string/menu_opt_sort_progress"></item>
+        </menu>
+    </item>
+</menu>

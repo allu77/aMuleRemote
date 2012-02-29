@@ -13,11 +13,14 @@ public class ECPartFileActionAsyncTask extends AmuleAsyncTask {
     public enum ECPartFileAction {
         PAUSE, RESUME, DELETE, 
         A4AF_NOW, A4AF_AUTO, A4AF_AWAY, 
-        PRIO_LOW, PRIO_NORMAL, PRIO_HIGH, PRIO_AUTO
+        PRIO_LOW, PRIO_NORMAL, PRIO_HIGH, PRIO_AUTO,
+        RENAME
     }
 
     ECPartFile mECPartFile;
     ECPartFileAction mAction;
+    
+    String mStringParam = null;
     
     public ECPartFileActionAsyncTask setECPartFile(ECPartFile file) {
         mECPartFile = file;
@@ -29,6 +32,12 @@ public class ECPartFileActionAsyncTask extends AmuleAsyncTask {
         return this;
     }
 
+    public ECPartFileActionAsyncTask setStringParam(String param) {
+        mStringParam = param;
+        return this;
+    }
+
+    
     @Override
     protected String backgroundTask() throws ECException, UnknownHostException, SocketTimeoutException, IOException {
         
@@ -64,15 +73,17 @@ public class ECPartFileActionAsyncTask extends AmuleAsyncTask {
         case PRIO_AUTO:
             mECPartFile.changePriority(ECPartFile.PR_AUTO);
             break;
+        case RENAME:
+            if (mStringParam == null) return "New name not specified";
+            mECPartFile.rename(mStringParam);
+            break;
         }
         return null;
     }
 
     @Override
     protected void notifyResult() {
-        if (mAction == ECPartFileAction.DELETE) {
-            // TODO need to finish detail activity or do something to detail fragment...
-        }
+        mECHelper.notifyECPartFileActionWatchers(mECPartFile, mAction);
     }
 
 }

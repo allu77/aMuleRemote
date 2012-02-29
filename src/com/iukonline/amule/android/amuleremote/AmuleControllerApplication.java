@@ -1,5 +1,9 @@
 package com.iukonline.amule.android.amuleremote;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -28,6 +32,33 @@ public class AmuleControllerApplication extends Application {
     public static final String AC_SETTING_CONNECT_TIMEOUT = "amule_client_connect_timeout";
     public static final String AC_SETTING_READ_TIMEOUT = "amule_client_read_timeout";
     
+    interface RefreshingActivity {
+        public void refreshContent();
+    }
+    
+    RefreshingActivity mRefreshingActivity;
+    private Timer autoRefresh;
+    
+    public void registerRefreshActivity(RefreshingActivity activity) {
+        mRefreshingActivity = activity;
+    }
+    
+    private void startRefresh() {
+        autoRefresh = new Timer();
+        autoRefresh.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (mRefreshingActivity != null) {
+                    ((Activity) mRefreshingActivity).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mRefreshingActivity.refreshContent();
+                        }
+                    });
+                }
+            }
+        }, 0, 10000); // TODO Parametrizzare intervallo
+    }
 
     
     
@@ -40,6 +71,7 @@ public class AmuleControllerApplication extends Application {
     
     public AmuleControllerApplication() {
        super();
+       startRefresh();
     }
 
     public boolean refreshServerSettings()  {
