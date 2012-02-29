@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import com.iukonline.amule.android.amuleremote.echelper.ECHelper;
 import com.iukonline.amule.android.amuleremote.echelper.ECHelperFakeClient;
@@ -22,6 +23,7 @@ public class AmuleControllerApplication extends Application {
     public static final String AC_SETTING_PASSWORD   = "amule_server_password"; 
     
     public static final String AC_SETTING_AUTOREFRESH = "amule_client_autorefresh";
+    public static final String AC_SETTING_AUTOREFRESH_INTERVAL = "amule_client_autorefresh_interval";
     
     public static final String AC_SETTING_SORT          = "amule_client_sort";
     public static final byte AC_SETTING_SORT_FILENAME = 0x0;
@@ -37,27 +39,49 @@ public class AmuleControllerApplication extends Application {
     }
     
     RefreshingActivity mRefreshingActivity;
-    private Timer autoRefresh;
+    private Timer mAutoRefreshTimer;
+    private boolean mAutoRefresh;
+    private int mAutoRefreshInterval;
     
     public void registerRefreshActivity(RefreshingActivity activity) {
         mRefreshingActivity = activity;
+        if (activity != null) {
+            refreshRefreshSettings();
+        }
     }
     
     private void startRefresh() {
-        autoRefresh = new Timer();
-        autoRefresh.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (mRefreshingActivity != null) {
-                    ((Activity) mRefreshingActivity).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mRefreshingActivity.refreshContent();
+        Toast.makeText(this, "START REFRESH CALLED", Toast.LENGTH_SHORT).show();
+        if (mAutoRefreshTimer == null) {
+            
+            if (mAutoRefresh) {
+                
+                Toast.makeText(this, "NO TIMER - CREATING NEW", Toast.LENGTH_SHORT).show();
+                
+                mAutoRefreshTimer = new Timer();
+                mAutoRefreshTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (mRefreshingActivity != null) {
+                            ((Activity) mRefreshingActivity).runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mRefreshingActivity.refreshContent();
+                                }
+                            });
                         }
-                    });
-                }
+                    }
+                }, 0, mAutoRefreshInterval * 1000);
             }
-        }, 0, 10000); // TODO Parametrizzare intervallo
+        } else {
+            Toast.makeText(this, "CANCELLING PREVIOUS TIMER", Toast.LENGTH_SHORT).show();
+            
+            mAutoRefreshTimer.cancel();
+            mAutoRefreshTimer = null;
+            if (mAutoRefresh) {
+                startRefresh();
+            }
+        }
     }
 
     
@@ -71,7 +95,6 @@ public class AmuleControllerApplication extends Application {
     
     public AmuleControllerApplication() {
        super();
-       startRefresh();
     }
 
     public boolean refreshServerSettings()  {
@@ -97,12 +120,26 @@ public class AmuleControllerApplication extends Application {
         
         return true;
     }
+    
+    public void refreshRefreshSettings() {
+        boolean autoRefresh = mSettings.getBoolean(AC_SETTING_AUTOREFRESH, false);
+        int autoRefreshInterval = Integer.parseInt(mSettings.getString(AC_SETTING_AUTOREFRESH_INTERVAL, "10"));
+        
+        Toast.makeText(this, "REFRESH CALLED", Toast.LENGTH_SHORT).show();
+        if (autoRefresh != mAutoRefresh || autoRefreshInterval != mAutoRefreshInterval) {
+            Toast.makeText(this, "Settings changed - " + autoRefresh + " - " + autoRefreshInterval, Toast.LENGTH_SHORT).show();
+            mAutoRefresh = autoRefresh;
+            mAutoRefreshInterval = autoRefreshInterval;
+            startRefresh();
+        }
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
         refreshServerSettings();
+        refreshRefreshSettings();
     }
 
     @Override
