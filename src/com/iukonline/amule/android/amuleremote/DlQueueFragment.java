@@ -6,8 +6,6 @@ import java.util.Collections;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.Menu;
@@ -20,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.DlQueueWatcher;
 import com.iukonline.amule.ec.ECPartFile;

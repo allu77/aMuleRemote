@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileWatcher;
 import com.iukonline.amule.ec.ECPartFile;

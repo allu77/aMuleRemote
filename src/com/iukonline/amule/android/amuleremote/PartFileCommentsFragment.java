@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileWatcher;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComment;
-import com.iukonline.amule.ec.ECPartFile.ECPartFileSourceName;
 
 
 
