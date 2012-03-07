@@ -114,7 +114,29 @@ public class PartFileCommentsFragment extends ListFragment implements ECPartFile
                 }
                 ECPartFileComment o = items.get(position);
                 if (o != null) {
-                    ((TextView) v.findViewById(R.id.amuledl_comments_row_rating)).setText(Integer.toString(o.rating));
+                    int ratingRes = R.string.partfile_deatil_comments_rating_notrated;;
+                    switch (o.rating) {
+                    case ECPartFile.RATING_NOT_RATED:
+                        ratingRes = R.string.partfile_deatil_comments_rating_notrated;
+                        break;
+                    case ECPartFile.RATING_INVALID:
+                        ratingRes = R.string.partfile_deatil_comments_rating_invalid;
+                        break;
+                    case ECPartFile.RATING_POOR:
+                        ratingRes = R.string.partfile_deatil_comments_rating_poor;
+                        break;
+                    case ECPartFile.RATING_FAIR:
+                        ratingRes = R.string.partfile_deatil_comments_rating_fair;
+                        break;
+                    case ECPartFile.RATING_GOOD:
+                        ratingRes = R.string.partfile_deatil_comments_rating_good;
+                        break;
+                    case ECPartFile.RATING_EXCELLENT:
+                        ratingRes = R.string.partfile_deatil_comments_rating_excellent;
+                        break;
+
+                    }
+                    ((TextView) v.findViewById(R.id.amuledl_comments_row_rating)).setText(ratingRes);
                     ((TextView) v.findViewById(R.id.amuledl_comments_row_author)).setText(o.author);
                     ((TextView) v.findViewById(R.id.amuledl_comments_row_filename)).setText(o.sourceName);
                     ((TextView) v.findViewById(R.id.amuledl_comments_row_comment)).setText(o.comment);

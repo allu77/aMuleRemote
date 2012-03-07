@@ -91,4 +91,10 @@
     <string name="menu_detail_opt_rename">Rename</string>
     <string name="settings_summary_client_autorefresh_interval">Sets the autorefresh interval</string>
     <string name="settings_label_client_autorefresh_interval">Autorefresh interval</string>
+    <string name="partfile_deatil_comments_rating_notrated">Not rated</string>
+    <string name="partfile_deatil_comments_rating_invalid">Invalid</string>
+    <string name="partfile_deatil_comments_rating_poor">Poor</string>
+    <string name="partfile_deatil_comments_rating_fair">Fair</string>
+    <string name="partfile_deatil_comments_rating_good">Good</string>
+    <string name="partfile_deatil_comments_rating_excellent">Excellent</string>
 </resources>

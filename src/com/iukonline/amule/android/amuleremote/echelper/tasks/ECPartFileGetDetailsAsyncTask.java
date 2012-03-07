@@ -20,6 +20,7 @@ public class ECPartFileGetDetailsAsyncTask extends AmuleAsyncTask {
     @Override
     protected String backgroundTask() throws ECException, UnknownHostException, SocketTimeoutException, IOException {
         if (isCancelled()) return null;
+        mECPartFile.setClient(mECClient);
         mECPartFile.refresh(true);
         return null;
     }

@@ -299,35 +299,51 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
                 }
             }
             
-            ((TextView) findViewById(R.id.partfile_filename)).setText(mPartFile.getFileName());
             
+            int fileNameBackground = R.color.progressWaitingMid;
             switch (mPartFile.getStatus()) {
             
             case ECPartFile.PS_EMPTY:
                 pauseEnabled = true;
                 deleteEnabled = true;
+                fileNameBackground = R.color.progressBlockedMid;
                 break;
             case ECPartFile.PS_ERROR:
                 deleteEnabled = true;
+                fileNameBackground = R.color.progressBlockedMid;
                 break;
             case ECPartFile.PS_HASHING:
                 deleteEnabled = true;
                 break;
             case ECPartFile.PS_INSUFFICIENT:
+                fileNameBackground = R.color.progressBlockedMid;
                 // TODO What's this?
                 break;
             case ECPartFile.PS_PAUSED:
                 deleteEnabled = true;
                 resumeEnabled = true;
+                fileNameBackground = R.color.progressStoppedMid;
                 break;
             case ECPartFile.PS_READY:
+                fileNameBackground = (mPartFile.getSpeed() > 0 ? R.color.progressRunningMid : R.color.progressWaitingMid);
                 deleteEnabled = true;
                 pauseEnabled = true;
+                break;
+            case ECPartFile.PS_UNKNOWN:
+                fileNameBackground = R.color.progressStoppedMid;
                 break;
             case ECPartFile.PS_WAITINGFORHASH:
                 deleteEnabled = true;
                 break;
+            case ECPartFile.PS_COMPLETE:
+            case ECPartFile.PS_COMPLETING:
+                fileNameBackground = R.color.progressRunningMid;
+                break;
             }
+            
+            TextView fileNameView = (TextView) findViewById(R.id.partfile_filename);
+            fileNameView.setText(mPartFile.getFileName());
+            fileNameView.setBackgroundColor(fileNameBackground);
 
         }
 

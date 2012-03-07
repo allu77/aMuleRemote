@@ -178,7 +178,7 @@
 	
 	
 		<TextView android:layout_height="wrap_content" android:id="@+id/textView11" android:layout_width="wrap_content" android:layout_below="@+id/partfile_detail_sources_active" android:layout_alignParentLeft="true" android:text="@string/partfile_detail_label_link" android:paddingTop="15dip"></TextView>
-	    <TextView android:text="TextView" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/textView11"   android:id="@+id/partfile_detail_link" ></TextView>
+	    <TextView android:text="TextView" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/textView11"   android:id="@+id/partfile_detail_link" android:singleLine="true" ></TextView>
 		
 
 	</RelativeLayout>

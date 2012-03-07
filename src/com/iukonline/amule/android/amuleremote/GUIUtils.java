@@ -12,5 +12,27 @@ public class GUIUtils {
             return new String(in + "B");
         }
     }
+    
+    static String getETA(long remaining, long speed) {
+        
+     // TODO Convert to string resources...
+        
+        String sEta;
+        if (speed > 0) {
+            long eta = remaining / speed;
+            if (eta < 60) {
+                sEta = Long.toString(eta) + " secs";
+            } else if (eta < 3600) {
+                sEta = String.format("%d:%02d mins", eta / 60, eta % 60);
+            } else if (eta < 86400) {
+                sEta = String.format("%d:%02d hours", eta / 3600, (eta % 3600) / 60);
+            } else {
+                sEta = Long.toString(eta / 86400) + " days";
+            }
+        } else {
+            sEta = "";
+        }
+        return sEta;
+    }
 
 }

@@ -84,7 +84,7 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
             ((TextView) v.findViewById(R.id.partfile_detail_done)).setText(GUIUtils.longToBytesFormatted(mPartFile.getSizeDone()));
             ((TextView) v.findViewById(R.id.partfile_detail_size)).setText(GUIUtils.longToBytesFormatted(mPartFile.getSizeFull()));
             
-            ((TextView) v.findViewById(R.id.partfile_detail_remaining)).setText("TBD");
+            ((TextView) v.findViewById(R.id.partfile_detail_remaining)).setText(GUIUtils.getETA(mPartFile.getSizeFull() - mPartFile.getSizeDone(), mPartFile.getSpeed()));
             
             ((TextView) v.findViewById(R.id.partfile_detail_sources_available)).setText(Integer.toString(mPartFile.getSourceCount()));
             ((TextView) v.findViewById(R.id.partfile_detail_sources_active)).setText(Integer.toString(mPartFile.getSourceXfer()));

@@ -7,10 +7,9 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
+
 
 import com.iukonline.amule.android.amuleremote.echelper.ECHelper;
-import com.iukonline.amule.android.amuleremote.echelper.ECHelperFakeClient;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 
 
@@ -45,19 +44,14 @@ public class AmuleControllerApplication extends Application {
     
     public void registerRefreshActivity(RefreshingActivity activity) {
         mRefreshingActivity = activity;
-        if (activity != null) {
-            refreshRefreshSettings();
-        }
+        if (activity == null) mAutoRefresh = false;
+        refreshRefreshSettings();
     }
     
     private void startRefresh() {
-        Toast.makeText(this, "START REFRESH CALLED", Toast.LENGTH_SHORT).show();
         if (mAutoRefreshTimer == null) {
             
             if (mAutoRefresh) {
-                
-                Toast.makeText(this, "NO TIMER - CREATING NEW", Toast.LENGTH_SHORT).show();
-                
                 mAutoRefreshTimer = new Timer();
                 mAutoRefreshTimer.schedule(new TimerTask() {
                     @Override
@@ -74,8 +68,6 @@ public class AmuleControllerApplication extends Application {
                 }, 0, mAutoRefreshInterval * 1000);
             }
         } else {
-            Toast.makeText(this, "CANCELLING PREVIOUS TIMER", Toast.LENGTH_SHORT).show();
-            
             mAutoRefreshTimer.cancel();
             mAutoRefreshTimer = null;
             if (mAutoRefresh) {
@@ -125,9 +117,7 @@ public class AmuleControllerApplication extends Application {
         boolean autoRefresh = mSettings.getBoolean(AC_SETTING_AUTOREFRESH, false);
         int autoRefreshInterval = Integer.parseInt(mSettings.getString(AC_SETTING_AUTOREFRESH_INTERVAL, "10"));
         
-        Toast.makeText(this, "REFRESH CALLED", Toast.LENGTH_SHORT).show();
         if (autoRefresh != mAutoRefresh || autoRefreshInterval != mAutoRefreshInterval) {
-            Toast.makeText(this, "Settings changed - " + autoRefresh + " - " + autoRefreshInterval, Toast.LENGTH_SHORT).show();
             mAutoRefresh = autoRefresh;
             mAutoRefreshInterval = autoRefreshInterval;
             startRefresh();

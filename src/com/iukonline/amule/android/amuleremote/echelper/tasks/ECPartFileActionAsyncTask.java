@@ -41,6 +41,8 @@ public class ECPartFileActionAsyncTask extends AmuleAsyncTask {
     @Override
     protected String backgroundTask() throws ECException, UnknownHostException, SocketTimeoutException, IOException {
         
+        mECPartFile.setClient(mECClient);
+        
         switch (mAction) {
         case DELETE:
             mECPartFile.remove();

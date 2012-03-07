@@ -277,24 +277,7 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
                             
                             ((TextView) v.findViewById(R.id.amuledl_row_sources)).setText(source.toString());
                             
-                         // TODO Convert to string resources...
-    
-                            String sEta;
-                            if (o.getSpeed() > 0) {
-                                long eta = (o.getSizeFull() - o.getSizeDone()) / o.getSpeed();
-                                if (eta < 60) {
-                                    sEta = Long.toString(eta) + " secs";
-                                } else if (eta < 3600) {
-                                    sEta = String.format("%d:%02d mins", eta / 60, eta % 60);
-                                } else if (eta < 86400) {
-                                    sEta = String.format("%d:%02d hours", eta / 3600, (eta % 3600) / 60);
-                                } else {
-                                    sEta = Long.toString(eta / 86400) + " days";
-                                }
-                            } else {
-                                sEta = "";
-                            }
-                            ((TextView) v.findViewById(R.id.amuledl_row_eta)).setText(sEta);
+                            ((TextView) v.findViewById(R.id.amuledl_row_eta)).setText(GUIUtils.getETA(o.getSizeFull() - o.getSizeDone(), o.getSpeed()));
                             
                             ProgressBar bar = (ProgressBar) v.findViewById(R.id.amuledl_row_progress);
                             

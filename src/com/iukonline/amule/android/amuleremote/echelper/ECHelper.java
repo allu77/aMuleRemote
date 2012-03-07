@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
@@ -50,11 +51,6 @@ public class ECHelper {
     protected ECClient mECClient;
     private AmuleClientStatus mECClientStatus = ClientStatusWatcher.AmuleClientStatus.NOT_CONNECTED;
 
-    // TODO: BONIFICARE QUESTO
-    //@SuppressWarnings("rawtypes")
-    //private AsyncTask mLatestTask;
-
-    // Data
     ArrayList<ECPartFile> mDlQueue ;
     long mDlQueueAge = -1;
     
@@ -242,9 +238,9 @@ public class ECHelper {
                 switch (status) {
                 case ERROR:
                 case NOT_CONNECTED:
-                    this.emptyTaskQueue();
+                    emptyTaskQueue();
                 case IDLE:
-                    this.processTaskQueue();
+                    processTaskQueue();
                     return; // Do not update status, since more task are running...
                 }
             }
@@ -316,33 +312,39 @@ public class ECHelper {
     }
     */
 
+    
+    
+    
+    
+    
     public Socket getAmuleSocket() throws UnknownHostException, IOException {
         if (mAmuleSocket == null && mServerHost != null) {
+            Log.d("ECHELPER", "Creating new socket");
             mAmuleSocket = new Socket();
         }
         return mAmuleSocket;
     }
 
     public ECClient getECClient() throws UnknownHostException, IOException {
-        Socket s = this.getAmuleSocket();
+        Socket s = getAmuleSocket();
         if (s.isClosed() || s.isInputShutdown() || s.isOutputShutdown()) {
+            Log.d("ECHELPER", "Invalid socket! Resetting");
             resetSocket();
-            s = this.getAmuleSocket();
+            s = getAmuleSocket();
         }
         if (!s.isConnected()) {
-            // TODO Parametrize timeout
+            Log.d("ECHELPER", "Connecting socket");
             s.connect(new InetSocketAddress(InetAddress.getByName(mServerHost), mServerPort), mClientConnectTimeout);
             s.setSoTimeout(mClientReadTimeout);
         }
-        if (mECClient == null && s != null) {
+        if (mECClient == null) {
+            Log.d("ECHELPER", "Creating new client");
             ECClient c = new ECClient();
             c.setClientName("Amule Remote Controller");
             c.setClientVersion("0.1aplha");
             try {
                 c.setPassword(mServerPassword);
             } catch (NoSuchAlgorithmException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
             c.setSocket(s);
             mECClient = c;
@@ -356,20 +358,25 @@ public class ECHelper {
 
 
     public void resetClient() {
-        //Toast.makeText(getApplication(), "Resetting client", Toast.LENGTH_LONG).show();
-
-        resetSocket();
+        Log.d("ECHELPER", "Setting client to null");
         mECClient = null;
+        //Toast.makeText(getApplication(), "Resetting client", Toast.LENGTH_LONG).show();
+        Log.d("ECHELPER", "Resetting socket");
+        resetSocket();
         //notifyAmuleClientStatusWatchers(ClientStatusWatcher.AMULE_CLIENT_STATUS_NOT_CONNECTED);
     }
 
     public void resetSocket() {
         if (mAmuleSocket != null) {
             try {
+                Log.d("ECHELPER", "Closing socket");
+                mAmuleSocket.shutdownInput();
+                mAmuleSocket.shutdownOutput();
                 mAmuleSocket.close();
             } catch (IOException e) {
                 // Do Nothing. We're closing. Right?
             }
+            Log.d("ECHELPER", "Setting socket to null");
             mAmuleSocket = null;
         }
     }
