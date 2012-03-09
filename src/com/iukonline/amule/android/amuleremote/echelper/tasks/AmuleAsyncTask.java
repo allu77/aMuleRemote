@@ -43,13 +43,6 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPreExecute() {
         mECHelper.notifyAmuleClientStatusWatchers(ClientStatusWatcher.AmuleClientStatus.WORKING);
-        try {
-            mECClient = mECHelper.getECClient();
-        } catch (UnknownHostException e) {
-            mPreExecuteError = new String("EC error - " + e.getLocalizedMessage());
-        } catch (IOException e) {
-            mPreExecuteError = new String("IO error - " + e.getLocalizedMessage());
-        }
     }
     
     abstract protected String backgroundTask() throws ECException, UnknownHostException, SocketTimeoutException, IOException;
@@ -57,6 +50,13 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, String> {
     protected String doInBackground(Void... params) {
         
         if (mPreExecuteError != null) return mPreExecuteError;
+        try {
+            mECClient = mECHelper.getECClient();
+        } catch (UnknownHostException e1) {
+            return new String("EC error - " + e1.getLocalizedMessage()); 
+        } catch (IOException e1) {
+            return new String("IO error - " + e1.getLocalizedMessage());
+        }
         
         try {
             Log.d("MYTASK", "------------------------- NEW TASK");

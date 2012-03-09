@@ -260,6 +260,39 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
                                             ));
                             
                             
+                            
+                            
+                            TextView commView = (TextView) v.findViewById(R.id.amuledl_row_hascomments);
+                            if (o.getCommentCount() == 0) {
+                                commView.setVisibility(View.GONE);
+                            } else {
+                                commView.setVisibility(View.VISIBLE);
+                                String commText = "!!";
+                                int commColor = android.R.color.primary_text_dark;
+                                switch (o.getWorstRating()) {
+                                case ECPartFile.RATING_INVALID:
+                                    commColor = R.color.ratingInvalid;
+                                    break;
+                                case ECPartFile.RATING_POOR:
+                                    commColor = R.color.ratingPoor;
+                                    commText = "!";
+                                    break;
+                                case ECPartFile.RATING_FAIR:
+                                    commColor = R.color.ratingFair;
+                                    commText = "!";
+                                    break;
+                                case ECPartFile.RATING_GOOD:
+                                    commText = "!";
+                                    commColor = R.color.ratingGood;
+                                    break;
+                                case ECPartFile.RATING_EXCELLENT:
+                                    commColor = R.color.ratingExcellent;
+                                    break;
+                                }
+                                commView.setText(commText);
+                                commView.setTextColor(getResources().getColor(commColor));
+                            }
+                            
                             v.findViewById(R.id.amuledl_row_hascomments).setVisibility(o.getCommentCount() > 0 ? View.VISIBLE : View.GONE);
                             
                             int sourceCount = o.getSourceCount();
@@ -267,8 +300,8 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
                             int sourceXfer = o.getSourceXfer();
                             int sourceNotCur = o.getSourceNotCurrent();
                             
-                            StringBuffer source = new StringBuffer(Integer.toString(sourceCount));
-                            if (sourceNotCur > 0) source.append("/" + Integer.toString(sourceCount + sourceNotCur));
+                            StringBuffer source = new StringBuffer(Integer.toString(sourceCount - sourceNotCur - sourceA4AF));
+                            if (sourceNotCur > 0) source.append("/" + Integer.toString(sourceCount));
                             if (sourceA4AF > 0) source.append("+"+Integer.toString(sourceA4AF));
                             if (sourceXfer > 0) source.append(" (" + Integer.toString(sourceXfer) + ")");
                             

@@ -6,13 +6,7 @@
   android:layout_height="match_parent">
 
  
-	<TextView 
-		android:text="FILENAME" 
-		android:layout_height="wrap_content" 
-		android:layout_width="wrap_content" 
-		android:id="@+id/partfile_filename" 
-		android:textColor="@color/detailTitle">
-	</TextView>
+
 	
 	<FrameLayout
 		android:id="@+id/partfile_tabcontent"

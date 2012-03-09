@@ -76,6 +76,8 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
             TextView tvPrio = (TextView) v.findViewById(R.id.partfile_detail_priority);
     
             
+            ((TextView) v.findViewById(R.id.partfile_detail_filename)).setText(mPartFile.getFileName());
+            
             ((TextView) v.findViewById(R.id.partfile_detail_link)).setText(mPartFile.getEd2kLink());
             
             
@@ -84,7 +86,7 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
             
             ((TextView) v.findViewById(R.id.partfile_detail_remaining)).setText(GUIUtils.getETA(mPartFile.getSizeFull() - mPartFile.getSizeDone(), mPartFile.getSpeed()));
             
-            ((TextView) v.findViewById(R.id.partfile_detail_sources_available)).setText(Integer.toString(mPartFile.getSourceCount()));
+            ((TextView) v.findViewById(R.id.partfile_detail_sources_available)).setText(Integer.toString(mPartFile.getSourceCount() - mPartFile.getSourceNotCurrent() - mPartFile.getSourceA4AF()));
             ((TextView) v.findViewById(R.id.partfile_detail_sources_active)).setText(Integer.toString(mPartFile.getSourceXfer()));
             ((TextView) v.findViewById(R.id.partfile_detail_sources_a4af)).setText(Integer.toString(mPartFile.getSourceA4AF()));
             ((TextView) v.findViewById(R.id.partfile_detail_sources_notcurrent)).setText(Integer.toString(mPartFile.getSourceNotCurrent()));
@@ -113,78 +115,65 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
                 break;
             }
         
-            //LinearLayout titleBar = (LinearLayout) v.findViewById(R.id.partfile_detail_//titleBar);
-        
-    
+            
+            int statusColor = R.color.progressWaitingMid;
             
             switch (mPartFile.getStatus()) {
             
             case ECPartFile.PS_ALLOCATING:
                 // TODO What's this?
                 tvStatus.setText(R.string.partfile_status_allocating);
-                //titleBar.setBackgroundResource(R.color.progressWaitingMid);
                 break;
             case ECPartFile.PS_COMPLETE:
                 tvStatus.setText(R.string.partfile_status_complete);
-                ////titleBar.setBackgroundResource(R.color.progressRunningMid);
+                statusColor = R.color.progressRunningMid;
                 break;
             case ECPartFile.PS_COMPLETING:
                 tvStatus.setText(R.string.partfile_status_completing);
-                ////titleBar.setBackgroundResource(R.color.progressRunningMid);
+                statusColor = R.color.progressRunningMid;
                 break;
             case ECPartFile.PS_EMPTY:
                 tvStatus.setText(R.string.partfile_status_empty); 
-                //titleBar.setBackgroundResource(R.color.progressBlockedMid);
+                statusColor = R.color.progressBlockedMid;
                 break;
             case ECPartFile.PS_ERROR:
-                
                 tvStatus.setText(R.string.partfile_status_error);
-                //titleBar.setBackgroundResource(R.color.progressBlockedMid);
+                statusColor = R.color.progressBlockedMid;
                 break;
             case ECPartFile.PS_HASHING:
                 tvStatus.setText(R.string.partfile_status_hashing);
-                //titleBar.setBackgroundResource(R.color.progressWaitingMid);
-                
-    
                 break;
             case ECPartFile.PS_INSUFFICIENT:
                 // TODO What's this?
                 tvStatus.setText(R.string.partfile_status_insuffcient);
-                //titleBar.setBackgroundResource(R.color.progressBlockedMid);
+                statusColor = R.color.progressBlockedMid;
                 break;
             case ECPartFile.PS_PAUSED:
                 tvStatus.setText(R.string.partfile_status_paused);
-                //titleBar.setBackgroundResource(R.color.progressStoppedMid);
                 break;
             case ECPartFile.PS_READY:
                 if (mPartFile.getSourceXfer() > 0) {
                     tvStatus.setText(R.string.partfile_status_downloading);
                     tvStatus.append( " " + GUIUtils.longToBytesFormatted(mPartFile.getSpeed()) + "/s");
-                    //titleBar.setBackgroundResource(R.color.progressRunningMid);
+                    statusColor = R.color.progressRunningMid;
                 } else {
                     tvStatus.setText(R.string.partfile_status_waiting);
-                    //titleBar.setBackgroundResource(R.color.progressWaitingMid);
+                    statusColor = R.color.progressWaitingMid;
                 } 
                 break;
             case ECPartFile.PS_UNKNOWN:
                 tvStatus.setText(R.string.partfile_status_unknown);
-                //titleBar.setBackgroundResource(R.color.progressBlockedMid);
+                statusColor = R.color.progressStoppedMid;
                 break;
             case ECPartFile.PS_WAITINGFORHASH:
                 // TODO What's this?
                 tvStatus.setText(R.string.partfile_status_waitingforhash);
-                //titleBar.setBackgroundResource(R.color.progressWaitingMid);
-    
                 break;
-                
             default:
                 tvStatus.setText("UNKNOWN-" + mPartFile.getStatus());
-                //titleBar.setBackgroundResource(R.color.progressBlockedMid);
-    
                 break;
             }
-            
-        
+            tvStatus.setTextColor(getResources().getColor(statusColor));
         }
     }
 

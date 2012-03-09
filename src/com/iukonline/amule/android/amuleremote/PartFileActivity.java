@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.MyAlertDialogFragment.DialogFragmentCaller;
@@ -300,51 +299,29 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
             }
             
             
-            int fileNameBackground = R.color.progressWaitingMid;
             switch (mPartFile.getStatus()) {
-            
             case ECPartFile.PS_EMPTY:
                 pauseEnabled = true;
                 deleteEnabled = true;
-                fileNameBackground = R.color.progressBlockedMid;
                 break;
             case ECPartFile.PS_ERROR:
                 deleteEnabled = true;
-                fileNameBackground = R.color.progressBlockedMid;
                 break;
             case ECPartFile.PS_HASHING:
                 deleteEnabled = true;
                 break;
-            case ECPartFile.PS_INSUFFICIENT:
-                fileNameBackground = R.color.progressBlockedMid;
-                // TODO What's this?
-                break;
             case ECPartFile.PS_PAUSED:
                 deleteEnabled = true;
                 resumeEnabled = true;
-                fileNameBackground = R.color.progressStoppedMid;
                 break;
             case ECPartFile.PS_READY:
-                fileNameBackground = (mPartFile.getSpeed() > 0 ? R.color.progressRunningMid : R.color.progressWaitingMid);
                 deleteEnabled = true;
                 pauseEnabled = true;
-                break;
-            case ECPartFile.PS_UNKNOWN:
-                fileNameBackground = R.color.progressStoppedMid;
                 break;
             case ECPartFile.PS_WAITINGFORHASH:
                 deleteEnabled = true;
                 break;
-            case ECPartFile.PS_COMPLETE:
-            case ECPartFile.PS_COMPLETING:
-                fileNameBackground = R.color.progressRunningMid;
-                break;
             }
-            
-            TextView fileNameView = (TextView) findViewById(R.id.partfile_filename);
-            fileNameView.setText(mPartFile.getFileName());
-            fileNameView.setBackgroundColor(fileNameBackground);
-
         }
 
         bPause.setEnabled(pauseEnabled);

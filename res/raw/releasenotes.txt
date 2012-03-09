@@ -1,0 +1,6 @@
+Amule Remote 0.1
+- Download queue management (start/stop/delete/set priority/handle A4AF/file rename)
+- Downlaod details (including comments and source names)
+- Automatic queue refresh
+- Periodically check for app updates
+- Add ed2k link (both from app and from ed2k:// URI in other apps)

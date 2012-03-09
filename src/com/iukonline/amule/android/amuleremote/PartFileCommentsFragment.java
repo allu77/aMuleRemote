@@ -111,31 +111,35 @@ public class PartFileCommentsFragment extends ListFragment implements ECPartFile
                     LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     v = vi.inflate(R.layout.amuledl_comments_row, null);
                 }
+                int ratingColor = android.R.color.primary_text_dark;
                 ECPartFileComment o = items.get(position);
                 if (o != null) {
-                    int ratingRes = R.string.partfile_deatil_comments_rating_notrated;;
+                    int ratingRes = R.string.partfile_deatil_comments_rating_notrated;
                     switch (o.rating) {
-                    case ECPartFile.RATING_NOT_RATED:
-                        ratingRes = R.string.partfile_deatil_comments_rating_notrated;
-                        break;
                     case ECPartFile.RATING_INVALID:
                         ratingRes = R.string.partfile_deatil_comments_rating_invalid;
+                        ratingColor = R.color.ratingInvalid;
                         break;
                     case ECPartFile.RATING_POOR:
                         ratingRes = R.string.partfile_deatil_comments_rating_poor;
+                        ratingColor = R.color.ratingPoor;
                         break;
                     case ECPartFile.RATING_FAIR:
                         ratingRes = R.string.partfile_deatil_comments_rating_fair;
+                        ratingColor = R.color.ratingFair;
                         break;
                     case ECPartFile.RATING_GOOD:
                         ratingRes = R.string.partfile_deatil_comments_rating_good;
+                        ratingColor = R.color.ratingGood;
                         break;
                     case ECPartFile.RATING_EXCELLENT:
                         ratingRes = R.string.partfile_deatil_comments_rating_excellent;
+                        ratingColor = R.color.ratingExcellent;
                         break;
 
                     }
                     ((TextView) v.findViewById(R.id.amuledl_comments_row_rating)).setText(ratingRes);
+                    ((TextView) v.findViewById(R.id.amuledl_comments_row_rating)).setTextColor(getResources().getColor(ratingColor));
                     ((TextView) v.findViewById(R.id.amuledl_comments_row_author)).setText(o.author);
                     ((TextView) v.findViewById(R.id.amuledl_comments_row_filename)).setText(o.sourceName);
                     ((TextView) v.findViewById(R.id.amuledl_comments_row_comment)).setText(o.comment);

@@ -97,4 +97,9 @@
     <string name="partfile_deatil_comments_rating_fair">Fair</string>
     <string name="partfile_deatil_comments_rating_good">Good</string>
     <string name="partfile_deatil_comments_rating_excellent">Excellent</string>
+    <string name="partfile_sourcenames_nosource">No source available</string>
+    <string name="partfile_comments_nocomments">No comment available</string>
+    <string name="menu_opt_about">About</string>
+    <string name="label_release_notes">Release notes:</string>
+    <string name="label_new_version_available">A new version is available!</string>
 </resources>

@@ -12,8 +12,8 @@
      <TextView android:id="@android:id/empty"
                android:layout_width="fill_parent"
                android:layout_height="0dip"
-               android:layout_weight="1"
-               android:text="XXXXX"
-	 />
+               android:layout_weight="1" 
+               android:paddingTop="5dip"
+               android:text="@string/partfile_sourcenames_nosource"/>
     
 </LinearLayout>

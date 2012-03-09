@@ -1,15 +1,22 @@
 package com.iukonline.amule.android.amuleremote;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.preference.PreferenceManager;
 
-
 import com.iukonline.amule.android.amuleremote.echelper.ECHelper;
+import com.iukonline.amule.android.amuleremote.echelper.ECHelperFakeClient;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 
 
@@ -33,14 +40,20 @@ public class AmuleControllerApplication extends Application {
     public static final String AC_SETTING_CONNECT_TIMEOUT = "amule_client_connect_timeout";
     public static final String AC_SETTING_READ_TIMEOUT = "amule_client_read_timeout";
     
+
+    
     interface RefreshingActivity {
         public void refreshContent();
     }
+    
+
     
     RefreshingActivity mRefreshingActivity;
     private Timer mAutoRefreshTimer;
     private boolean mAutoRefresh;
     private int mAutoRefreshInterval;
+    
+
     
     public void registerRefreshActivity(RefreshingActivity activity) {
         mRefreshingActivity = activity;
@@ -85,8 +98,12 @@ public class AmuleControllerApplication extends Application {
     
     public boolean mainNeedsRefresh = true;
     
+    UpdateChecker mUpdateChecker;
+    
+
     public AmuleControllerApplication() {
-       super();
+        super();
+
     }
 
     public boolean refreshServerSettings()  {
@@ -127,6 +144,15 @@ public class AmuleControllerApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            mUpdateChecker = new UpdateChecker(pInfo.versionCode);
+
+            //mUpdateChecker = new UpdateChecker(1);
+        } catch (NameNotFoundException e) {
+        }
+        
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
         refreshServerSettings();
         refreshRefreshSettings();
@@ -150,6 +176,27 @@ public class AmuleControllerApplication extends Application {
             return ECPartFileComparator.ComparatorType.PROGRESS;
         }
         return null;
+    }
+    
+    public String getReleaseNotes() {
+        InputStream is = getResources().openRawResource(R.raw.releasenotes);
+        
+        char[] buf = new char[2048];
+        Reader r;
+        StringBuilder s = new StringBuilder();
+
+        try {
+            r = new InputStreamReader(is, "UTF-8");
+            while (true) {
+                int n = r.read(buf);
+                if (n < 0)
+                  break;
+                s.append(buf, 0, n);
+            }
+        } catch (UnsupportedEncodingException e) {
+        } catch (IOException e) {
+        }
+        return s.toString();
     }
     
 

@@ -3,16 +3,21 @@ package com.iukonline.amule.android.amuleremote;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.DlQueueFragment.DlQueueFragmentContainer;
+import com.iukonline.amule.android.amuleremote.UpdateChecker.UpdatesWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECStatsWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.AddEd2kAsyncTask;
@@ -22,7 +27,7 @@ import com.iukonline.amule.android.amuleremote.echelper.tasks.GetECStatsAsyncTas
 import com.iukonline.amule.ec.ECStats;
 
 
-public class AmuleRemoteActivity extends FragmentActivity implements ClientStatusWatcher, DlQueueFragmentContainer, ECStatsWatcher, RefreshingActivity  {
+public class AmuleRemoteActivity extends FragmentActivity implements ClientStatusWatcher, DlQueueFragmentContainer, ECStatsWatcher, RefreshingActivity, UpdatesWatcher  {
     
     
     
@@ -69,6 +74,7 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
         updateECStats(mApp.mECHelper.registerForECStatsUpdates(this));
         
         mApp.registerRefreshActivity(this);
+        mApp.mUpdateChecker.registerUpdatesWatcher(this);
         
         if (! mHandleURI.equals(NO_URI_TO_HANDLE)) {
             showAddED2KDialog(mHandleURI);
@@ -83,6 +89,7 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
         
         mApp.mECHelper.unRegisterFromAmuleClientStatusUpdates(this);
         mApp.registerRefreshActivity(null);
+        mApp.mUpdateChecker.registerUpdatesWatcher(null);
         
         super.onPause();
     }
@@ -136,6 +143,8 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
         case R.id.menu_opt_added2k:
             showAddED2KDialog(null);
             return true;
+        case R.id.menu_opt_about:
+            showAboutDialog();
         default:
             return super.onOptionsItemSelected(item);
         }
@@ -180,6 +189,29 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
             });
         
         dialogFrag.show(getSupportFragmentManager(), "rename_dialog");
+    }
+    
+    public void showAboutDialog() {
+        //DialogFragment d = mApp.getAboutDialog();
+        
+        String versionName = null;
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            versionName = pInfo.versionName;
+        } catch (NameNotFoundException e) {
+
+        }
+        
+        MyAlertDialogFragment d = MyAlertDialogFragment.newInstance();
+        AlertDialog.Builder db = d.getAlertDialogBuilder(this);
+        
+        View aboutView =  getLayoutInflater().inflate(R.layout.about_dialog, null);
+        ((TextView) aboutView.findViewById(R.id.about_dialog_appname)).setText(getString(R.string.app_name) + " " + versionName);
+        ((TextView) aboutView.findViewById(R.id.about_dialog_release_notes)).setText(mApp.getReleaseNotes());
+
+        db.setView(aboutView);
+        db.setPositiveButton(R.string.alert_dialog_ok, null);
+        d.show(getSupportFragmentManager(), "about_dialog");
     }
     
     
@@ -235,5 +267,26 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     @Override
     public void refreshContent() {
         refreshDlQueue();
+    }
+
+    // UpdatesWatcher Interface
+    
+    @Override
+    public void notifyUpdate(String newReleaseURL, String releaseNotes) {
+        
+        
+        MyAlertDialogFragment d = MyAlertDialogFragment.newInstance();
+        AlertDialog.Builder db = d.getAlertDialogBuilder(this);
+        
+        
+        View newVersionView =  getLayoutInflater().inflate(R.layout.new_version_dialog, null);
+        ((TextView) newVersionView.findViewById(R.id.new_version_dialog_download_url)).setText(newReleaseURL);
+        ((TextView) newVersionView.findViewById(R.id.new_version_dialog_release_notes)).setText(releaseNotes);
+        
+        db.setView(newVersionView);
+        db.setPositiveButton(R.string.alert_dialog_ok, null);
+        
+        d.show(getSupportFragmentManager(), "new_release_dialog");
+        
     }
 }
