@@ -300,7 +300,7 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
                             int sourceXfer = o.getSourceXfer();
                             int sourceNotCur = o.getSourceNotCurrent();
                             
-                            StringBuffer source = new StringBuffer(Integer.toString(sourceCount - sourceNotCur - sourceA4AF));
+                            StringBuffer source = new StringBuffer(Integer.toString(sourceCount - sourceNotCur));
                             if (sourceNotCur > 0) source.append("/" + Integer.toString(sourceCount));
                             if (sourceA4AF > 0) source.append("+"+Integer.toString(sourceA4AF));
                             if (sourceXfer > 0) source.append(" (" + Integer.toString(sourceXfer) + ")");
