@@ -319,7 +319,7 @@ public class ECHelper {
     
     public Socket getAmuleSocket() throws UnknownHostException, IOException {
         if (mAmuleSocket == null && mServerHost != null) {
-            Log.d("ECHELPER", "Creating new socket");
+            //Log.d("ECHELPER", "Creating new socket");
             mAmuleSocket = new Socket();
         }
         return mAmuleSocket;
@@ -328,17 +328,17 @@ public class ECHelper {
     public ECClient getECClient() throws UnknownHostException, IOException {
         Socket s = getAmuleSocket();
         if (s.isClosed() || s.isInputShutdown() || s.isOutputShutdown()) {
-            Log.d("ECHELPER", "Invalid socket! Resetting");
+            //Log.d("ECHELPER", "Invalid socket! Resetting");
             resetSocket();
             s = getAmuleSocket();
         }
         if (!s.isConnected()) {
-            Log.d("ECHELPER", "Connecting socket");
+            //Log.d("ECHELPER", "Connecting socket");
             s.connect(new InetSocketAddress(InetAddress.getByName(mServerHost), mServerPort), mClientConnectTimeout);
             s.setSoTimeout(mClientReadTimeout);
         }
         if (mECClient == null) {
-            Log.d("ECHELPER", "Creating new client");
+            //Log.d("ECHELPER", "Creating new client");
             ECClient c = new ECClient();
             c.setClientName("Amule Remote Controller");
             c.setClientVersion("0.1aplha");
@@ -358,10 +358,10 @@ public class ECHelper {
 
 
     public void resetClient() {
-        Log.d("ECHELPER", "Setting client to null");
+        //Log.d("ECHELPER", "Setting client to null");
         mECClient = null;
         //Toast.makeText(getApplication(), "Resetting client", Toast.LENGTH_LONG).show();
-        Log.d("ECHELPER", "Resetting socket");
+        //Log.d("ECHELPER", "Resetting socket");
         resetSocket();
         //notifyAmuleClientStatusWatchers(ClientStatusWatcher.AMULE_CLIENT_STATUS_NOT_CONNECTED);
     }
@@ -369,14 +369,14 @@ public class ECHelper {
     public void resetSocket() {
         if (mAmuleSocket != null) {
             try {
-                Log.d("ECHELPER", "Closing socket");
+                //Log.d("ECHELPER", "Closing socket");
                 mAmuleSocket.shutdownInput();
                 mAmuleSocket.shutdownOutput();
                 mAmuleSocket.close();
             } catch (IOException e) {
                 // Do Nothing. We're closing. Right?
             }
-            Log.d("ECHELPER", "Setting socket to null");
+            //Log.d("ECHELPER", "Setting socket to null");
             mAmuleSocket = null;
         }
     }

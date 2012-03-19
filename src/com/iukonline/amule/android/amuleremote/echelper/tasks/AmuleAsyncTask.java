@@ -59,11 +59,11 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, String> {
         }
         
         try {
-            Log.d("MYTASK", "------------------------- NEW TASK");
-            Log.d("MYTASK", "Getting client ");
+            //Log.d("MYTASK", "------------------------- NEW TASK");
+            //Log.d("MYTASK", "Getting client ");
             //mECClient = mECHelper.getECClient();
-            Log.d("MYTASK",mECClient.toString());
-            Log.d("MYTASK", "Running Task ");
+            //Log.d("MYTASK",mECClient.toString());
+            //Log.d("MYTASK", "Running Task ");
             return backgroundTask();
         
         } catch (ECException e) {
@@ -80,14 +80,14 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, String> {
             
             //mECHelper.releaseECClient();
             
-            Log.d("MYTASK", "IO ERROR - Resetting client");
+            //Log.d("MYTASK", "IO ERROR - Resetting client");
             mECHelper.resetClient();
             
             try {
-                Log.d("MYTASK", "Getting client");
+                //Log.d("MYTASK", "Getting client");
                 mECClient = mECHelper.getECClient();
-                Log.d("MYTASK", "Got client " + mECClient.toString());
-                Log.d("MYTASK", "Re-run task");
+                //Log.d("MYTASK", "Got client " + mECClient.toString());
+                //Log.d("MYTASK", "Re-run task");
                 return backgroundTask();
                 
             } catch (ECException e2) {
