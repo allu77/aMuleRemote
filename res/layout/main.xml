@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
   android:orientation="vertical"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent">
+  
+
+  
     <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/relativeLayout1">
         
         <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="--" android:layout_alignBaseline="@+id/main_label_dl_rate" android:layout_alignBottom="@+id/main_label_dl_rate" android:layout_toRightOf="@+id/main_label_dl_rate" android:id="@+id/main_dl_rate" android:layout_centerVertical="true"></TextView>
@@ -16,7 +20,18 @@
         <fragment android:name="com.iukonline.amule.android.amuleremote.DlQueueFragment"
             android:id="@+id/fragment_dlqueue"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="0dip"
+            android:layout_weight="1" >
             <!-- Preview: layout=@layout/dlqueue_fragment -->
         </fragment>
+        
+                    <com.google.ads.AdView android:id="@+id/adView"
+                         android:layout_width="fill_parent"
+                         android:layout_height="wrap_content"
+                         ads:adUnitId="a14f67154359d47"
+                         ads:adSize="BANNER"
+                         ads:testDevices="TEST_EMULATOR"
+                         ads:loadAdOnCreate="true"/>
+        
+
 </LinearLayout>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
@@ -15,12 +16,20 @@
 		android:layout_weight="1">
 	</FrameLayout>
 	
+
+	
 	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/partfile_detail_control_buttons">	
 	  <Button android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_weight="1" android:id="@+id/partfile_button_pause" android:text="@string/partfile_detail_button_pause"></Button>
 	  <Button android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_weight="1" android:id="@+id/partfile_button_resume" android:text="@string/partfile_detail_button_resume"></Button>
 	  <Button android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_weight="1" android:id="@+id/partfile_button_delete" android:text="@string/partfile_detail_button_delete"></Button>
 	 </LinearLayout>
 
-  
+  	                    <com.google.ads.AdView android:id="@+id/adView"
+                         android:layout_width="fill_parent"
+                         android:layout_height="wrap_content"
+                         ads:adUnitId="a14f67154359d47"
+                         ads:adSize="BANNER"
+                         ads:testDevices="TEST_EMULATOR"
+                         ads:loadAdOnCreate="true"/>
     
 </LinearLayout>

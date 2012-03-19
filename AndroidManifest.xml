@@ -3,8 +3,9 @@
       package="com.iukonline.amule.android.amuleremote"
       android:versionCode="1"
       android:versionName="0.1">
-    <uses-sdk android:targetSdkVersion="13" android:minSdkVersion="8"/>
+    <uses-sdk android:targetSdkVersion="13" android:minSdkVersion="7"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application android:label="@string/app_name" android:name=".AmuleControllerApplication" android:icon="@drawable/amule_icon">
         <activity android:name=".AmuleRemoteActivity"
@@ -24,5 +25,8 @@
         <activity android:name=".AmuleControllerPreferences">
         </activity>
         <activity android:name=".PartFileActivity" android:theme="@style/Theme.Sherlock"></activity>
+        
+        <activity android:name="com.google.ads.AdActivity"
+              android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
     </application>
 </manifest>

@@ -1,3 +1,8 @@
+Amule Remote 0.2
+- Ads
+- Added compatibility for Android 2.1 
+
+
 Amule Remote 0.1
 - Download queue management (start/stop/delete/set priority/handle A4AF/file rename)
 - Downlaod details (including comments and source names)
