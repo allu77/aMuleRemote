@@ -8,6 +8,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.acra.ACRA;
+import org.acra.annotation.ReportsCrashes;
+
 import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -16,10 +19,13 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.preference.PreferenceManager;
 
 import com.iukonline.amule.android.amuleremote.echelper.ECHelper;
-import com.iukonline.amule.android.amuleremote.echelper.ECHelperFakeClient;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 
+// TODO : Pubblicare license delle varie librerie importate?
+// - ActionBarSherlock
+// - acra (ha anche una notice)
 
+@ReportsCrashes(formKey = "dFEwUy12NFVEcDJQV09palh1YXB2d0E6MQ")
 public class AmuleControllerApplication extends Application {
     
     public static final String AC_SHARED_PREFERENCES_NAME = "AmuleController";
@@ -143,6 +149,9 @@ public class AmuleControllerApplication extends Application {
 
     @Override
     public void onCreate() {
+        
+        ACRA.init(this);
+        
         super.onCreate();
         
         try {
