@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="libs/GoogleAdMobAdsSdk-4.3.1.jar"/>
 	<classpathentry kind="lib" path="libs/acra-4.2.3.jar"/>
 	<classpathentry kind="lib" path="libs/JavaAmuleEC-0.2.jar"/>
-	<classpathentry kind="src" path="ActionBarSherlock_src"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
