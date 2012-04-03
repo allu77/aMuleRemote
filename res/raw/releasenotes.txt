@@ -1,9 +1,16 @@
-Amule Remote 0.2
+aMule Remote 0.3.1
+- Fixed bugs in change priority and A4Af handling
+
+aMule Remote 0.3
+- Added support for data compression on EC protocol (saves bandwidth)
+- Implemented acra libray for automated crash report (needs additional work for customization) 
+
+aMule Remote 0.2
 - Ads
 - Added compatibility for Android 2.1 
 
 
-Amule Remote 0.1
+aMule Remote 0.1
 - Download queue management (start/stop/delete/set priority/handle A4AF/file rename)
 - Downlaod details (including comments and source names)
 - Automatic queue refresh
