@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import com.iukonline.amule.ec.ECCodes;
 import com.iukonline.amule.ec.ECException;
 import com.iukonline.amule.ec.ECPartFile;
 
@@ -41,43 +42,41 @@ public class ECPartFileActionAsyncTask extends AmuleAsyncTask {
     @Override
     protected String backgroundTask() throws ECException, UnknownHostException, SocketTimeoutException, IOException {
         
-        mECPartFile.setClient(mECClient);
-        
         switch (mAction) {
         case DELETE:
-            mECPartFile.remove();
+            mECClient.changeDownloadStatus(mECPartFile.getHash(), ECCodes.EC_OP_PARTFILE_DELETE);
             if (isCancelled()) return null;
             return null;
         case PAUSE:
-            mECPartFile.pause();
+            mECClient.changeDownloadStatus(mECPartFile.getHash(), ECCodes.EC_OP_PARTFILE_PAUSE);
             break;
         case RESUME:
-            mECPartFile.resume();
+            mECClient.changeDownloadStatus(mECPartFile.getHash(), ECCodes.EC_OP_PARTFILE_RESUME);
             break;
         case A4AF_NOW:
-            mECPartFile.swapA4AFThis();
+            mECClient.changeDownloadStatus(mECPartFile.getHash(), ECCodes.EC_OP_PARTFILE_SWAP_A4AF_THIS);
             break;
         case A4AF_AUTO:
-            mECPartFile.swapA4AFThisAuto();
+            mECClient.changeDownloadStatus(mECPartFile.getHash(), ECCodes.EC_OP_PARTFILE_SWAP_A4AF_THIS_AUTO);
             break;
         case A4AF_AWAY:
-            mECPartFile.swapA4AFOthers();
+            mECClient.changeDownloadStatus(mECPartFile.getHash(), ECCodes.EC_OP_PARTFILE_SWAP_A4AF_OTHERS);
             break;
         case PRIO_LOW:
-            mECPartFile.changePriority(ECPartFile.PR_LOW);
+            mECClient.setPartFilePriority(mECPartFile.getHash(), ECPartFile.PR_LOW);
             break;
         case PRIO_NORMAL:
-            mECPartFile.changePriority(ECPartFile.PR_NORMAL);
+            mECClient.setPartFilePriority(mECPartFile.getHash(), ECPartFile.PR_NORMAL);
             break;
         case PRIO_HIGH:
-            mECPartFile.changePriority(ECPartFile.PR_HIGH);
+            mECClient.setPartFilePriority(mECPartFile.getHash(), ECPartFile.PR_HIGH);
             break;
         case PRIO_AUTO:
-            mECPartFile.changePriority(ECPartFile.PR_AUTO);
+            mECClient.setPartFilePriority(mECPartFile.getHash(), ECPartFile.PR_AUTO);
             break;
         case RENAME:
             if (mStringParam == null) return "New name not specified";
-            mECPartFile.rename(mStringParam);
+            mECClient.renamePartFile(mECPartFile.getHash(), mStringParam);
             break;
         }
         return null;

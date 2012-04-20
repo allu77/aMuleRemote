@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="Theme.AmuleRemote" parent="@style/Theme.Sherlock">
+	    <item name="abDisplayOptions">showTitle</item>
+	<!-- <item name="actionButtonStyle">@style/AmuleRemoteActionButtonStyle</item> -->
+	</style>
+</resources>

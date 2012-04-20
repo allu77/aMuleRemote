@@ -93,7 +93,7 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
         inflater.inflate(R.menu.sourcenames_context, menu);
         
         AdapterView.AdapterContextMenuInfo aMenuInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        mLastSelected = mPartFile.getSourceNames().get(aMenuInfo.position).name;
+        mLastSelected = mPartFile.getSourceNames().get(aMenuInfo.position).getName();
 
     } 
     
@@ -166,8 +166,8 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
                 }
                 ECPartFileSourceName o = items.get(position);
                 if (o != null) {
-                    ((TextView) v.findViewById(R.id.amuledl_sourcenames_count)).setText(Integer.toString(o.count));
-                    ((TextView) v.findViewById(R.id.amuledl_sourcenames_name)).setText(o.name);
+                    ((TextView) v.findViewById(R.id.amuledl_sourcenames_count)).setText(Integer.toString(o.getCount()));
+                    ((TextView) v.findViewById(R.id.amuledl_sourcenames_name)).setText(o.getName());
                 }
                 return v;
         }

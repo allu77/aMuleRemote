@@ -1,9 +1,9 @@
 package com.iukonline.amule.android.amuleremote;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActionBar;
 import android.support.v4.app.ActionBar.Tab;
 import android.support.v4.app.Fragment;
@@ -16,11 +16,11 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
-import com.iukonline.amule.android.amuleremote.MyAlertDialogFragment.DialogFragmentCaller;
 import com.iukonline.amule.android.amuleremote.PartFileSourceNamesFragment.RenameDialogContainer;
+import com.iukonline.amule.android.amuleremote.dialogs.AlertDialogFragment;
+import com.iukonline.amule.android.amuleremote.dialogs.EditTextDialogFragment;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileActionWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileWatcher;
@@ -30,7 +30,7 @@ import com.iukonline.amule.android.amuleremote.echelper.tasks.ECPartFileActionAs
 import com.iukonline.amule.android.amuleremote.echelper.tasks.ECPartFileGetDetailsAsyncTask;
 import com.iukonline.amule.ec.ECPartFile;
 
-public class PartFileActivity extends FragmentActivity implements ClientStatusWatcher, ECPartFileWatcher, ECPartFileActionWatcher, DialogFragmentCaller, RenameDialogContainer, RefreshingActivity {
+public class PartFileActivity extends FragmentActivity implements ClientStatusWatcher, ECPartFileWatcher, ECPartFileActionWatcher, RenameDialogContainer, RefreshingActivity {
     final static String BUNDLE_PARAM_HASH = "hash";
     final static String BUNDLE_SELECTED_TAB = "tab";
     final static String BUNDLE_NEEDS_REFRESH = "needs_refresh";
@@ -212,34 +212,32 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
     }
     
     
-    
-    
     public void showRenameDialog(String fileName) {
-        MyAlertDialogFragment dialogFrag = MyAlertDialogFragment.newInstance();
-        AlertDialog.Builder builder = dialogFrag.getAlertDialogBuilder(this);
         
-        // TODO Create string resource
-        builder.setTitle("Provide new name");
-        final EditText input = new EditText(this);
-        input.setText(fileName);
-        builder.setView(input);
-        builder.setPositiveButton(R.string.alert_dialog_ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                doPartFileAction(ECPartFileAction.RENAME, true, input.getText().toString());
+        Handler h = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                Bundle b = msg.getData();
+                doPartFileAction(ECPartFileAction.RENAME, true, b.getString(EditTextDialogFragment.BUNDLE_EDIT_STRING));
             }
-        });
-        builder.setNegativeButton(R.string.alert_dialog_cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // Canceled.
-              }
-            });
-        
-        dialogFrag.show(getSupportFragmentManager(), "rename_dialog");
+        };
+
+        EditTextDialogFragment d = new EditTextDialogFragment(R.string.dialog_rename_partfile, fileName, h.obtainMessage(), null);
+        d.show(getSupportFragmentManager(), "rename_dialog");
     }
     
     
     private void showDeleteConfirmDialog() {
-        MyAlertDialogFragment.newInstance(R.string.partfile_dialog_delete_confirm, this).show(getSupportFragmentManager(), "delete_confirm");
+
+        Handler h = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                doPartFileAction(ECPartFileAction.DELETE, false);
+            }
+        };
+        
+        AlertDialogFragment d = new AlertDialogFragment(R.string.partfile_dialog_delete_confirm, h.obtainMessage(), null, true);
+        d.show(getSupportFragmentManager(), "delete_dialog");
     }
     
     
@@ -342,7 +340,6 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
     
     @Override
     public String getWatcherId() {
-        // TODO Auto-generated method stub
         return this.getClass().getName();
     }
 
@@ -390,20 +387,12 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
 
     
     
-    // DialogFragmentCaller Interface
     
-    @Override
-    public void myAlertDialogPositiveClick() {
-        // TODO Delete PartFile
-        mApp.mECHelper.registerForECPartFileActions(this, mHash);
-        doPartFileAction(ECPartFileAction.DELETE, false);
-    }
 
-    @Override
-    public void myAlertDialogNegativeClick() {
-        // Do nothing
+    
 
-    }
+
+
     
     // RefreshingActivity Interface
     

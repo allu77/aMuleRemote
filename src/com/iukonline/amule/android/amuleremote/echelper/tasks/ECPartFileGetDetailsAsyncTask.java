@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import com.iukonline.amule.ec.ECCodes;
 import com.iukonline.amule.ec.ECException;
 import com.iukonline.amule.ec.ECPartFile;
 
@@ -20,8 +21,7 @@ public class ECPartFileGetDetailsAsyncTask extends AmuleAsyncTask {
     @Override
     protected String backgroundTask() throws ECException, UnknownHostException, SocketTimeoutException, IOException {
         if (isCancelled()) return null;
-        mECPartFile.setClient(mECClient);
-        mECPartFile.refresh(true);
+        mECClient.refreshPartFile(mECPartFile, ECCodes.EC_DETAIL_FULL);
         return null;
     }
 

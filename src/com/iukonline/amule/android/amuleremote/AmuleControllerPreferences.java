@@ -10,11 +10,5 @@ public class AmuleControllerPreferences extends PreferenceActivity {
             addPreferencesFromResource(R.xml.main_settings);
     }
 
-    @Override
-    public void onContentChanged() {
-        // TODO Auto-generated method stub
-        super.onContentChanged();
-    }
-    
-    
+   
 }

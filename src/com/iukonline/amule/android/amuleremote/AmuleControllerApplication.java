@@ -9,6 +9,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.acra.ACRA;
+import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
 import android.app.Activity;
@@ -25,7 +26,24 @@ import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 // - ActionBarSherlock
 // - acra (ha anche una notice)
 
-@ReportsCrashes(formKey = "dFEwUy12NFVEcDJQV09palh1YXB2d0E6MQ")
+
+
+
+@ReportsCrashes(formKey = "dFEwUy12NFVEcDJQV09palh1YXB2d0E6MQ",
+                mode = ReportingInteractionMode.NOTIFICATION,
+                resToastText = R.string.crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
+                resNotifTickerText = R.string.crash_notif_ticker_text,
+                resNotifTitle = R.string.crash_notif_title,
+                resNotifText = R.string.crash_notif_text,
+                //resNotifIcon = android.R.drawable.stat_notify_error, // optional. default is a warning sign
+                resDialogText = R.string.crash_dialog_text,
+                //resDialogIcon = android.R.drawable.ic_dialog_info, //optional. default is a warning sign
+                resDialogTitle = R.string.crash_dialog_title, // optional. default is your application name
+                resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
+                resDialogOkToast = R.string.crash_dialog_ok_toast // optional. displays a Toast message when the user accepts to send a report.
+)
+
+
 public class AmuleControllerApplication extends Application {
     
     public static final String AC_SHARED_PREFERENCES_NAME = "AmuleController";
@@ -167,11 +185,6 @@ public class AmuleControllerApplication extends Application {
         refreshRefreshSettings();
     }
 
-    @Override
-    public void onLowMemory() {
-        // TODO Auto-generated method stub
-        super.onLowMemory();
-    }
     
     static ECPartFileComparator.ComparatorType getDlComparatorTypeFromSortSetting (byte sortSetting) {
         switch (sortSetting) {

@@ -115,7 +115,7 @@ public class PartFileCommentsFragment extends ListFragment implements ECPartFile
                 ECPartFileComment o = items.get(position);
                 if (o != null) {
                     int ratingRes = R.string.partfile_deatil_comments_rating_notrated;
-                    switch (o.rating) {
+                    switch (o.getRating()) {
                     case ECPartFile.RATING_INVALID:
                         ratingRes = R.string.partfile_deatil_comments_rating_invalid;
                         ratingColor = R.color.ratingInvalid;
@@ -140,9 +140,9 @@ public class PartFileCommentsFragment extends ListFragment implements ECPartFile
                     }
                     ((TextView) v.findViewById(R.id.amuledl_comments_row_rating)).setText(ratingRes);
                     ((TextView) v.findViewById(R.id.amuledl_comments_row_rating)).setTextColor(getResources().getColor(ratingColor));
-                    ((TextView) v.findViewById(R.id.amuledl_comments_row_author)).setText(o.author);
-                    ((TextView) v.findViewById(R.id.amuledl_comments_row_filename)).setText(o.sourceName);
-                    ((TextView) v.findViewById(R.id.amuledl_comments_row_comment)).setText(o.comment);
+                    ((TextView) v.findViewById(R.id.amuledl_comments_row_author)).setText(o.getAuthor());
+                    ((TextView) v.findViewById(R.id.amuledl_comments_row_filename)).setText(o.getSourceName());
+                    ((TextView) v.findViewById(R.id.amuledl_comments_row_comment)).setText(o.getComment());
                 }
                 return v;
         }

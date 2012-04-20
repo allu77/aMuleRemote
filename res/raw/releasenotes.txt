@@ -1,8 +1,25 @@
+TODO for 0.4
+- Fetch server version and attach to acra reports
+- Fetch category list and filter download queue + show in partfile details
+- Show last seen complate in partfile details
+- Show kad and ed2k status
+- Fix problem with list reset on refresh (need to update adapter and not to reassign)
+- Fix and complete sort options
+
+- TAG JavaAmuleEC to 0.4 in other repository...
+  
+
+aMule Remote 0.4
+- Implemented support for zlib data compression on EC protocol (saves even more bandwidth)
+- Fixed crashes on orientation change during dialog boxes
+- Notification is shown before sending report on crash
+
+
 aMule Remote 0.3.1
 - Fixed bugs in change priority and A4Af handling
 
 aMule Remote 0.3
-- Added support for data compression on EC protocol (saves bandwidth)
+- Added support for UTF-8 data compression on EC protocol (saves bandwidth)
 - Implemented acra libray for automated crash report (needs additional work for customization) 
 
 aMule Remote 0.2

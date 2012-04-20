@@ -1,23 +1,23 @@
 package com.iukonline.amule.android.amuleremote;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
-import android.view.LayoutInflater;
 import android.view.MenuInflater;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.DlQueueFragment.DlQueueFragmentContainer;
 import com.iukonline.amule.android.amuleremote.UpdateChecker.UpdatesWatcher;
+import com.iukonline.amule.android.amuleremote.dialogs.AboutDialogFragment;
+import com.iukonline.amule.android.amuleremote.dialogs.EditTextDialogFragment;
+import com.iukonline.amule.android.amuleremote.dialogs.NewVersionDialogFragment;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECStatsWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.AddEd2kAsyncTask;
@@ -163,54 +163,40 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     
     
     public void showAddED2KDialog(String url) {
-        MyAlertDialogFragment dialogFrag = MyAlertDialogFragment.newInstance();
-        AlertDialog.Builder builder = dialogFrag.getAlertDialogBuilder(this);
         
-        // TODO Create string resource
-        builder.setTitle("Provide ED2K link");
-        final EditText input = new EditText(this);
-        input.setText(url);
-        builder.setView(input);
-        builder.setPositiveButton(R.string.alert_dialog_ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                
-                AddEd2kAsyncTask ed2kTask = (AddEd2kAsyncTask) mApp.mECHelper.getNewTask(AddEd2kAsyncTask.class);
-                ed2kTask.setEd2kUrl(input.getText().toString());
-                
-                if (mApp.mECHelper.executeTask(ed2kTask, TaskScheduleMode.QUEUE)) {
-                    refreshDlQueue(TaskScheduleMode.QUEUE);
+        Handler h = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                Bundle b = msg.getData();
+                if (b != null) {
+                    String u = b.getString(EditTextDialogFragment.BUNDLE_EDIT_STRING);
+                    if (u != null) {
+                        AddEd2kAsyncTask ed2kTask = (AddEd2kAsyncTask) mApp.mECHelper.getNewTask(AddEd2kAsyncTask.class);
+                        ed2kTask.setEd2kUrl(u);
+                        
+                        if (mApp.mECHelper.executeTask(ed2kTask, TaskScheduleMode.QUEUE)) {
+                            refreshDlQueue(TaskScheduleMode.QUEUE);
+                        }
+                    }
                 }
             }
-        });
-        builder.setNegativeButton(R.string.alert_dialog_cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // Canceled.
-              }
-            });
+        };
         
-        dialogFrag.show(getSupportFragmentManager(), "rename_dialog");
+        EditTextDialogFragment d = new EditTextDialogFragment(R.string.dialog_added2k_title, url, h.obtainMessage(), null);
+        d.show(getSupportFragmentManager(), "rename_dialog");
+        
     }
     
     public void showAboutDialog() {
-        //DialogFragment d = mApp.getAboutDialog();
         
         String versionName = null;
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             versionName = pInfo.versionName;
         } catch (NameNotFoundException e) {
-
         }
         
-        MyAlertDialogFragment d = MyAlertDialogFragment.newInstance();
-        AlertDialog.Builder db = d.getAlertDialogBuilder(this);
-        
-        View aboutView =  getLayoutInflater().inflate(R.layout.about_dialog, null);
-        ((TextView) aboutView.findViewById(R.id.about_dialog_appname)).setText(getString(R.string.app_name) + " " + versionName);
-        ((TextView) aboutView.findViewById(R.id.about_dialog_release_notes)).setText(mApp.getReleaseNotes());
-
-        db.setView(aboutView);
-        db.setPositiveButton(R.string.alert_dialog_ok, null);
+        AboutDialogFragment d = new AboutDialogFragment(versionName, mApp.getReleaseNotes());
         d.show(getSupportFragmentManager(), "about_dialog");
     }
     
@@ -228,7 +214,6 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     
     @Override
     public String getWatcherId() {
-        // TODO Auto-generated method stub
         return this.getClass().getName();
     }
 
@@ -257,8 +242,8 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     @Override
     public void updateECStats(ECStats newStats) {
         if (newStats != null) {
-            ((TextView) findViewById(R.id.main_dl_rate)).setText(GUIUtils.longToBytesFormatted(newStats.getSpeedDl()) + "/s");
-            ((TextView) findViewById(R.id.main_ul_rate)).setText(GUIUtils.longToBytesFormatted(newStats.getSpeedUl()) + "/s");
+            ((TextView) findViewById(R.id.main_dl_rate)).setText(GUIUtils.longToBytesFormatted(newStats.getDlSpeed()) + "/s");
+            ((TextView) findViewById(R.id.main_ul_rate)).setText(GUIUtils.longToBytesFormatted(newStats.getUlSpeed()) + "/s");
         }
     }
     
@@ -274,18 +259,9 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     @Override
     public void notifyUpdate(String newReleaseURL, String releaseNotes) {
         
+        // TODO: TESTARE
         
-        MyAlertDialogFragment d = MyAlertDialogFragment.newInstance();
-        AlertDialog.Builder db = d.getAlertDialogBuilder(this);
-        
-        
-        View newVersionView =  getLayoutInflater().inflate(R.layout.new_version_dialog, null);
-        ((TextView) newVersionView.findViewById(R.id.new_version_dialog_download_url)).setText(newReleaseURL);
-        ((TextView) newVersionView.findViewById(R.id.new_version_dialog_release_notes)).setText(releaseNotes);
-        
-        db.setView(newVersionView);
-        db.setPositiveButton(R.string.alert_dialog_ok, null);
-        
+        NewVersionDialogFragment d = new NewVersionDialogFragment(newReleaseURL, releaseNotes);
         d.show(getSupportFragmentManager(), "new_release_dialog");
         
     }

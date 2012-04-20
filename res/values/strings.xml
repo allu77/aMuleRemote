@@ -102,4 +102,17 @@
     <string name="menu_opt_about">About</string>
     <string name="label_release_notes">Release notes:</string>
     <string name="label_new_version_available">A new version is available!</string>
+    <string name="crash_toast_text">Ooooops ! I crashed, but a report has been sent to my developer to help him fix the issue !</string>
+	<string name="crash_notif_ticker_text">Unexpected error, please send a report...</string>
+	<string name="crash_notif_title">aMule Remote has crashed...</string>
+	<string name="crash_notif_text">Please click here to help fix the issue.</string>
+	<string name="crash_dialog_title">aMule Remote has crashed</string>
+	<string name="crash_dialog_text">An unexpected error occurred forcing the
+    application to stop. Please help us fix this by sending us error data,
+    all you have to do is click \'OK\'.</string>
+	<string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
+	<string name="crash_dialog_ok_toast">Thank you !</string>
+	<string name="dialog_added2k_title">Inesert ED2K URI</string>
+	<string name="dialog_rename_partfile">Insert new file name</string>
+	<string name="dialog_ed2k_notify">ED2K URI added</string>
 </resources>

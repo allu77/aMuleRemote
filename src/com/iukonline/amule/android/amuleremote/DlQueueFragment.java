@@ -168,7 +168,7 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
     public void updateDlQueue(ArrayList<ECPartFile> newDlQueue) {
 
         boolean createAdapter = false;
-
+        
         if (newDlQueue != null) {
             ((TextView) getListView().getEmptyView()).setText(R.string.dlqueue_empty);
 /*            if (mDlQueue == null) {
