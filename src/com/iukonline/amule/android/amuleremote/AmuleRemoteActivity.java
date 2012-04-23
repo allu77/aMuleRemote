@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
 import android.view.MenuInflater;
+import android.view.View;
 import android.widget.TextView;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
@@ -24,6 +25,7 @@ import com.iukonline.amule.android.amuleremote.echelper.tasks.AddEd2kAsyncTask;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.AmuleAsyncTask.TaskScheduleMode;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.GetDlQueueAsyncTask;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.GetECStatsAsyncTask;
+import com.iukonline.amule.ec.ECConnState;
 import com.iukonline.amule.ec.ECStats;
 
 
@@ -242,8 +244,33 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     @Override
     public void updateECStats(ECStats newStats) {
         if (newStats != null) {
-            ((TextView) findViewById(R.id.main_dl_rate)).setText(GUIUtils.longToBytesFormatted(newStats.getDlSpeed()) + "/s");
-            ((TextView) findViewById(R.id.main_ul_rate)).setText(GUIUtils.longToBytesFormatted(newStats.getUlSpeed()) + "/s");
+            ((TextView) findViewById(R.id.main_dl_rate)).setText(GUIUtils.longToBytesFormatted(newStats.getDlSpeed()) + "/s \u2193");
+            ((TextView) findViewById(R.id.main_ul_rate)).setText(GUIUtils.longToBytesFormatted(newStats.getUlSpeed()) + "/s \u2191");
+            
+            // TODO STRING RESOURCES
+            ECConnState c = newStats.getConnState();
+            if (c == null) {
+                ((TextView) findViewById(R.id.main_edonkey_status)).setText("Not Connected");
+                ((TextView) findViewById(R.id.main_kad_status)).setText("Not Connected");
+            } else {
+                if (c.isKadFirewalled()) {
+                    ((TextView) findViewById(R.id.main_kad_status)).setText("Firewalled");
+                } else if (c.isKadRunning()) {
+                    ((TextView) findViewById(R.id.main_kad_status)).setText("Connected");
+                } else {
+                    ((TextView) findViewById(R.id.main_kad_status)).setText("Not Connected");
+                }
+                
+                if (c.isConnectedEd2k()) {
+                    ((TextView) findViewById(R.id.main_edonkey_status)).setText("Connected");
+                } else if (c.isConnectingEd2k()) {
+                    ((TextView) findViewById(R.id.main_edonkey_status)).setText("Connecting");
+                } else {
+                    ((TextView) findViewById(R.id.main_edonkey_status)).setText("Not Connected");
+                }
+            }
+            
+            findViewById(R.id.main_conn_bar).setVisibility(View.VISIBLE);
         }
     }
     
