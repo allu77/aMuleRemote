@@ -1,5 +1,4 @@
 TODO for 0.4
-- Fetch server version and attach to acra reports
 - Fetch category list and filter download queue + show in partfile details
 - Show last seen complate in partfile details
 - Fix and complete sort options

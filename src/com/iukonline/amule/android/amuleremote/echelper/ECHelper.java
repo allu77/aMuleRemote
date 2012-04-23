@@ -11,8 +11,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.acra.ErrorReporter;
+
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
@@ -341,7 +342,7 @@ public class ECHelper {
             //Log.d("ECHELPER", "Creating new client");
             ECClient c = new ECClient();
             c.setClientName("Amule Remote Controller");
-            c.setClientVersion("0.1aplha");
+            c.setClientVersion("0.4");
             try {
                 c.setPassword(mServerPassword);
             } catch (NoSuchAlgorithmException e) {
@@ -349,6 +350,8 @@ public class ECHelper {
             c.setSocket(s);
             mECClient = c;
         }
+        
+        if (mECClient != null) ErrorReporter.getInstance().putCustomData("ServerVersion", mECClient.getServerVersion());
         return mECClient;
     }
 
