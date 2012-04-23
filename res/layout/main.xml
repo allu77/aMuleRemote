@@ -11,8 +11,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:visibility="visible"
-        android:baselineAligned="gone"
+        android:visibility="gone"
+        android:baselineAligned="false"
         >
         
         <LinearLayout
