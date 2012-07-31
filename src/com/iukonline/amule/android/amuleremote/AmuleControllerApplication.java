@@ -17,6 +17,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.DropBoxManager;
 import android.preference.PreferenceManager;
 
 import com.iukonline.amule.android.amuleremote.echelper.ECHelper;
@@ -28,9 +29,13 @@ import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 
 
 
+// FIXME - RIATTIVARE
 
+/*
 @ReportsCrashes(formKey = "dFEwUy12NFVEcDJQV09palh1YXB2d0E6MQ",
                 mode = ReportingInteractionMode.NOTIFICATION,
+                logcatArguments = { "-t", "200", "-v", "time", "aMuleRemote:D", "*:S" },
+                additionalDropBoxTags = {"aMuleRemote"},
                 resToastText = R.string.crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
                 resNotifTickerText = R.string.crash_notif_ticker_text,
                 resNotifTitle = R.string.crash_notif_title,
@@ -41,21 +46,29 @@ import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
                 resDialogTitle = R.string.crash_dialog_title, // optional. default is your application name
                 resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
                 resDialogOkToast = R.string.crash_dialog_ok_toast // optional. displays a Toast message when the user accepts to send a report.
-)
+)*/
 
 
 public class AmuleControllerApplication extends Application {
+    
+    public static final String AC_LOGTAG = "aMuleRemote";
     
     public static final String AC_SHARED_PREFERENCES_NAME = "AmuleController";
     
     public static final String AC_SETTING_HOSTNAME   = "amule_server_host";
     public static final String AC_SETTING_PORT       = "amule_server_port";
-    public static final String AC_SETTING_PASSWORD   = "amule_server_password"; 
+    public static final String AC_SETTING_PASSWORD   = "amule_server_password";
+    public static final String AC_SETTING_VERSION    = "amule_server_version"; 
     
     public static final String AC_SETTING_AUTOREFRESH = "amule_client_autorefresh";
     public static final String AC_SETTING_AUTOREFRESH_INTERVAL = "amule_client_autorefresh_interval";
     
     public static final String AC_SETTING_SORT          = "amule_client_sort";
+    
+    public static final String AC_SETTING_ENABLE_LOG    = "debug_enable_log";
+    public static final String AC_SETTING_ENABLE_EXCEPTIONS = "debug_enable_exceptions";
+    public static final String AC_SETTING_ENABLE_DEBUG_OPTIONS = "debug_enable_options";
+    
     public static final byte AC_SETTING_SORT_FILENAME = 0x0;
     public static final byte AC_SETTING_SORT_STATUS = 0x1;
     public static final byte AC_SETTING_SORT_TRANSFERED = 0x2;
@@ -64,19 +77,27 @@ public class AmuleControllerApplication extends Application {
     public static final String AC_SETTING_CONNECT_TIMEOUT = "amule_client_connect_timeout";
     public static final String AC_SETTING_READ_TIMEOUT = "amule_client_read_timeout";
     
-
-    
-    interface RefreshingActivity {
-        public void refreshContent();
-    }
-    
-
+    public boolean sendExceptions = false;
+    public boolean enableLog = false;
+    public boolean enableDebugOptions = false; 
     
     RefreshingActivity mRefreshingActivity;
     private Timer mAutoRefreshTimer;
     private boolean mAutoRefresh;
     private int mAutoRefreshInterval;
     
+    
+    public SharedPreferences mSettings;
+    ECHelper mECHelper = new ECHelper(this);
+    //ECHelper mECHelper = new ECHelperFakeClient(this);
+    
+    public boolean mainNeedsRefresh = true;
+    
+    UpdateChecker mUpdateChecker;
+    
+    interface RefreshingActivity {
+        public void refreshContent();
+    }
 
     
     public void registerRefreshActivity(RefreshingActivity activity) {
@@ -97,7 +118,7 @@ public class AmuleControllerApplication extends Application {
                             ((Activity) mRefreshingActivity).runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mRefreshingActivity.refreshContent();
+                                    if (mRefreshingActivity != null) mRefreshingActivity.refreshContent();
                                 }
                             });
                         }
@@ -115,14 +136,7 @@ public class AmuleControllerApplication extends Application {
 
     
     
-    
-    SharedPreferences mSettings;
-    ECHelper mECHelper = new ECHelper(this);
-    //ECHelper mECHelper = new ECHelperFakeClient(this);
-    
-    public boolean mainNeedsRefresh = true;
-    
-    UpdateChecker mUpdateChecker;
+
     
 
     public AmuleControllerApplication() {
@@ -135,6 +149,7 @@ public class AmuleControllerApplication extends Application {
         String host = mSettings.getString(AC_SETTING_HOSTNAME, "");
         int port = Integer.parseInt(mSettings.getString(AC_SETTING_PORT, "4712"));
         String password = mSettings.getString(AC_SETTING_PASSWORD, "");
+        String version = mSettings.getString(AC_SETTING_VERSION, "V200");
         
         int connTimeout = Integer.parseInt(mSettings.getString(AC_SETTING_CONNECT_TIMEOUT, "10")) * 1000;
         int readTimeout = Integer.parseInt(mSettings.getString(AC_SETTING_READ_TIMEOUT, "30")) * 1000;
@@ -146,6 +161,7 @@ public class AmuleControllerApplication extends Application {
         mECHelper.setServerInfo(
                         mSettings.getString(AC_SETTING_HOSTNAME, "example.com"),
                         port,
+                        version,
                         mSettings.getString(AC_SETTING_PASSWORD, "FAKEPASSWORD"),
                         connTimeout,
                         readTimeout
@@ -164,11 +180,23 @@ public class AmuleControllerApplication extends Application {
             startRefresh();
         }
     }
+    
+    public void refreshDebugSettings() {
+        sendExceptions = mSettings.getBoolean(AC_SETTING_ENABLE_EXCEPTIONS, false);
+        enableLog = mSettings.getBoolean(AC_SETTING_ENABLE_LOG, false);
+        enableDebugOptions = mSettings.getBoolean(AC_SETTING_ENABLE_DEBUG_OPTIONS, false);
+        
+        if (mECHelper != null) {
+            mECHelper.mDropBox = (DropBoxManager) getSystemService(DROPBOX_SERVICE);
+        }
+    }
+
 
     @Override
     public void onCreate() {
         
-        ACRA.init(this);
+        // FIXME: Ripristinare
+        //ACRA.init(this);
         
         super.onCreate();
         

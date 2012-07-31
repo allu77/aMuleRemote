@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileWatcher;
+import com.iukonline.amule.ec.ECCategory;
 import com.iukonline.amule.ec.ECPartFile;
 
 public class PartFileDetailsFragment extends Fragment implements ECPartFileWatcher {
@@ -78,6 +79,23 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
             
             ((TextView) v.findViewById(R.id.partfile_detail_filename)).setText(mPartFile.getFileName());
             
+            String textCat = "Unknown";
+            long cat = mPartFile.getCat();
+            if (cat == 0) {
+                textCat = "Uncategorized";
+            } else {
+                ECCategory[] catList = mApp.mECHelper.getCategories();
+                for (int i = 0; i < catList.length; i++) {
+                    if (catList[i].getId() == cat) {
+                        textCat = catList[i].getTitle();
+                        break;
+                    }
+                }
+            }
+            ((TextView) v.findViewById(R.id.partfile_detail_category)).setText(textCat);
+
+            
+            
             ((TextView) v.findViewById(R.id.partfile_detail_link)).setText(mPartFile.getEd2kLink());
             
             
@@ -85,6 +103,8 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
             ((TextView) v.findViewById(R.id.partfile_detail_size)).setText(GUIUtils.longToBytesFormatted(mPartFile.getSizeFull()));
             
             ((TextView) v.findViewById(R.id.partfile_detail_remaining)).setText(GUIUtils.getETA(mPartFile.getSizeFull() - mPartFile.getSizeDone(), mPartFile.getSpeed()));
+            
+            ((TextView) v.findViewById(R.id.partfile_detail_lastseencomplete)).setText(mPartFile.getLastSeenComp() == null ? "Never" : mPartFile.getLastSeenComp().toLocaleString());
             
             ((TextView) v.findViewById(R.id.partfile_detail_sources_available)).setText(Integer.toString(mPartFile.getSourceCount() - mPartFile.getSourceNotCurrent()));
             ((TextView) v.findViewById(R.id.partfile_detail_sources_active)).setText(Integer.toString(mPartFile.getSourceXfer()));

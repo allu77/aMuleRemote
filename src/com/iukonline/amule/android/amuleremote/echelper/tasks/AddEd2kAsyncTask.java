@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
-import com.iukonline.amule.android.amuleremote.R;
-import com.iukonline.amule.ec.ECException;
-
 import android.widget.Toast;
+
+import com.iukonline.amule.android.amuleremote.R;
+import com.iukonline.amule.ec.exceptions.ECClientException;
+import com.iukonline.amule.ec.exceptions.ECPacketParsingException;
+import com.iukonline.amule.ec.exceptions.ECServerException;
 
 public class AddEd2kAsyncTask extends AmuleAsyncTask {
     
@@ -18,11 +20,9 @@ public class AddEd2kAsyncTask extends AmuleAsyncTask {
     }
 
     @Override
-    protected String backgroundTask() throws ECException, UnknownHostException, SocketTimeoutException, IOException {
-        if (isCancelled()) return null;
+    protected void backgroundTask() throws UnknownHostException, SocketTimeoutException, IOException, ECClientException, ECPacketParsingException, ECServerException {
+        if (isCancelled()) return;
         mECClient.addED2KLink(mEd2kUrl);
-        if (isCancelled()) return null;
-        return null;
     }
 
     @Override

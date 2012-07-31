@@ -1,4 +1,4 @@
-package com.iukonline.amule.android.amuleremote.echelper;
+/*package com.iukonline.amule.android.amuleremote.echelper;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -25,3 +25,4 @@ public class ECHelperFakeClient extends ECHelper {
     }
 
 }
+*/

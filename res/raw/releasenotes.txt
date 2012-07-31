@@ -1,6 +1,8 @@
 TODO for 0.4
+- HIGH PRIORITY: support for protocol versio 0x203 (2.3.1)
+
 - Fetch category list and filter download queue + show in partfile details
-- Show last seen complate in partfile details
+- Show last seen complete in partfile details
 - Fix and complete sort options
 
 - TAG JavaAmuleEC to 0.4 in other repository...
@@ -12,6 +14,7 @@ aMule Remote 0.4
 - Fixed problem with list refresh
 - Notification is shown before sending report on crash
 - Some GUI improvements
+- Fixed login bug on aMule 2.2.2
 
 
 aMule Remote 0.3.1

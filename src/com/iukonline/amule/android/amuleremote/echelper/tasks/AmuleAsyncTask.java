@@ -8,12 +8,17 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.ECHelper;
 import com.iukonline.amule.ec.ECClient;
-import com.iukonline.amule.ec.ECException;
+import com.iukonline.amule.ec.ECPacket;
+import com.iukonline.amule.ec.ECRawPacket;
+import com.iukonline.amule.ec.exceptions.ECClientException;
+import com.iukonline.amule.ec.exceptions.ECPacketParsingException;
+import com.iukonline.amule.ec.exceptions.ECServerException;
 
-public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, String> {
+public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
 
     public enum TaskScheduleMode { BEST_EFFORT, PREEMPTIVE, QUEUE } 
     public enum TaskScheduleQueueStatus { QUEUED, LAUNCHED }
@@ -23,7 +28,7 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, String> {
     protected ECClient mECClient;
     protected TaskScheduleQueueStatus mQueueStatus;
     
-    protected String mPreExecuteError;
+    protected Exception mPreExecuteError;
     
     public void initialize(ECHelper helper) {
         mECHelper = helper;
@@ -45,86 +50,130 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, String> {
         mECHelper.notifyAmuleClientStatusWatchers(ClientStatusWatcher.AmuleClientStatus.WORKING);
     }
     
-    abstract protected String backgroundTask() throws ECException, UnknownHostException, SocketTimeoutException, IOException;
     
-    protected String doInBackground(Void... params) {
+    // NOTE: Every thrown exception must also be handled in onPostExecute
+    abstract protected void backgroundTask() throws UnknownHostException, SocketTimeoutException, IOException, AmuleAsyncTaskException, ECClientException, ECPacketParsingException, ECServerException;
+    
+    protected Exception doInBackground(Void... params) {
         
         if (mPreExecuteError != null) return mPreExecuteError;
         try {
+            if (mECHelper.mApplication.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Requesting ECClient");
             mECClient = mECHelper.getECClient();
         } catch (UnknownHostException e1) {
-            return new String("EC error - " + e1.getLocalizedMessage()); 
+            return e1;
         } catch (IOException e1) {
-            return new String("IO error - " + e1.getLocalizedMessage());
+            return e1;
         }
         
         try {
-            //Log.d("MYTASK", "------------------------- NEW TASK");
-            //Log.d("MYTASK", "Getting client ");
-            //mECClient = mECHelper.getECClient();
-            //Log.d("MYTASK",mECClient.toString());
-            //Log.d("MYTASK", "Running Task ");
-            return backgroundTask();
-        
-        } catch (ECException e) {
-            return isCancelled() ? null : new String("EC error - " + e.getLocalizedMessage());
-        } catch (UnknownHostException e) {
-            return isCancelled() ? null : new String("HOST error - " + e.getLocalizedMessage());
-        } catch (SocketTimeoutException e) {
-            return isCancelled() ? null : new String("Socket timeout");
+            if (mECHelper.mApplication.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Launching backgroundTask: " + getClass().getName());
+            backgroundTask();
+            if (mECHelper.mApplication.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "backgroundTask finished");
         } catch (IOException e) {
-
             
-            
+            if (mECClient.isStateful()) {
+                mECHelper.setClientStale();
+                return e; // If client is stateful, we need to refresh all data
+            }
             if (isCancelled()) return null;
             
-            //mECHelper.releaseECClient();
-            
-            //Log.d("MYTASK", "IO ERROR - Resetting client");
+            if (mECHelper.mApplication.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Resetting ECClient");
             mECHelper.resetClient();
             
             try {
-                //Log.d("MYTASK", "Getting client");
+                if (mECHelper.mApplication.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Requesting ECClient");
                 mECClient = mECHelper.getECClient();
-                //Log.d("MYTASK", "Got client " + mECClient.toString());
-                //Log.d("MYTASK", "Re-run task");
-                return backgroundTask();
+                if (mECHelper.mApplication.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Launching backgroundTask: " + getClass().getName());
+                backgroundTask();
+                if (mECHelper.mApplication.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "backgroundTask finished");
                 
-            } catch (ECException e2) {
-                return isCancelled() ? null : new String("EC error - " + e2.getLocalizedMessage());
-            } catch (UnknownHostException e2) {
-                return isCancelled() ? null : new String("HOST error - " + e2.getLocalizedMessage());
-            } catch (SocketTimeoutException e2) {
-                return isCancelled() ? null : new String("Socket timeout");
-            } catch (IOException e2) {
-                return isCancelled() ? null : new String("IO error - " + e2.getLocalizedMessage());
+            } catch (Exception e2) {
+                return isCancelled() ? null : e2;
             }
+        } catch (Exception e) {
+            return isCancelled() ? null : e;
         }
+        
+        return null;
     }
     
     abstract protected void notifyResult();
     
     @Override
     protected void onCancelled() {
-        //mECHelper.releaseECClient(this, true);
         mECHelper.resetClient();
         mECHelper.notifyAmuleClientStatusWatchers(ClientStatusWatcher.AmuleClientStatus.IDLE);
     }
     
     @Override
-    protected void onPostExecute(String result) {
+    protected void onPostExecute(Exception result) {
         if (result == null) {
-            //mECHelper.releaseECClient(this, false);
             mECHelper.notifyAmuleClientStatusWatchers(ClientStatusWatcher.AmuleClientStatus.IDLE);
             notifyResult();
         } else {
-            Toast.makeText(mECHelper.getApplication(), result, Toast.LENGTH_LONG).show();
-            //mECHelper.releaseECClient(this, true);
-            //mECHelper.resetClient();
+
+            // TODO: Use string resources
+            
+            String notifyText = "Unhandled error";
+            
+            if (result instanceof ECServerException) {
+                notifyText = "Server retuned an error - " + result.getMessage();
+            } else if (result instanceof ECClientException) {
+                notifyText = "Error building request - " + result.getMessage();
+                if (mECHelper.mApplication.enableLog) {
+                    Log.e(AmuleControllerApplication.AC_LOGTAG, notifyText);
+                    ECPacket req = ((ECClientException)result).getRequestPacket();
+                    ECPacket resp = ((ECClientException)result).getResponsePacket();
+                    if (req != null) {
+                        ECRawPacket rr = req.getRawPacket();
+                        if (rr != null) {
+                            mECHelper.mDropBox.addText(AmuleControllerApplication.AC_LOGTAG, "Request:\n" + rr.dump());
+                        }
+                    }
+                    if (resp != null) {
+                        ECRawPacket rr = resp.getRawPacket();
+                        if (rr != null) {
+                            mECHelper.mDropBox.addText(AmuleControllerApplication.AC_LOGTAG, "Response:\n" + rr.dump());
+                        }
+                    }
+                }
+                mECHelper.sendParsingExceptionIfEnabled(result);
+            } else if (result instanceof ECPacketParsingException) {
+                notifyText = "Error parsing packet - " + result.getMessage();
+                if (mECHelper.mApplication.enableLog) {
+                    Log.e(AmuleControllerApplication.AC_LOGTAG, notifyText);
+                    ECRawPacket p = ((ECPacketParsingException)result).getCausePacket();
+                    if (p != null) {
+                        mECHelper.mDropBox.addText(AmuleControllerApplication.AC_LOGTAG, "Packet");
+                        
+                        String[] lines = p.dump().split("\\n");
+                        for (int i = 0; i < lines.length; i++) mECHelper.mDropBox.addText(AmuleControllerApplication.AC_LOGTAG, lines[i]);
+                        
+                        
+                        //Log.e(AmuleControllerApplication.AC_LOGTAG, "Request:");
+                        //Log.e(AmuleControllerApplication.AC_LOGTAG, p.dump());
+                    }
+                }
+                mECHelper.sendParsingExceptionIfEnabled(result);
+            } else if (result instanceof UnknownHostException) {
+                notifyText = "Cannot resolve server hostname/IP";
+            } else if (result instanceof SocketTimeoutException) {
+                notifyText = "Connection to server timed out";
+            } else if (result instanceof IOException) {
+                notifyText = "Unexpected end of connection to server - " + result.getMessage();
+            } else if (result instanceof AmuleAsyncTaskException) {
+                notifyText = result.getMessage();
+            } 
+
+            Toast.makeText(mECHelper.getApplication(), notifyText, Toast.LENGTH_LONG).show();
             mECHelper.notifyAmuleClientStatusWatchers(ClientStatusWatcher.AmuleClientStatus.ERROR);
+            
+            mECHelper.resetStaleClientData();
+
         }
     }
-
+    
 
     @Override
     public String toString() {

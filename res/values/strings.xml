@@ -102,8 +102,8 @@
     <string name="menu_opt_about">About</string>
     <string name="label_release_notes">Release notes:</string>
     <string name="label_new_version_available">A new version is available!</string>
-    <string name="crash_toast_text">Ooooops ! I crashed, but a report has been sent to my developer to help him fix the issue !</string>
-	<string name="crash_notif_ticker_text">Unexpected error, please send a report...</string>
+    <string name="crash_toast_text">Ooooops! I crashed, but a you can send a report to my developer to help him fix the issue! Please click on the taskbar notification.</string>
+	<string name="crash_notif_ticker_text">Fatal error, please send a report...</string>
 	<string name="crash_notif_title">aMule Remote has crashed...</string>
 	<string name="crash_notif_text">Please click here to help fix the issue.</string>
 	<string name="crash_dialog_title">aMule Remote has crashed</string>
@@ -111,8 +111,21 @@
     application to stop. Please help us fix this by sending us error data,
     all you have to do is click \'OK\'.</string>
 	<string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
-	<string name="crash_dialog_ok_toast">Thank you !</string>
-	<string name="dialog_added2k_title">Inesert ED2K URI</string>
+	<string name="crash_dialog_ok_toast">Thank you!</string>
+	<string name="dialog_added2k_title">Insert ED2K URI</string>
 	<string name="dialog_rename_partfile">Insert new file name</string>
 	<string name="dialog_ed2k_notify">ED2K URI added</string>
+	<string name="menu_opt_refresh_cat">Refresh Categories</string>
+	<string name="partfile_detail_label_lastseencomplete">Last Seen Complete:</string>
+	<string name="partfile_detail_label_category">Category: </string>
+	<string name="menu_opt_send_report">Send Bug Report</string>
+	<string name="settings_label_server_version">Server version</string>
+	<string name="settings_summary_server_version">EC Protocol Version</string>
+	<string name="settings_label_debug">Debug</string>
+	<string name="settings_label_debug_enable_exceptions">Send bug report on compatibility exceptions</string>
+	<string name="settings_summary_debug_enable_exceptions">Please enable this only if requested by the developer</string>
+	<string name="settings_label_debug_enable_options">Enable debug options</string>
+	<string name="settings_summary_debug_enable_options">Enable additional debugging options in menu</string>
+	<string name="settings_label_debug_enable_log">Enable debug logging</string>
+	<string name="settings_summary_debug_enable_log">Enable this only if requested by the developer</string>
 </resources>

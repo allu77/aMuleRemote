@@ -2,13 +2,10 @@ package com.iukonline.amule.android.amuleremote.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.R;
 
 public class AboutDialogFragment extends AlertDialogFragment {

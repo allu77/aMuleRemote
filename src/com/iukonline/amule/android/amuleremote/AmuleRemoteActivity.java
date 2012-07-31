@@ -1,16 +1,28 @@
 package com.iukonline.amule.android.amuleremote;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import org.acra.ErrorReporter;
+
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActionBar;
+import android.support.v4.app.ActionBar.OnNavigationListener;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
@@ -19,39 +31,68 @@ import com.iukonline.amule.android.amuleremote.UpdateChecker.UpdatesWatcher;
 import com.iukonline.amule.android.amuleremote.dialogs.AboutDialogFragment;
 import com.iukonline.amule.android.amuleremote.dialogs.EditTextDialogFragment;
 import com.iukonline.amule.android.amuleremote.dialogs.NewVersionDialogFragment;
+import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.CategoriesWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECStatsWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.AddEd2kAsyncTask;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.AmuleAsyncTask.TaskScheduleMode;
+import com.iukonline.amule.android.amuleremote.echelper.tasks.GetCategoriesAsyncTask;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.GetDlQueueAsyncTask;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.GetECStatsAsyncTask;
+import com.iukonline.amule.ec.ECCategory;
 import com.iukonline.amule.ec.ECConnState;
 import com.iukonline.amule.ec.ECStats;
 
 
-public class AmuleRemoteActivity extends FragmentActivity implements ClientStatusWatcher, DlQueueFragmentContainer, ECStatsWatcher, RefreshingActivity, UpdatesWatcher  {
+public class AmuleRemoteActivity extends FragmentActivity implements ClientStatusWatcher, DlQueueFragmentContainer, ECStatsWatcher, CategoriesWatcher, RefreshingActivity, UpdatesWatcher  {
     
     
     
     public final static String BUNDLE_PARAM_ERRSTR          = "errstr";
     public final static String BUNDLE_PARAM_URI_TO_HANDLE   = "uri_to_handle";
     
+    private final static String BUNDLE_CATEGORY_FILTER = "category";
+    
     public final static String NO_URI_TO_HANDLE       = "NO_URI"; 
     
     private AmuleControllerApplication mApp;
     private String mHandleURI;
+    private CategoriesAdapter mCategoriesAdapter;
+    private long mCatId = ECCategory.NEW_CATEGORY_ID;
     
     String mED2KUrl;
     
     private boolean mIsProgressShown = false;
     
+    
+    TextView mTextDlRate;
+    TextView mTextUlRate;
+    TextView mTextEDonkeyStatus;
+    TextView mTextKADStatus;
+    View mViewConnBar;
+    
+    ActionBar mActionBar;
+
+    
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        if (savedInstanceState != null) {
+            mCatId = savedInstanceState.getLong(BUNDLE_CATEGORY_FILTER, ECCategory.NEW_CATEGORY_ID);
+        }
+        
         setContentView(R.layout.main);
         
         mApp = (AmuleControllerApplication) getApplication();
+        mTextDlRate = (TextView) findViewById(R.id.main_dl_rate);
+        mTextUlRate = (TextView) findViewById(R.id.main_ul_rate);
+        mTextEDonkeyStatus = (TextView) findViewById(R.id.main_edonkey_status);
+        mTextKADStatus = (TextView) findViewById(R.id.main_kad_status);
+        mViewConnBar = findViewById(R.id.main_conn_bar);
+        
+        mActionBar = getSupportActionBar();
         
         Intent i = getIntent();
         String a = i.getAction();
@@ -71,9 +112,12 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
             startActivity(settingsActivity);
             return;
         }
+        mApp.refreshDebugSettings();
         
         notifyStatusChange(mApp.mECHelper.registerForAmuleClientStatusUpdates(this));
+        
         updateECStats(mApp.mECHelper.registerForECStatsUpdates(this));
+        updateCategories(mApp.mECHelper.registerForCategoriesUpdates(this));
         
         mApp.registerRefreshActivity(this);
         mApp.mUpdateChecker.registerUpdatesWatcher(this);
@@ -82,7 +126,7 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
             showAddED2KDialog(mHandleURI);
         }
         
-        if (! mApp.mECHelper.isDlQueueValid()) this.refreshDlQueue();
+        if (! mApp.mECHelper.isDlQueueValid()) refreshDlQueue();
         
     }
     
@@ -90,10 +134,19 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     protected void onPause() {
         
         mApp.mECHelper.unRegisterFromAmuleClientStatusUpdates(this);
+        mApp.mECHelper.unRegisterFromECStatsUpdates(this);
+        mApp.mECHelper.unRegisterFromCategoriesUpdates(this);
+
         mApp.registerRefreshActivity(null);
         mApp.mUpdateChecker.registerUpdatesWatcher(null);
         
         super.onPause();
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putLong(BUNDLE_CATEGORY_FILTER, mCatId);
+        super.onSaveInstanceState(outState);
     }
     
 
@@ -113,16 +166,20 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
         
         if (refreshItem != null) {
             if (mIsProgressShown) {
-                //Toast.makeText(this, "Showing progressbar", Toast.LENGTH_LONG).show();
-                //refreshItem.setActionView((View) getRefreshProgressBar());
-                
                 refreshItem.setActionView(R.layout.refresh_progress);
             } else {
-                //Toast.makeText(this, "Showing button", Toast.LENGTH_LONG).show();
                 refreshItem.setActionView(null);
-                
             }
-
+        }
+        
+        MenuItem sendReportItem = menu.findItem(R.id.menu_opt_send_report);
+        MenuItem refreshCatItem = menu.findItem(R.id.menu_opt_refresh_cat);
+        MenuItem resetClientItem = menu.findItem(R.id.menu_opt_reset);
+        
+        if (mApp != null) {
+            if (sendReportItem != null) sendReportItem.setVisible(mApp.enableDebugOptions);
+            if (refreshCatItem != null) refreshCatItem.setVisible(mApp.enableDebugOptions);
+            if (resetClientItem != null) resetClientItem.setVisible(mApp.enableDebugOptions);
         }
 
         return super.onPrepareOptionsMenu(menu);
@@ -133,7 +190,10 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.menu_opt_refresh:
-            refreshDlQueue();
+            refreshDlQueue(TaskScheduleMode.QUEUE);
+            return true;
+        case R.id.menu_opt_refresh_cat:
+            refreshCategories(TaskScheduleMode.QUEUE);
             return true;
         case R.id.menu_opt_settings:
             Intent settingsActivity = new Intent(this, AmuleControllerPreferences.class);
@@ -147,6 +207,10 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
             return true;
         case R.id.menu_opt_about:
             showAboutDialog();
+            return true;
+        case R.id.menu_opt_send_report:
+            ErrorReporter.getInstance().handleException(new Exception("MANUAL BUG REPORT"));
+            return true;
         default:
             return super.onOptionsItemSelected(item);
         }
@@ -158,10 +222,33 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     }
 
     public void refreshDlQueue(TaskScheduleMode mode)  {
+        
+        
+        
+        if (mApp.mECHelper.getCategories() == null) {
+            if (!refreshCategories(mode)) return;
+            
+            mode = TaskScheduleMode.QUEUE;
+        }
+        
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Scheduling Get Stats Task");
         if (mApp.mECHelper.executeTask(mApp.mECHelper.getNewTask(GetECStatsAsyncTask.class), mode)) {
-            mApp.mECHelper.executeTask(mApp.mECHelper.getNewTask(GetDlQueueAsyncTask.class), TaskScheduleMode.QUEUE);
+            GetDlQueueAsyncTask t = (GetDlQueueAsyncTask) mApp.mECHelper.getNewTask(GetDlQueueAsyncTask.class);
+            t.setDlQueue(mApp.mECHelper.getDlQueue());
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Scheduling GetDlQueue Task");
+            mApp.mECHelper.executeTask(t, TaskScheduleMode.QUEUE);
         }
     }
+    
+    public boolean refreshCategories() {
+        return refreshCategories(TaskScheduleMode.BEST_EFFORT);
+    }
+    
+    public boolean refreshCategories(TaskScheduleMode mode) {
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Scheduling GetGategories Task");
+        return mApp.mECHelper.executeTask(mApp.mECHelper.getNewTask(GetCategoriesAsyncTask.class), mode);
+    }
+    
     
     
     public void showAddED2KDialog(String url) {
@@ -244,33 +331,38 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     @Override
     public void updateECStats(ECStats newStats) {
         if (newStats != null) {
-            ((TextView) findViewById(R.id.main_dl_rate)).setText(GUIUtils.longToBytesFormatted(newStats.getDlSpeed()) + "/s \u2193");
-            ((TextView) findViewById(R.id.main_ul_rate)).setText(GUIUtils.longToBytesFormatted(newStats.getUlSpeed()) + "/s \u2191");
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Updating Stats");
+            
+            mTextDlRate.setText(GUIUtils.longToBytesFormatted(newStats.getDlSpeed()) + "/s \u2193");
+            mTextUlRate.setText(GUIUtils.longToBytesFormatted(newStats.getUlSpeed()) + "/s \u2191");
             
             // TODO STRING RESOURCES
             ECConnState c = newStats.getConnState();
             if (c == null) {
-                ((TextView) findViewById(R.id.main_edonkey_status)).setText("Not Connected");
-                ((TextView) findViewById(R.id.main_kad_status)).setText("Not Connected");
+                mTextEDonkeyStatus.setText("Not Connected");
+                mTextKADStatus.setText("Not Connected");
             } else {
                 if (c.isKadFirewalled()) {
-                    ((TextView) findViewById(R.id.main_kad_status)).setText("Firewalled");
+                    mTextKADStatus.setText("Firewalled");
                 } else if (c.isKadRunning()) {
-                    ((TextView) findViewById(R.id.main_kad_status)).setText("Connected");
+                    mTextKADStatus.setText("Connected");
                 } else {
-                    ((TextView) findViewById(R.id.main_kad_status)).setText("Not Connected");
+                    mTextKADStatus.setText("Not Connected");
                 }
                 
                 if (c.isConnectedEd2k()) {
-                    ((TextView) findViewById(R.id.main_edonkey_status)).setText("Connected");
+                    mTextEDonkeyStatus.setText("Connected");
                 } else if (c.isConnectingEd2k()) {
-                    ((TextView) findViewById(R.id.main_edonkey_status)).setText("Connecting");
+                    mTextEDonkeyStatus.setText("Connecting");
                 } else {
-                    ((TextView) findViewById(R.id.main_edonkey_status)).setText("Not Connected");
+                    mTextEDonkeyStatus.setText("Not Connected");
                 }
             }
             
-            findViewById(R.id.main_conn_bar).setVisibility(View.VISIBLE);
+            mViewConnBar.setVisibility(View.VISIBLE);
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Stats updated");
+        } else {
+            mViewConnBar.setVisibility(View.GONE);
         }
     }
     
@@ -292,4 +384,102 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
         d.show(getSupportFragmentManager(), "new_release_dialog");
         
     }
+
+    @Override
+    public void updateCategories(ECCategory[] newCategoryList) {
+        
+        if (newCategoryList == null) {
+            mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+            return;
+        }
+        
+        // TODO: Optimize adapter (update List and do not re-create each time)
+        
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Updating Categories");
+        if (mCategoriesAdapter == null) {
+            ArrayList <ECCategory> catList = new ArrayList<ECCategory>(newCategoryList.length + 1);
+            catList.add(new ECCategory("All Files", null, null, (byte) 0, (byte) 0));
+            catList.addAll(Arrays.asList(newCategoryList));
+            
+            mCategoriesAdapter = new CategoriesAdapter(this, R.layout.dlqueue_fragment, catList);
+            mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            mActionBar.setListNavigationCallbacks(
+                            mCategoriesAdapter,
+                            new OnNavigationListener() {
+                                @Override
+                                public boolean onNavigationItemSelected(int position, long itemId) {
+                                    DlQueueFragment f = (DlQueueFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_dlqueue);
+                                    mCatId = itemId;
+                                    if (f != null) {
+                                        f.filterDlQueueByCategory(itemId);
+                                    }
+                                    return true;
+                                }
+                            }
+            );
+        } else {
+            int selectedIndex = getSupportActionBar().getSelectedNavigationIndex();
+            mCatId = ECCategory.NEW_CATEGORY_ID;
+            if (selectedIndex >= 0 && selectedIndex < mCategoriesAdapter.getCount()) {
+                mCatId = mCategoriesAdapter.getItemId(selectedIndex);
+            }
+            while (mCategoriesAdapter.getCount() > 1) {
+                mCategoriesAdapter.remove(mCategoriesAdapter.getItem(mCategoriesAdapter.getCount() - 1));
+            }
+            for (int i = 0; i < newCategoryList.length; i++) mCategoriesAdapter.add(newCategoryList[i]);
+        }
+        
+        for (int i = 0; i < mCategoriesAdapter.getCount(); i++) {
+            if (mCategoriesAdapter.getItemId(i) == mCatId) {
+                mActionBar.setSelectedNavigationItem(i);
+                break;
+            }
+        }
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Categories udpated");
+        
+    }
+    
+    
+    private class CategoriesAdapter extends ArrayAdapter<ECCategory> {
+        
+        public CategoriesAdapter(Context context, int textViewResourceId, ArrayList<ECCategory> objects) {
+            super(context, textViewResourceId, objects);
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView v = new TextView(getContext());
+            ECCategory c = getItem(position);
+            if (c.getId() == 0L) {
+                v.setText("Uncategorized");
+            } else {
+                v.setText(c.getTitle());
+            }
+            return v;
+        }
+
+        @Override
+        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            TextView v = (TextView) getView(position, convertView, parent);
+            
+            v.setMinHeight(60);
+            v.setGravity(Gravity.CENTER_VERTICAL);
+            
+            return v;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return getItem(position).getId();
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return true;
+        }
+
+    }
+
+
+
 }

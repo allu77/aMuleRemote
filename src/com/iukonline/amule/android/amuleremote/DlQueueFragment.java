@@ -1,7 +1,8 @@
 package com.iukonline.amule.android.amuleremote;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.DlQueueWatcher;
+import com.iukonline.amule.ec.ECCategory;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 
@@ -31,14 +34,16 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
     
     private final static String BUNDLE_SORT_BY = "sort";
     private final static String BUNDLE_SELECTED_ITEM = "selected";
+    private final static String BUNDLE_CATEGORY_FILTER = "category";
 
 
     AmuleControllerApplication mApp;
 
     
-    ArrayList <ECPartFile> mDlQueue;
+    HashMap<String, ECPartFile> mDlQueue;
     DownloadListAdapter mDlAdapter;
     byte mSortBy;
+    long mCatId;
     int mRestoreSelected = -1;
     ECPartFileComparator mDlQueueComparator;
     
@@ -51,16 +56,14 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
         
         if (savedInstanceState == null) {
             mSortBy = (byte) mApp.mSettings.getLong(AmuleControllerApplication.AC_SETTING_SORT, AmuleControllerApplication.AC_SETTING_SORT_FILENAME);
-            //mSortBy = AmuleControllerApplication.AC_SETTING_SORT_FILENAME;
         } else {
             mSortBy = savedInstanceState.getByte(BUNDLE_SORT_BY, AmuleControllerApplication.AC_SETTING_SORT_FILENAME);
             mRestoreSelected = savedInstanceState.getInt(BUNDLE_SELECTED_ITEM, -1);
+            mCatId = savedInstanceState.getLong(BUNDLE_CATEGORY_FILTER, ECCategory.NEW_CATEGORY_ID);
         }
         
         mDlQueueComparator = new ECPartFileComparator(AmuleControllerApplication.getDlComparatorTypeFromSortSetting(mSortBy));
-        
         setHasOptionsMenu(true);
-
     }
     
     @Override
@@ -83,7 +86,6 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
     @Override
     public void onResume() {
         super.onResume();
-
         updateDlQueue(mApp.mECHelper.registerForDlQueueUpdates(this));
     }
     
@@ -105,6 +107,7 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
         super.onSaveInstanceState(outState);
         outState.putByte(BUNDLE_SORT_BY, mSortBy);
         outState.putInt(BUNDLE_SELECTED_ITEM, getSelectedItemPosition());
+        outState.putLong(BUNDLE_CATEGORY_FILTER, mCatId);
     }
     
     
@@ -135,10 +138,15 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
         }
         
         mDlQueueComparator = new ECPartFileComparator(AmuleControllerApplication.getDlComparatorTypeFromSortSetting(mSortBy));
-        Collections.sort(mDlQueue, mDlQueueComparator);
+        if (mDlAdapter != null) mDlAdapter.sort(mDlQueueComparator);
         
         refreshView();
         return true;
+    }
+    
+    public void filterDlQueueByCategory(long catId) {
+        mCatId = catId;
+        updateDlQueue(mApp.mECHelper.getDlQueue());
     }
     
 
@@ -148,7 +156,8 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
             mDlAdapter.notifyDataSetChanged();
         } else {
             if (mDlQueue != null) {
-                mDlAdapter = new DownloadListAdapter(getActivity(), R.layout.dlqueue_fragment, mDlQueue );
+                mDlAdapter = new DownloadListAdapter(getActivity(), R.layout.dlqueue_fragment, new ArrayList<ECPartFile> (mDlQueue.values()));
+                if (mDlQueueComparator != null) mDlAdapter.sort(mDlQueueComparator);
                 setListAdapter(mDlAdapter);
             } else {
                 ((TextView) getView().findViewById(android.R.id.empty)).setText(R.string.dlqueue_server_not_queried);
@@ -158,35 +167,59 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
                 setSelection(mRestoreSelected);
                 mRestoreSelected = -1;
             }
-
         }
         
     }   
     
     
     @Override
-    public void updateDlQueue(ArrayList<ECPartFile> newDlQueue) {
+    public void updateDlQueue(HashMap<String, ECPartFile> newDlQueue) {
 
-        if (newDlQueue != null) {
+        
+        if (newDlQueue == null) {
+            mDlAdapter = null; // RESET LIST...
+        } else {
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Updating Dl Queue");
+            
             // DlQueue fetched (if empty it will be non null anyway). Set the corect empty message.
             ((TextView) getListView().getEmptyView()).setText(R.string.dlqueue_empty);
+            
+            if (mDlAdapter != null) {
+                
+                int i = 0;
+                
+                ArrayList<ECPartFile> foundHash = new ArrayList<ECPartFile>();
+                
+                while (i < mDlAdapter.getCount()) {
+                    ECPartFile pOld = mDlAdapter.getItem(i);
+
+                    if ((mCatId == ECCategory.NEW_CATEGORY_ID || pOld.getCat() == mCatId) && newDlQueue.containsValue(pOld)) {
+                        foundHash.add(pOld);
+                        //dlQueueMap.remove(ECUtils.byteArrayToHexString(pOld.getHash()));
+                        i++;
+                    } else {
+                        mDlAdapter.remove(pOld);
+                    }
+                }
+                Iterator <ECPartFile> iter = newDlQueue.values().iterator();
+                while (iter.hasNext()) {
+                    ECPartFile p = iter.next();
+                    if ((mCatId == ECCategory.NEW_CATEGORY_ID || p.getCat() == mCatId) && ! foundHash.contains(p)) mDlAdapter.add(p);
+                }
+                
+                if (mDlQueueComparator != null) mDlAdapter.sort(mDlQueueComparator);
+            }
+            
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Dl Queue Updated");
         }
         
         mDlQueue = newDlQueue;
-        
-        if (mDlQueue != null) {
-            Collections.sort(mDlQueue, mDlQueueComparator);
-            
-            if (mDlAdapter != null) {
-                mDlAdapter.setList(mDlQueue);
-            }
-        }
         refreshView();
     }
     
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        ((DlQueueFragmentContainer) getActivity()).partFileSelected(mDlQueue.get(position).getHash());
+        ((DlQueueFragmentContainer) getActivity()).partFileSelected(mDlAdapter.getItem(position).getHash());
     }
     
     @Override
@@ -207,17 +240,20 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
 
     private class DownloadListAdapter extends ArrayAdapter<ECPartFile> {
 
-        private ArrayList<ECPartFile> items;
+        //private ArrayList<ECPartFile> items;
         
         public DownloadListAdapter(Context context, int textViewResourceId, ArrayList<ECPartFile> items) {
                 super(context, textViewResourceId, items);
-                this.items = items;
+                //this.items = items;
         }
         
+        /*
         public void setList (ArrayList<ECPartFile> items) {
             this.items = items;
-        }
+        }*/
 
+        
+        
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
                 
@@ -244,8 +280,8 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
             }
             
             
-            if (position < items.size()) {
-                ECPartFile o = items.get(position);
+            if (position < getCount()) {
+                ECPartFile o = getItem(position);
                 if (o != null) {
                         float perc = ((float) o.getSizeDone()) * 100f / ((float) o.getSizeFull());
                         

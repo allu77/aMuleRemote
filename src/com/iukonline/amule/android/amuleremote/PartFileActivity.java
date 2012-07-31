@@ -266,6 +266,8 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
         ECPartFileActionAsyncTask actionTask = (ECPartFileActionAsyncTask) mApp.mECHelper.getNewTask(ECPartFileActionAsyncTask.class);
         actionTask.setECPartFile(mPartFile).setAction(actionType);
         if (stringParam != null) actionTask.setStringParam(stringParam);
+        
+        mApp.mECHelper.registerForECPartFileActions(this, mHash);
         if (mApp.mECHelper.executeTask(actionTask, TaskScheduleMode.QUEUE) && refreshAfter) {
             ECPartFileGetDetailsAsyncTask detailsTask = (ECPartFileGetDetailsAsyncTask) mApp.mECHelper.getNewTask(ECPartFileGetDetailsAsyncTask.class);
             detailsTask.setECPartFile(mPartFile);
@@ -362,8 +364,12 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
     @Override
     public void updateECPartFile(ECPartFile newECPartFile) {
         
-        // TODO: Check if hash is the same...
-        if (mPartFile == null && newECPartFile != null) {
+        if (newECPartFile == null) {
+            // This should mean that Client data is stale... Close activity and go back to dlqueue
+            finish();
+        } else if (mPartFile == null) {
+        
+            // TODO: Check if hash is the same...
             mPartFile = newECPartFile;
             if (mNeedsRefresh) refreshPartFileDetails();
         }
@@ -378,11 +384,11 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
     
     @Override
     public void notifyECPartFileActionDone(ECPartFileAction action) {
+        mApp.mECHelper.unRegisterFromECPartFileActions(this, mHash);
         if (action == ECPartFileAction.DELETE) {
             mApp.mECHelper.invalidateDlQueue();
             finish();
         }
-        
     }
 
     

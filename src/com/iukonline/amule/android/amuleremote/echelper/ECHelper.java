@@ -6,7 +6,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -14,8 +13,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.acra.ErrorReporter;
 
 import android.os.AsyncTask;
+import android.os.DropBoxManager;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.CategoriesWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher.AmuleClientStatus;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.DlQueueWatcher;
@@ -26,40 +27,55 @@ import com.iukonline.amule.android.amuleremote.echelper.tasks.AmuleAsyncTask;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.AmuleAsyncTask.TaskScheduleMode;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.AmuleAsyncTask.TaskScheduleQueueStatus;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.ECPartFileActionAsyncTask.ECPartFileAction;
+import com.iukonline.amule.ec.ECCategory;
 import com.iukonline.amule.ec.ECClient;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.ECStats;
 import com.iukonline.amule.ec.ECUtils;
+import com.iukonline.amule.ec.fake.ECClientFake;
+import com.iukonline.amule.ec.v203.ECClientV203;
+import com.iukonline.amule.ec.v204.ECClientV204;
 
 
 
 public class ECHelper {
     
-    AmuleControllerApplication mApplication;
+    public AmuleControllerApplication mApplication;
 
     // TODO: BONIFICARE
-    public static final byte AC_GET_CLIENT_MODE_PREEMPTIVE = 0;
-    public static final byte AC_GET_CLIENT_MODE_BESTEFFORT = 1;
+    //public static final byte AC_GET_CLIENT_MODE_PREEMPTIVE = 0;
+    //public static final byte AC_GET_CLIENT_MODE_BESTEFFORT = 1;
+    
+    private boolean isClientStale = false;
     
     private int mClientConnectTimeout;
     private int mClientReadTimeout;
     
     private String mServerHost;
     private int mServerPort;
+    private String mServerVersion;
     private String mServerPassword;
 
     private Socket mAmuleSocket;
     protected ECClient mECClient;
+    
+    public DropBoxManager mDropBox;
+    
     private AmuleClientStatus mECClientStatus = ClientStatusWatcher.AmuleClientStatus.NOT_CONNECTED;
 
-    ArrayList<ECPartFile> mDlQueue ;
+    // When adding new cached data, remeber to add the to resetStaleClientData() for stateful clients
+    
+    
+    HashMap<String, ECPartFile> mDlQueue ;
     long mDlQueueAge = -1;
     
     ECStats mStats;
+    ECCategory[] mCategories;
 
     // Watchers
     HashMap<String, DlQueueWatcher> mDlQueueWatchers = new HashMap<String, DlQueueWatcher>();
     HashMap<String, ECStatsWatcher> mECStatsWatchers = new HashMap<String, ECStatsWatcher>();
+    HashMap<String, CategoriesWatcher> mCategoriesWatchers = new HashMap<String, CategoriesWatcher>();
     HashMap<String, ClientStatusWatcher> mAmuleStatusWatchers = new HashMap<String, ClientStatusWatcher>();
     HashMap<String, HashMap<String, ECPartFileWatcher>> mECPartFileWatchers = new HashMap<String, HashMap<String, ECPartFileWatcher>>();
     HashMap<String, HashMap<String, ECPartFileActionWatcher>> mECPartFileActionWatchers = new HashMap<String, HashMap<String, ECPartFileActionWatcher>>();
@@ -144,8 +160,6 @@ public class ECHelper {
     
     
     
-    
-    
     public ECHelper(AmuleControllerApplication application) {
         mApplication = application;
     }
@@ -162,7 +176,7 @@ public class ECHelper {
         return mECClientStatus;
     }
     
-    public ArrayList <ECPartFile> registerForDlQueueUpdates (DlQueueWatcher watcher) { 
+    public HashMap<String, ECPartFile> registerForDlQueueUpdates (DlQueueWatcher watcher) { 
         registerWatcher(watcher, mDlQueueWatchers);
         return getDlQueue();
     }
@@ -172,11 +186,16 @@ public class ECHelper {
         return this.getStats();
     }
     
+    public ECCategory[] registerForCategoriesUpdates (CategoriesWatcher watcher) {
+        registerWatcher(watcher, mCategoriesWatchers);
+        return this.getCategories();
+    }
+    
     public ECPartFile registerForECPartFileUpdates (ECPartFileWatcher watcher, byte[] hash) {
         String hashString = ECUtils.byteArrayToHexString(hash);
         if (! mECPartFileWatchers.containsKey(hashString)) mECPartFileWatchers.put(hashString, new HashMap <String, ECPartFileWatcher>());
         registerWatcher(watcher, mECPartFileWatchers.get(hashString));
-        return getPartFileFromHash(hash);
+        return mDlQueue == null ? null : mDlQueue.get(hashString);
     }
     
     public void registerForECPartFileActions (ECPartFileActionWatcher watcher, byte[] hash) {
@@ -202,6 +221,8 @@ public class ECHelper {
     public void unRegisterFromDlQueueUpdates (DlQueueWatcher watcher) { unRegisterWatcher(watcher, mDlQueueWatchers); }
     
     public void unRegisterFromECStatsUpdates (ECStatsWatcher watcher) { unRegisterWatcher(watcher, mECStatsWatchers); }
+    
+    public void unRegisterFromCategoriesUpdates (CategoriesWatcher watcher) { unRegisterWatcher(watcher, mCategoriesWatchers); }
     
     public void unRegisterFromECPartFileUpdates (ECPartFileWatcher watcher, byte[] hash) {
         String hashString = ECUtils.byteArrayToHexString(hash);
@@ -256,7 +277,7 @@ public class ECHelper {
         }
     }
 
-    public void notifyDlQueueWatchers (ArrayList<ECPartFile> dlQueue) {
+    public void notifyDlQueueWatchers (HashMap<String, ECPartFile> dlQueue) {
         setDlQueue(dlQueue);
         Iterator <DlQueueWatcher> i = mDlQueueWatchers.values().iterator();
         while (i.hasNext()) i.next().updateDlQueue(dlQueue);
@@ -271,11 +292,28 @@ public class ECHelper {
         }
     }
     
+    public void notifyCategoriesWatchers(ECCategory[] categories) {
+        mCategories = categories;
+        Iterator <CategoriesWatcher> i = mCategoriesWatchers.values().iterator();
+        while (i.hasNext()) {
+            i.next().updateCategories(categories);
+        }
+    }
+    
     public void notifyECPartFileWatchers (ECPartFile file) {
-        String hashString = ECUtils.byteArrayToHexString(file.getHash());
-        if (mECPartFileWatchers.containsKey(hashString)) {
-            Iterator <ECPartFileWatcher> i = mECPartFileWatchers.get(hashString).values().iterator();
-            while (i.hasNext()) i.next().updateECPartFile(file);
+        if (file == null) {
+            for (HashMap <String, ECPartFileWatcher> m : mECPartFileWatchers.values()) {
+                for (ECPartFileWatcher w : m.values()) {
+                    w.updateECPartFile(null);
+                }
+            }
+        } else {
+            String hashString = ECUtils.byteArrayToHexString(file.getHash());
+            if (mECPartFileWatchers.containsKey(hashString)) {
+                for (ECPartFileWatcher w : mECPartFileWatchers.get(hashString).values()) {
+                    w.updateECPartFile(file);
+                }
+            }
         }
     }
     
@@ -287,12 +325,12 @@ public class ECHelper {
         }
     }
 
-    public ArrayList<ECPartFile> getDlQueue() {
+    public HashMap<String, ECPartFile> getDlQueue() {
         return mDlQueue;
     }
 
-    public void setDlQueue(ArrayList<ECPartFile> mdlList) {
-        mDlQueue = mdlList;
+    public void setDlQueue(HashMap<String, ECPartFile> dlQueue) {
+        mDlQueue = dlQueue;
         mDlQueueAge = System.currentTimeMillis();
     }
     
@@ -304,18 +342,6 @@ public class ECHelper {
         return mDlQueueAge > 0 ? true : false;
     }
 
-    /*
-    public void cancelLatestTask() {
-        if (mLatestTask != null) {
-                mLatestTask.cancel(true);
-                resetClient();
-        }
-    }
-    */
-
-    
-    
-    
     
     
     public Socket getAmuleSocket() throws UnknownHostException, IOException {
@@ -327,20 +353,32 @@ public class ECHelper {
     }
 
     public ECClient getECClient() throws UnknownHostException, IOException {
-        Socket s = getAmuleSocket();
-        if (s.isClosed() || s.isInputShutdown() || s.isOutputShutdown()) {
-            //Log.d("ECHELPER", "Invalid socket! Resetting");
-            resetSocket();
+        Socket s = null;
+        if (! mServerVersion.equals("Fake")) {
             s = getAmuleSocket();
-        }
-        if (!s.isConnected()) {
-            //Log.d("ECHELPER", "Connecting socket");
-            s.connect(new InetSocketAddress(InetAddress.getByName(mServerHost), mServerPort), mClientConnectTimeout);
-            s.setSoTimeout(mClientReadTimeout);
+            if (s.isClosed() || s.isInputShutdown() || s.isOutputShutdown()) {
+                //Log.d("ECHELPER", "Invalid socket! Resetting");
+                resetSocket();
+                s = getAmuleSocket();
+            }
+            if (!s.isConnected()) {
+                //Log.d("ECHELPER", "Connecting socket");
+                s.connect(new InetSocketAddress(InetAddress.getByName(mServerHost), mServerPort), mClientConnectTimeout);
+                s.setSoTimeout(mClientReadTimeout);
+            }
         }
         if (mECClient == null) {
             //Log.d("ECHELPER", "Creating new client");
-            ECClient c = new ECClient();
+            ECClient c;
+            if (mServerVersion.equals("V204")) {
+                c = new ECClientV204();
+            } else  if (mServerVersion.equals("V203")) {
+                c = new ECClientV203();
+            } else if (mServerVersion.equals("Fake")) {
+                c = new ECClientFake();
+            } else {
+                c = new ECClient();
+            }
             c.setClientName("Amule Remote Controller");
             c.setClientVersion("0.4");
             try {
@@ -351,7 +389,10 @@ public class ECHelper {
             mECClient = c;
         }
         
-        if (mECClient != null) ErrorReporter.getInstance().putCustomData("ServerVersion", mECClient.getServerVersion());
+        if (mECClient != null) {
+            ErrorReporter.getInstance().putCustomData("ServerVersion", mECClient.getServerVersion());
+            isClientStale = false;
+        }
         return mECClient;
     }
 
@@ -361,35 +402,51 @@ public class ECHelper {
 
 
     public void resetClient() {
-        //Log.d("ECHELPER", "Setting client to null");
         mECClient = null;
-        //Toast.makeText(getApplication(), "Resetting client", Toast.LENGTH_LONG).show();
-        //Log.d("ECHELPER", "Resetting socket");
         resetSocket();
-        //notifyAmuleClientStatusWatchers(ClientStatusWatcher.AMULE_CLIENT_STATUS_NOT_CONNECTED);
+    }
+    
+    public void setClientStale() {
+        isClientStale = true;
+    }
+    
+    public void resetStaleClientData() {
+        if (isClientStale) {
+            mDlQueue = null;
+            mDlQueueAge = -1;
+            mStats = null;
+            mCategories = null;
+            
+            // This should reset stateful data
+            notifyDlQueueWatchers(null);
+            notifyECStatsWatchers(null);
+            notifyCategoriesWatchers(null);
+            notifyECPartFileWatchers(null);
+            
+            isClientStale = false;
+        }
     }
 
     public void resetSocket() {
         if (mAmuleSocket != null) {
             try {
-                //Log.d("ECHELPER", "Closing socket");
                 mAmuleSocket.shutdownInput();
                 mAmuleSocket.shutdownOutput();
                 mAmuleSocket.close();
             } catch (IOException e) {
                 // Do Nothing. We're closing. Right?
             }
-            //Log.d("ECHELPER", "Setting socket to null");
             mAmuleSocket = null;
         }
     }
 
-    public void setServerInfo(String host, int port, String password, int connTimeout, int readTimeout)  {
+    public void setServerInfo(String host, int port, String version, String password, int connTimeout, int readTimeout)  {
         
-        if (!host.equalsIgnoreCase(mServerHost) || port != mServerPort || connTimeout != mClientConnectTimeout || readTimeout != mClientReadTimeout) {
+        if (!host.equalsIgnoreCase(mServerHost) || port != mServerPort || !version.equalsIgnoreCase(mServerVersion) || connTimeout != mClientConnectTimeout || readTimeout != mClientReadTimeout) {
             // Server or host changed (don't care about password)
             mServerHost = host;
             mServerPort = port;
+            mServerVersion = version;
             mClientConnectTimeout = connTimeout;
             mClientReadTimeout = readTimeout;
             resetClient();
@@ -408,19 +465,13 @@ public class ECHelper {
     public void setStats(ECStats mStats) {
         this.mStats = mStats;
     }
-
-    public ECPartFile getPartFileFromHash(byte[] hash) {
-        Iterator<ECPartFile> itr = mDlQueue.iterator();
-        while (itr.hasNext()) {
-            ECPartFile p = itr.next();
-            byte[] h = p.getHash();
-            boolean matches = true;
-            for (int i = 0; i < hash.length && matches; i++) {
-                if (hash[i] != h[i]) matches = false; 
-            }
-            if (matches) return p;
-        }
-        return null;
+    
+    public ECCategory[] getCategories() {
+        return mCategories;
+    }
+    
+    public void sendParsingExceptionIfEnabled(Exception e) {
+        if (mApplication.sendExceptions) ErrorReporter.getInstance().handleException(e);
     }
 
 }

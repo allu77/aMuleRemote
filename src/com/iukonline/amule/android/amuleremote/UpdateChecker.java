@@ -6,7 +6,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 public class UpdateChecker {
     
@@ -33,22 +32,18 @@ public class UpdateChecker {
     public void registerUpdatesWatcher(UpdatesWatcher watcher) {
         mUpdatesWatcher = watcher;
         if (watcher != null) {
-            Log.d("UPDATE", "Registering watcher");
             if (! mLatestUpdatePublished) {
                 mUpdatesWatcher.notifyUpdate(mNewReleaseURL, mReleaseNotes);
                 mLatestUpdatePublished = true;
             } else {
                 checkForUpdates();
             }
-        } else {
-            Log.d("UPDATE", "De-Registering watcher");
         }
     }
     
     private void checkForUpdates() {
         long now = System.currentTimeMillis();
         if (now - mLatestUpdatesCheck > AC_UPDATE_INTERVAL) {
-            Log.d("UPDATE", "Checking for updates...");
             // Schedule update check Task, which will result in an update refresh and publish
             
             AsyncTask<String, Void, String> fetchReleaseXML = new AsyncTask<String, Void, String>() {
@@ -69,17 +64,12 @@ public class UpdateChecker {
     }
     
     private void parseUpdatesXML(String xml) {
-        Log.d("UPDATE", "Parsing updates XML..." + xml);
 
         String latestReleaseXML = getXMLElement(xml, "latestRelease");
         if (latestReleaseXML != null) {
-            Log.d("UPDATE", "Found latest release tag..." + latestReleaseXML);
             int latestVersionCode = Integer.parseInt(getXMLElement(latestReleaseXML, "versionCode"));
             String latestVersionReleaseNotesURL = getXMLElement(latestReleaseXML, "releaseNotesURL");
             String latestVersionDownloadURL = getXMLElement(latestReleaseXML, "downloadURL");
-            
-            Log.d("UPDATE", "Latest version code: " + latestVersionCode);
-            
             
             if (latestVersionCode > mCurrentVersionCode) {
                 mNewReleaseURL = latestVersionDownloadURL;
@@ -111,15 +101,12 @@ public class UpdateChecker {
     
     private String getXMLElement(String xml, String tag) {
         int tagStart = xml.indexOf("<" + tag);
-        Log.d("UPDATE", "Tag start = " + tagStart);
         
         if (tagStart >= 0) {
             int contentStart = xml.indexOf(">", tagStart);
             if (contentStart > tagStart) {
                 contentStart++;
-                Log.d("UPDATE", "Content start = " + contentStart);
                 int tagEnd = xml.indexOf("</" + tag, contentStart);
-                Log.d("UPDATE", "Tag end = " + tagEnd);
                 if (tagEnd > contentStart) {
                     return xml.substring(contentStart, tagEnd);
                 }

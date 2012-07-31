@@ -5,8 +5,10 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import com.iukonline.amule.ec.ECCodes;
-import com.iukonline.amule.ec.ECException;
 import com.iukonline.amule.ec.ECPartFile;
+import com.iukonline.amule.ec.exceptions.ECClientException;
+import com.iukonline.amule.ec.exceptions.ECPacketParsingException;
+import com.iukonline.amule.ec.exceptions.ECServerException;
 
 
 public class ECPartFileActionAsyncTask extends AmuleAsyncTask {
@@ -40,13 +42,13 @@ public class ECPartFileActionAsyncTask extends AmuleAsyncTask {
 
     
     @Override
-    protected String backgroundTask() throws ECException, UnknownHostException, SocketTimeoutException, IOException {
+    protected void backgroundTask() throws UnknownHostException, SocketTimeoutException, IOException, AmuleAsyncTaskException, ECClientException, ECPacketParsingException, ECServerException {
         
+        if (isCancelled()) return;
         switch (mAction) {
         case DELETE:
             mECClient.changeDownloadStatus(mECPartFile.getHash(), ECCodes.EC_OP_PARTFILE_DELETE);
-            if (isCancelled()) return null;
-            return null;
+            break;
         case PAUSE:
             mECClient.changeDownloadStatus(mECPartFile.getHash(), ECCodes.EC_OP_PARTFILE_PAUSE);
             break;
@@ -75,11 +77,10 @@ public class ECPartFileActionAsyncTask extends AmuleAsyncTask {
             mECClient.setPartFilePriority(mECPartFile.getHash(), ECPartFile.PR_AUTO);
             break;
         case RENAME:
-            if (mStringParam == null) return "New name not specified";
+            if (mStringParam == null) throw new AmuleAsyncTaskException("New name not specified");
             mECClient.renamePartFile(mECPartFile.getHash(), mStringParam);
             break;
         }
-        return null;
     }
 
     @Override
