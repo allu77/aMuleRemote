@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileWatcher;
 import com.iukonline.amule.ec.ECPartFile;
@@ -75,14 +77,20 @@ public class PartFileCommentsFragment extends ListFragment implements ECPartFile
     
     @Override
     public void updateECPartFile(ECPartFile newECPartFile) {
-        // TODO: Check if hash is the same...
-        if (mPartFile == null && newECPartFile != null) {
-            mPartFile = newECPartFile;
-            mCommentsAdpater = new CommentsAdapter(getActivity(), R.layout.partfile_sourcenames_fragment, mPartFile.getComments() );
-            setListAdapter(mCommentsAdpater);
+        if (newECPartFile != null) {
+            if (mPartFile == null) {
+                mPartFile = newECPartFile;
+                mCommentsAdpater = new CommentsAdapter(getActivity(), R.layout.partfile_sourcenames_fragment, mPartFile.getComments() );
+                setListAdapter(mCommentsAdpater);
+            } else {
+                if (! mPartFile.getHashAsString().equals(newECPartFile.getHashAsString())) {
+                    Toast.makeText(mApp, R.string.error_unexpected, Toast.LENGTH_LONG).show();
+                    if (mApp.enableLog) Log.e(AmuleControllerApplication.AC_LOGTAG, "Got a different hash in updateECPartFile!");
+
+                    mApp.mECHelper.resetClient();
+                }
+            }
         }
-        // We shouldn't need to re-assign mPartFile, since this should be the same modified...
-        
 
         refreshView();
     }

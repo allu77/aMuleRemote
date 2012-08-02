@@ -72,18 +72,23 @@
     <string name="menu_detail_opt_prio">Change priority</string>
     <string name="partfile_prio_auto">Auto</string>
     <string name="menu_detail_opt_a4af">A4AF</string>
-    <string name="menu_opt_sort">Sort by...</string>
+    <string name="menu_opt_sort">Sort by&#8230;</string>
     <string name="menu_opt_sort_filename">Filename</string>
     <string name="menu_opt_sort_status">Status</string>
     <string name="menu_opt_sort_transfered">Transfered</string>
     <string name="menu_opt_sort_progress">Progress</string>
+    <string name="menu_opt_sort_size">Size</string>
+    <string name="menu_opt_sort_speed">Speed</string>
+    <string name="menu_opt_sort_priority">Priority</string>
+    <string name="menu_opt_sort_remaining">Remaining time</string>
+    <string name="menu_opt_sort_last_seen_complete">Last seen complete</string>
     <string name="settings_label_client_connect_timeout">Connect timeout (sec)</string>
     <string name="settings_label_client_read_timeout">Read timeout (sec)</string>
     <string name="settings_summary_client_connect_timeout">Max seconds to wait for connection establishment</string>
     <string name="settings_summary_client_read_timeout">Max seconds to wait for a reply</string>
     <string name="partfile_detail_label_comments">Comments</string>
     <string name="partfile_detail_label_sorucenames">Source names</string>
-    <string name="dlqueue_server_not_queried">Amule server not queried yet</string>
+    <string name="dlqueue_server_not_queried">Not connected to aMule server</string>
     <string name="alert_dialog_ok">OK</string>
     <string name="alert_dialog_cancel">Cancel</string>
     <string name="partfile_dialog_delete_confirm">Are you sure you want to delete this file?</string>
@@ -103,8 +108,8 @@
     <string name="label_release_notes">Release notes:</string>
     <string name="label_new_version_available">A new version is available!</string>
     <string name="crash_toast_text">Ooooops! I crashed, but a you can send a report to my developer to help him fix the issue! Please click on the taskbar notification.</string>
-	<string name="crash_notif_ticker_text">Fatal error, please send a report...</string>
-	<string name="crash_notif_title">aMule Remote has crashed...</string>
+	<string name="crash_notif_ticker_text">Fatal error, please send a report&#8230;</string>
+	<string name="crash_notif_title">aMule Remote has crashedt&#8230;</string>
 	<string name="crash_notif_text">Please click here to help fix the issue.</string>
 	<string name="crash_dialog_title">aMule Remote has crashed</string>
 	<string name="crash_dialog_text">An unexpected error occurred forcing the
@@ -128,4 +133,17 @@
 	<string name="settings_summary_debug_enable_options">Enable additional debugging options in menu</string>
 	<string name="settings_label_debug_enable_log">Enable debug logging</string>
 	<string name="settings_summary_debug_enable_log">Enable this only if requested by the developer</string>
+	<string name="about_dialog_intro">&#169; 2011-2012 by iuk\n
+	http://www.iukonline.com/\n
+	\n
+	This product includes software developed at\n
+	ACRA (http://acra.googlecode.com/).\n
+	</string>
+	<string name="error_unexpected">Wow! Something really unexpected just happened. Please contact application support if you want to help in avoiding this in the future. In the meanwhile, connection will be reset.</string>
+	<string name="error_server">aMule server retuned an error</string>
+	<string name="error_client">Error building request</string>
+	<string name="error_packet_parsing">Error parsing packet</string>
+	<string name="error_host">Cannot resolve server hostname/IP</string>
+	<string name="error_timeout">Connection to server timed out</string>
+	<string name="error_io">Unexpected end of connection to server</string>
 </resources>

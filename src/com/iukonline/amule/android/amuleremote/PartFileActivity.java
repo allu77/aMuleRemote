@@ -12,10 +12,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
+import android.util.Log;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.PartFileSourceNamesFragment.RenameDialogContainer;
@@ -363,20 +365,21 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
 
     @Override
     public void updateECPartFile(ECPartFile newECPartFile) {
-        
-        if (newECPartFile == null) {
-            // This should mean that Client data is stale... Close activity and go back to dlqueue
+        if (newECPartFile != null) {
+            if (mPartFile == null) {
+                mPartFile = newECPartFile;
+                if (mNeedsRefresh) refreshPartFileDetails();
+            } else {
+                if (! mPartFile.getHashAsString().equals(newECPartFile.getHashAsString())) {
+                    Toast.makeText(mApp, R.string.error_unexpected, Toast.LENGTH_LONG).show();
+                    if (mApp.enableLog) Log.e(AmuleControllerApplication.AC_LOGTAG, "Got a different hash in updateECPartFile!");
+                    mApp.mECHelper.resetClient();
+                }
+            }
+            refreshView();
+        } else {
             finish();
-        } else if (mPartFile == null) {
-        
-            // TODO: Check if hash is the same...
-            mPartFile = newECPartFile;
-            if (mNeedsRefresh) refreshPartFileDetails();
         }
-        // We shouldn't need to re-assign mPartFile, since this should be the same modified...)
-        
-        refreshView();
-        
     }
 
     
@@ -477,8 +480,7 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
 
         @Override
         public void onTabReselected(Tab tab, FragmentTransaction ft) {
-            // TODO Auto-generated method stub
-            
+            // Do nothing
         }
     }
 

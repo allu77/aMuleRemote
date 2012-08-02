@@ -42,10 +42,6 @@ public class ECHelper {
     
     public AmuleControllerApplication mApplication;
 
-    // TODO: BONIFICARE
-    //public static final byte AC_GET_CLIENT_MODE_PREEMPTIVE = 0;
-    //public static final byte AC_GET_CLIENT_MODE_BESTEFFORT = 1;
-    
     private boolean isClientStale = false;
     
     private int mClientConnectTimeout;
@@ -249,6 +245,9 @@ public class ECHelper {
         
         mECClientStatus = status;
         if (status == AmuleClientStatus.ERROR) {
+            if (mECClient != null && mECClient.isStateful()) {
+                setClientStale();
+            }
             resetClient();
         }
         

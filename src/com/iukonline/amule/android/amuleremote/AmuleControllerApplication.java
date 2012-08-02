@@ -9,6 +9,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.acra.ACRA;
+import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
@@ -23,19 +24,28 @@ import android.preference.PreferenceManager;
 import com.iukonline.amule.android.amuleremote.echelper.ECHelper;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 
-// TODO : Pubblicare license delle varie librerie importate?
-// - ActionBarSherlock
-// - acra (ha anche una notice)
 
-
-
-// FIXME - RIATTIVARE
-
-/*
-@ReportsCrashes(formKey = "dFEwUy12NFVEcDJQV09palh1YXB2d0E6MQ",
+@ReportsCrashes(formKey = "dDFweWxkWHBPanVGUEhUaG9yekhTdkE6MQ",
                 mode = ReportingInteractionMode.NOTIFICATION,
+                customReportContent = { 
+                    ReportField.REPORT_ID, 
+                    ReportField.PHONE_MODEL, 
+                    ReportField.BRAND, 
+                    ReportField.PRODUCT, 
+                    ReportField.ANDROID_VERSION, 
+                    ReportField.DISPLAY, 
+                    ReportField.USER_COMMENT, 
+                    ReportField.USER_APP_START_DATE, 
+                    ReportField.USER_CRASH_DATE, 
+                    ReportField.STACK_TRACE, 
+                    ReportField.CUSTOM_DATA, 
+                    ReportField.DROPBOX, 
+                    ReportField.LOGCAT, 
+                    ReportField.INITIAL_CONFIGURATION, 
+                    ReportField.CRASH_CONFIGURATION 
+                },
                 logcatArguments = { "-t", "200", "-v", "time", "aMuleRemote:D", "*:S" },
-                additionalDropBoxTags = {"aMuleRemote"},
+                additionalDropBoxTags = { "aMuleRemote" },
                 resToastText = R.string.crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
                 resNotifTickerText = R.string.crash_notif_ticker_text,
                 resNotifTitle = R.string.crash_notif_title,
@@ -46,7 +56,7 @@ import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
                 resDialogTitle = R.string.crash_dialog_title, // optional. default is your application name
                 resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
                 resDialogOkToast = R.string.crash_dialog_ok_toast // optional. displays a Toast message when the user accepts to send a report.
-)*/
+)
 
 
 public class AmuleControllerApplication extends Application {
@@ -73,6 +83,13 @@ public class AmuleControllerApplication extends Application {
     public static final byte AC_SETTING_SORT_STATUS = 0x1;
     public static final byte AC_SETTING_SORT_TRANSFERED = 0x2;
     public static final byte AC_SETTING_SORT_PROGRESS = 0x3;
+    
+    public static final byte AC_SETTING_SORT_SIZE = 0x4;
+    public static final byte AC_SETTING_SORT_SPEED = 0x5;
+    public static final byte AC_SETTING_SORT_PRIORITY = 0x6;
+    public static final byte AC_SETTING_SORT_REMAINING = 0x7;
+    public static final byte AC_SETTING_SORT_LAST_SEE_COMPLETE = 0x8;
+    
     
     public static final String AC_SETTING_CONNECT_TIMEOUT = "amule_client_connect_timeout";
     public static final String AC_SETTING_READ_TIMEOUT = "amule_client_read_timeout";
@@ -195,8 +212,7 @@ public class AmuleControllerApplication extends Application {
     @Override
     public void onCreate() {
         
-        // FIXME: Ripristinare
-        //ACRA.init(this);
+        ACRA.init(this);
         
         super.onCreate();
         
@@ -224,6 +240,16 @@ public class AmuleControllerApplication extends Application {
             return ECPartFileComparator.ComparatorType.TRANSFERED;
         case AC_SETTING_SORT_PROGRESS:
             return ECPartFileComparator.ComparatorType.PROGRESS;
+        case AC_SETTING_SORT_SIZE:
+            return ECPartFileComparator.ComparatorType.SIZE;
+        case AC_SETTING_SORT_SPEED:
+            return ECPartFileComparator.ComparatorType.SPEED;
+        case AC_SETTING_SORT_PRIORITY:
+            return ECPartFileComparator.ComparatorType.PRIORITY;
+        case AC_SETTING_SORT_REMAINING:
+            return ECPartFileComparator.ComparatorType.REMAINING;
+        case AC_SETTING_SORT_LAST_SEE_COMPLETE:
+            return ECPartFileComparator.ComparatorType.LAST_SEEN_COMPLETE;
         }
         return null;
     }

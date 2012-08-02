@@ -1,11 +1,15 @@
 package com.iukonline.amule.android.amuleremote;
 
+import java.text.SimpleDateFormat;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileWatcher;
 import com.iukonline.amule.ec.ECCategory;
@@ -104,7 +108,11 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
             
             ((TextView) v.findViewById(R.id.partfile_detail_remaining)).setText(GUIUtils.getETA(mPartFile.getSizeFull() - mPartFile.getSizeDone(), mPartFile.getSpeed()));
             
-            ((TextView) v.findViewById(R.id.partfile_detail_lastseencomplete)).setText(mPartFile.getLastSeenComp() == null ? "Never" : mPartFile.getLastSeenComp().toLocaleString());
+            ((TextView) v.findViewById(R.id.partfile_detail_lastseencomplete)).setText(
+                            mPartFile.getLastSeenComp() == null || mPartFile.getLastSeenComp().getTime() == 0 ? 
+                            "Never" 
+                            : 
+                            new SimpleDateFormat("d MMM yyyy HH:mm:ss").format(mPartFile.getLastSeenComp()));
             
             ((TextView) v.findViewById(R.id.partfile_detail_sources_available)).setText(Integer.toString(mPartFile.getSourceCount() - mPartFile.getSourceNotCurrent()));
             ((TextView) v.findViewById(R.id.partfile_detail_sources_active)).setText(Integer.toString(mPartFile.getSourceXfer()));
@@ -217,9 +225,18 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
     
     @Override
     public void updateECPartFile(ECPartFile newECPartFile) {
-        // TODO: Check if hash is the same...
-        if (mPartFile == null) mPartFile = newECPartFile;
-        // We shouldn't need to re-assign mPartFile, since this should be the same modified...
+        if (newECPartFile != null) {
+            if (mPartFile == null) {
+                mPartFile = newECPartFile;
+            } else {
+                if (! mPartFile.getHashAsString().equals(newECPartFile.getHashAsString())) {
+                    Toast.makeText(mApp, R.string.error_unexpected, Toast.LENGTH_LONG).show();
+                    if (mApp.enableLog) Log.e(AmuleControllerApplication.AC_LOGTAG, "Got a different hash in updateECPartFile!");
+                    mApp.mECHelper.resetClient();
+                }
+            }
+        }
+
         refreshView();
     }
 

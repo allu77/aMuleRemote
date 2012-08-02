@@ -42,6 +42,7 @@ import com.iukonline.amule.android.amuleremote.echelper.tasks.GetECStatsAsyncTas
 import com.iukonline.amule.ec.ECCategory;
 import com.iukonline.amule.ec.ECConnState;
 import com.iukonline.amule.ec.ECStats;
+import com.iukonline.amule.ec.ECUtils;
 
 
 public class AmuleRemoteActivity extends FragmentActivity implements ClientStatusWatcher, DlQueueFragmentContainer, ECStatsWatcher, CategoriesWatcher, RefreshingActivity, UpdatesWatcher  {
@@ -123,7 +124,9 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
         mApp.mUpdateChecker.registerUpdatesWatcher(this);
         
         if (! mHandleURI.equals(NO_URI_TO_HANDLE)) {
-            showAddED2KDialog(mHandleURI);
+            String parURI = new String(mHandleURI);
+            mHandleURI = new String(NO_URI_TO_HANDLE);
+            showAddED2KDialog(parURI);
         }
         
         if (! mApp.mECHelper.isDlQueueValid()) refreshDlQueue();
@@ -294,6 +297,8 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     // DlQueueFragmentContainer
     
     public void partFileSelected(byte[] hash) {
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Partfile " + ECUtils.byteArrayToHexString(hash) + " selected, starting PartFileActivity");
+
         Intent i = new Intent(this, PartFileActivity.class);
         i.putExtra(PartFileActivity.BUNDLE_PARAM_HASH, hash);
         startActivity(i);
@@ -362,6 +367,7 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
             mViewConnBar.setVisibility(View.VISIBLE);
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Stats updated");
         } else {
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Hiding connection bar");
             mViewConnBar.setVisibility(View.GONE);
         }
     }
@@ -378,7 +384,7 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     @Override
     public void notifyUpdate(String newReleaseURL, String releaseNotes) {
         
-        // TODO: TESTARE
+        // FIXME: Prima di rilasciare verificare che app number sul manifest sia incrementato...
         
         NewVersionDialogFragment d = new NewVersionDialogFragment(newReleaseURL, releaseNotes);
         d.show(getSupportFragmentManager(), "new_release_dialog");
@@ -389,6 +395,7 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     public void updateCategories(ECCategory[] newCategoryList) {
         
         if (newCategoryList == null) {
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Hiding category list");
             mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             return;
         }
@@ -418,6 +425,7 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
                             }
             );
         } else {
+            mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
             int selectedIndex = getSupportActionBar().getSelectedNavigationIndex();
             mCatId = ECCategory.NEW_CATEGORY_ID;
             if (selectedIndex >= 0 && selectedIndex < mCategoriesAdapter.getCount()) {

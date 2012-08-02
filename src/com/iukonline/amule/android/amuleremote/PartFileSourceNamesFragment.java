@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.MenuItem;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileWatcher;
 import com.iukonline.amule.ec.ECPartFile;
@@ -128,14 +130,20 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
     
     @Override
     public void updateECPartFile(ECPartFile newECPartFile) {
-        // TODO: Check if hash is the same...
-        if (mPartFile == null && newECPartFile != null) {
-            mPartFile = newECPartFile;
-            mSourceNamesAdpater = new SourceNamesAdapter(getActivity(), R.layout.partfile_sourcenames_fragment, mPartFile.getSourceNames() );
-            setListAdapter(mSourceNamesAdpater);
-        }
-        // We shouldn't need to re-assign mPartFile, since this should be the same modified...
         
+        if (newECPartFile != null) {
+            if (mPartFile == null) {
+                mPartFile = newECPartFile;
+                mSourceNamesAdpater = new SourceNamesAdapter(getActivity(), R.layout.partfile_sourcenames_fragment, mPartFile.getSourceNames() );
+                setListAdapter(mSourceNamesAdpater);
+            } else {
+                if (! mPartFile.getHashAsString().equals(newECPartFile.getHashAsString())) {
+                    Toast.makeText(mApp, R.string.error_unexpected, Toast.LENGTH_LONG).show();
+                    if (mApp.enableLog) Log.e(AmuleControllerApplication.AC_LOGTAG, "Got a different hash in updateECPartFile!");
+                    mApp.mECHelper.resetClient();
+                }
+            }
+        }
 
         refreshView();
     }
@@ -150,6 +158,10 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
     
     
     private class SourceNamesAdapter extends ArrayAdapter<ECPartFileSourceName> {
+        
+        // FIXME Wrong usage of ArrayAdapter (see DlQueueFragment)
+        // The fix can be complex as here we are using the same ECPartFile and ArrayList is update there... What happens here??
+        
         private ArrayList<ECPartFileSourceName> items;
         
         public SourceNamesAdapter(Context context, int textViewResourceId, ArrayList<ECPartFileSourceName> items) {

@@ -62,6 +62,8 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
             mCatId = savedInstanceState.getLong(BUNDLE_CATEGORY_FILTER, ECCategory.NEW_CATEGORY_ID);
         }
         
+        
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Sort settings onCreate is " + mSortBy);
         mDlQueueComparator = new ECPartFileComparator(AmuleControllerApplication.getDlComparatorTypeFromSortSetting(mSortBy));
         setHasOptionsMenu(true);
     }
@@ -95,8 +97,10 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
         mApp.mECHelper.unRegisterFromDlQueueUpdates(this);
         
         SharedPreferences.Editor e = mApp.mSettings.edit();
-        e.putLong(AmuleControllerApplication.AC_SETTING_SORT, AmuleControllerApplication.AC_SETTING_SORT_PROGRESS);
+        e.putLong(AmuleControllerApplication.AC_SETTING_SORT, mSortBy);
         e.commit();
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Sort settings saved onPause is " + mSortBy);
+
         
         super.onPause();
     }
@@ -133,12 +137,26 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
         case R.id.menu_dlqueue_opt_sort_transfered:
             mSortBy = AmuleControllerApplication.AC_SETTING_SORT_TRANSFERED;
             break;
+        case R.id.menu_dlqueue_opt_sort_size:
+            mSortBy = AmuleControllerApplication.AC_SETTING_SORT_SIZE;
+            break;
+        case R.id.menu_dlqueue_opt_sort_speed:
+            mSortBy = AmuleControllerApplication.AC_SETTING_SORT_SPEED;
+            break;
+        case R.id.menu_dlqueue_opt_sort_priority:
+            mSortBy = AmuleControllerApplication.AC_SETTING_SORT_PRIORITY;
+            break;
+        case R.id.menu_dlqueue_opt_sort_remaining:
+            mSortBy = AmuleControllerApplication.AC_SETTING_SORT_REMAINING;
+            break;
+        case R.id.menu_dlqueue_opt_sort_last_seen_complete:
+            mSortBy = AmuleControllerApplication.AC_SETTING_SORT_LAST_SEE_COMPLETE;
+            break;
         default:
             return super.onOptionsItemSelected(item);
         }
         
-        mDlQueueComparator = new ECPartFileComparator(AmuleControllerApplication.getDlComparatorTypeFromSortSetting(mSortBy));
-        if (mDlAdapter != null) mDlAdapter.sort(mDlQueueComparator);
+        mDlQueueComparator.setCompType(AmuleControllerApplication.getDlComparatorTypeFromSortSetting(mSortBy));
         
         refreshView();
         return true;
@@ -151,16 +169,20 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
     
 
     public void refreshView() {
+
+        if (mDlQueue == null) ((TextView) getView().findViewById(android.R.id.empty)).setText(R.string.dlqueue_server_not_queried);
         
         if (mDlAdapter != null) {
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "refreshView sorting with type " + mDlQueueComparator.getCompType());
+            mDlAdapter.sort(mDlQueueComparator);
             mDlAdapter.notifyDataSetChanged();
         } else {
             if (mDlQueue != null) {
                 mDlAdapter = new DownloadListAdapter(getActivity(), R.layout.dlqueue_fragment, new ArrayList<ECPartFile> (mDlQueue.values()));
-                if (mDlQueueComparator != null) mDlAdapter.sort(mDlQueueComparator);
+        
+                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "refreshView sorting with type " + mDlQueueComparator.getCompType());
+                mDlAdapter.sort(mDlQueueComparator);
                 setListAdapter(mDlAdapter);
-            } else {
-                ((TextView) getView().findViewById(android.R.id.empty)).setText(R.string.dlqueue_server_not_queried);
             } 
             
             if (mRestoreSelected > 0) {
@@ -177,7 +199,9 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
 
         
         if (newDlQueue == null) {
-            mDlAdapter = null; // RESET LIST...
+            //mDlAdapter = null; // RESET LIST...
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Resetting Dl Queue");
+            if (mDlAdapter != null) mDlAdapter.clear();
         } else {
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Updating Dl Queue");
             
@@ -207,7 +231,7 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
                     if ((mCatId == ECCategory.NEW_CATEGORY_ID || p.getCat() == mCatId) && ! foundHash.contains(p)) mDlAdapter.add(p);
                 }
                 
-                if (mDlQueueComparator != null) mDlAdapter.sort(mDlQueueComparator);
+                //mDlAdapter.sort(mDlQueueComparator);
             }
             
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Dl Queue Updated");
@@ -219,6 +243,7 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
     
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "User selected item in position " + position + ", id " + id);
         ((DlQueueFragmentContainer) getActivity()).partFileSelected(mDlAdapter.getItem(position).getHash());
     }
     

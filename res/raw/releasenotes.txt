@@ -1,21 +1,13 @@
-TODO for 0.4
-- HIGH PRIORITY: support for protocol versio 0x203 (2.3.1)
-
-- Fetch category list and filter download queue + show in partfile details
-- Show last seen complete in partfile details
-- Fix and complete sort options
-
-- TAG JavaAmuleEC to 0.4 in other repository...
-  
-
 aMule Remote 0.4
-- Implemented support for zlib data compression on EC protocol (saves even more bandwidth)
+- aMule 2.3.1 is now supported
+- Fixed login bug on aMule 2.2.2
+- Implemented zlib data compression on EC protocol (saves even more bandwidth)
+- Notification is shown before sending report on crash
 - Fixed crashes on orientation change during dialog boxes
 - Fixed problem with list refresh
-- Notification is shown before sending report on crash
-- Some GUI improvements
-- Fixed login bug on aMule 2.2.2
-
+- GUI improvements
+- Category filter implemented
+- Added debugging more debugging options for remote support
 
 aMule Remote 0.3.1
 - Fixed bugs in change priority and A4Af handling
@@ -27,7 +19,6 @@ aMule Remote 0.3
 aMule Remote 0.2
 - Ads
 - Added compatibility for Android 2.1 
-
 
 aMule Remote 0.1
 - Download queue management (start/stop/delete/set priority/handle A4AF/file rename)

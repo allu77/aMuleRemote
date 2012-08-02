@@ -7,6 +7,13 @@
             <item android:id="@+id/menu_dlqueue_opt_sort_status" android:title="@string/menu_opt_sort_status"></item>
             <item android:id="@+id/menu_dlqueue_opt_sort_transfered" android:title="@string/menu_opt_sort_transfered"></item>
             <item android:id="@+id/menu_dlqueue_opt_sort_progress" android:title="@string/menu_opt_sort_progress"></item>
+            
+            <item android:id="@+id/menu_dlqueue_opt_sort_size" android:title="@string/menu_opt_sort_size"></item>
+            <item android:id="@+id/menu_dlqueue_opt_sort_speed" android:title="@string/menu_opt_sort_speed"></item>
+            <item android:id="@+id/menu_dlqueue_opt_sort_priority" android:title="@string/menu_opt_sort_priority"></item>
+            <item android:id="@+id/menu_dlqueue_opt_sort_remaining" android:title="@string/menu_opt_sort_remaining"></item>
+            <item android:id="@+id/menu_dlqueue_opt_sort_last_seen_complete" android:title="@string/menu_opt_sort_last_seen_complete"></item>
+            
         </menu>
     </item>
 </menu>

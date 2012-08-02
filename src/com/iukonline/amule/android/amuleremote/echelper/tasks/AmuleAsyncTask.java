@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.ECHelper;
 import com.iukonline.amule.ec.ECClient;
@@ -73,7 +75,6 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
         } catch (IOException e) {
             
             if (mECClient.isStateful()) {
-                mECHelper.setClientStale();
                 return e; // If client is stateful, we need to refresh all data
             }
             if (isCancelled()) return null;
@@ -113,14 +114,13 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
             notifyResult();
         } else {
 
-            // TODO: Use string resources
-            
-            String notifyText = "Unhandled error";
+            Resources r = mECHelper.mApplication.getResources();
+            String notifyText;
             
             if (result instanceof ECServerException) {
-                notifyText = "Server retuned an error - " + result.getMessage();
+                notifyText = r.getText(R.string.error_server) + " - " + result.getMessage();
             } else if (result instanceof ECClientException) {
-                notifyText = "Error building request - " + result.getMessage();
+                notifyText = r.getText(R.string.error_client) + " - " + result.getMessage();
                 if (mECHelper.mApplication.enableLog) {
                     Log.e(AmuleControllerApplication.AC_LOGTAG, notifyText);
                     ECPacket req = ((ECClientException)result).getRequestPacket();
@@ -140,7 +140,7 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
                 }
                 mECHelper.sendParsingExceptionIfEnabled(result);
             } else if (result instanceof ECPacketParsingException) {
-                notifyText = "Error parsing packet - " + result.getMessage();
+                notifyText = r.getText(R.string.error_packet_parsing) + " - " + result.getMessage();
                 if (mECHelper.mApplication.enableLog) {
                     Log.e(AmuleControllerApplication.AC_LOGTAG, notifyText);
                     ECRawPacket p = ((ECPacketParsingException)result).getCausePacket();
@@ -150,25 +150,24 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
                         String[] lines = p.dump().split("\\n");
                         for (int i = 0; i < lines.length; i++) mECHelper.mDropBox.addText(AmuleControllerApplication.AC_LOGTAG, lines[i]);
                         
-                        
-                        //Log.e(AmuleControllerApplication.AC_LOGTAG, "Request:");
-                        //Log.e(AmuleControllerApplication.AC_LOGTAG, p.dump());
                     }
                 }
                 mECHelper.sendParsingExceptionIfEnabled(result);
             } else if (result instanceof UnknownHostException) {
-                notifyText = "Cannot resolve server hostname/IP";
+                notifyText = r.getText(R.string.error_host).toString();
             } else if (result instanceof SocketTimeoutException) {
-                notifyText = "Connection to server timed out";
+                notifyText = r.getText(R.string.error_timeout).toString();
             } else if (result instanceof IOException) {
-                notifyText = "Unexpected end of connection to server - " + result.getMessage();
+                notifyText = r.getText(R.string.error_io) + " - " + result.getMessage();
             } else if (result instanceof AmuleAsyncTaskException) {
                 notifyText = result.getMessage();
-            } 
+            } else {
+                notifyText = r.getText(R.string.error_unexpected).toString();
+                if (mECHelper.mApplication.enableLog) Log.e(AmuleControllerApplication.AC_LOGTAG, "Got an unexpected exception " + result.getClass().getName() + " for background task " + getClass().getName());
+            }
 
             Toast.makeText(mECHelper.getApplication(), notifyText, Toast.LENGTH_LONG).show();
             mECHelper.notifyAmuleClientStatusWatchers(ClientStatusWatcher.AmuleClientStatus.ERROR);
-            
             mECHelper.resetStaleClientData();
 
         }
