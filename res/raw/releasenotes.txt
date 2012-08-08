@@ -8,6 +8,8 @@ aMule Remote 0.4
 - GUI improvements
 - Category filter implemented
 - Added debugging more debugging options for remote support
+- Fixed bug on login to server with wrong client version
+- Fixed issue on first startup (application locket to the settings screen)
 
 aMule Remote 0.3.1
 - Fixed bugs in change priority and A4Af handling
