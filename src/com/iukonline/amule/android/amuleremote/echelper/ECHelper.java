@@ -245,9 +245,10 @@ public class ECHelper {
         
         mECClientStatus = status;
         if (status == AmuleClientStatus.ERROR) {
-            if (mECClient != null && mECClient.isStateful()) {
-                setClientStale();
-            }
+            // Moved in resetClient
+            // if (mECClient != null && mECClient.isStateful()) {
+            //    setClientStale();
+            // }
             resetClient();
         }
         
@@ -401,6 +402,9 @@ public class ECHelper {
 
 
     public void resetClient() {
+        if (mECClient != null && mECClient.isStateful()) {
+            setClientStale();
+        }
         mECClient = null;
         resetSocket();
     }

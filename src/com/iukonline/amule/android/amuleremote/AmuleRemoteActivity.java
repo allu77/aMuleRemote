@@ -29,6 +29,7 @@ import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.Refres
 import com.iukonline.amule.android.amuleremote.DlQueueFragment.DlQueueFragmentContainer;
 import com.iukonline.amule.android.amuleremote.UpdateChecker.UpdatesWatcher;
 import com.iukonline.amule.android.amuleremote.dialogs.AboutDialogFragment;
+import com.iukonline.amule.android.amuleremote.dialogs.AlertDialogFragment;
 import com.iukonline.amule.android.amuleremote.dialogs.EditTextDialogFragment;
 import com.iukonline.amule.android.amuleremote.dialogs.NewVersionDialogFragment;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.CategoriesWatcher;
@@ -36,6 +37,7 @@ import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatu
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECStatsWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.AddEd2kAsyncTask;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.AmuleAsyncTask.TaskScheduleMode;
+import com.iukonline.amule.android.amuleremote.echelper.tasks.ECPartFileActionAsyncTask.ECPartFileAction;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.GetCategoriesAsyncTask;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.GetDlQueueAsyncTask;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.GetECStatsAsyncTask;
@@ -64,6 +66,7 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     String mED2KUrl;
     
     private boolean mIsProgressShown = false;
+    private boolean mServerConfigured = false;
     
     
     TextView mTextDlRate;
@@ -107,13 +110,27 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
 
         super.onResume();
         
+        mApp.refreshDebugSettings();
         if (! mApp.refreshServerSettings()) {
             // No server configured
-            Intent settingsActivity = new Intent(this, AmuleControllerPreferences.class);
-            startActivity(settingsActivity);
+            mServerConfigured = false;
+            
+            Handler h = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    Intent settingsActivity = new Intent(AmuleRemoteActivity.this, AmuleControllerPreferences.class);
+                    startActivity(settingsActivity);
+                    return;
+                }
+            };
+            
+            AlertDialogFragment d = new AlertDialogFragment(R.string.dlqueue_dialog_title_no_server_configured, R.string.dlqueue_dialog_message_no_server_configured, h.obtainMessage(), null, true);
+            d.show(getSupportFragmentManager(), "delete_dialog");
             return;
+
         }
-        mApp.refreshDebugSettings();
+        
+        mServerConfigured = true;
         
         notifyStatusChange(mApp.mECHelper.registerForAmuleClientStatusUpdates(this));
         
@@ -168,16 +185,25 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
         MenuItem refreshItem = menu.findItem(R.id.menu_opt_refresh);
         
         if (refreshItem != null) {
+            refreshItem.setVisible(mServerConfigured);
             if (mIsProgressShown) {
                 refreshItem.setActionView(R.layout.refresh_progress);
             } else {
                 refreshItem.setActionView(null);
             }
         }
+
+        MenuItem addEd2kItem = menu.findItem(R.id.menu_opt_added2k);
+        MenuItem sortItem = menu.findItem(R.id.menu_opt_sort);
         
         MenuItem sendReportItem = menu.findItem(R.id.menu_opt_send_report);
         MenuItem refreshCatItem = menu.findItem(R.id.menu_opt_refresh_cat);
         MenuItem resetClientItem = menu.findItem(R.id.menu_opt_reset);
+        
+        addEd2kItem.setVisible(mServerConfigured);
+        sortItem.setVisible(mServerConfigured);
+        refreshCatItem.setVisible(mServerConfigured);
+        resetClientItem.setVisible(mServerConfigured);
         
         if (mApp != null) {
             if (sendReportItem != null) sendReportItem.setVisible(mApp.enableDebugOptions);
