@@ -17,11 +17,20 @@ public class AlertDialogFragment extends DialogFragment {
     protected final static String BUNDLE_SHOW_CANCEL = "show_cancel";
     
     protected int mTitle = -1;
+    protected int mMessage = -1;
     protected Message mOkMessage;
     protected Message mCancelMessage;
     protected boolean mShowCancel;
     
     public AlertDialogFragment() {
+    }
+    
+    public AlertDialogFragment(int title, int message, Message okMessage, Message cancelMessage, boolean showCancel) {
+        mTitle = title;
+        mMessage = message;
+        mOkMessage = okMessage;
+        mCancelMessage = cancelMessage;
+        mShowCancel = showCancel;
     }
     
     public AlertDialogFragment(int title, Message okMessage, Message cancelMessage, boolean showCancel) {
@@ -54,6 +63,7 @@ public class AlertDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         
         if (mTitle >= 0) builder.setTitle(mTitle);
+        if (mMessage >= 0) builder.setMessage(mMessage);
         
         builder.setPositiveButton(R.string.alert_dialog_ok,
                             new DialogInterface.OnClickListener() {

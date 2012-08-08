@@ -146,4 +146,6 @@
 	<string name="error_host">Cannot resolve server hostname/IP</string>
 	<string name="error_timeout">Connection to server timed out</string>
 	<string name="error_io">Unexpected end of connection to server</string>
+	<string name="dlqueue_dialog_title_no_server_configured">No aMule server configured</string>
+	<string name="dlqueue_dialog_message_no_server_configured">Press OK to go to the settings screen</string>
 </resources>
