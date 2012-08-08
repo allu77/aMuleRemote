@@ -433,8 +433,8 @@ public class ECHelper {
     public void resetSocket() {
         if (mAmuleSocket != null) {
             try {
-                mAmuleSocket.shutdownInput();
-                mAmuleSocket.shutdownOutput();
+                //mAmuleSocket.shutdownInput();
+                //mAmuleSocket.shutdownOutput();
                 mAmuleSocket.close();
             } catch (IOException e) {
                 // Do Nothing. We're closing. Right?
