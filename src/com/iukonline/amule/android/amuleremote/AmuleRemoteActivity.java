@@ -37,7 +37,6 @@ import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatu
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECStatsWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.AddEd2kAsyncTask;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.AmuleAsyncTask.TaskScheduleMode;
-import com.iukonline.amule.android.amuleremote.echelper.tasks.ECPartFileActionAsyncTask.ECPartFileAction;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.GetCategoriesAsyncTask;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.GetDlQueueAsyncTask;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.GetECStatsAsyncTask;
@@ -125,7 +124,7 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
             };
             
             AlertDialogFragment d = new AlertDialogFragment(R.string.dlqueue_dialog_title_no_server_configured, R.string.dlqueue_dialog_message_no_server_configured, h.obtainMessage(), null, true);
-            d.show(getSupportFragmentManager(), "delete_dialog");
+            d.show(getSupportFragmentManager(), "no_server_dialog");
             return;
 
         }
