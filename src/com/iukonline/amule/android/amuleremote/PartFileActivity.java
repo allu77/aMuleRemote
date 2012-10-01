@@ -220,11 +220,13 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
             @Override
             public void handleMessage(Message msg) {
                 Bundle b = msg.getData();
+                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "PartFileActivity.showRenameDialog: Launching rename action with name " + EditTextDialogFragment.BUNDLE_EDIT_STRING);
                 doPartFileAction(ECPartFileAction.RENAME, true, b.getString(EditTextDialogFragment.BUNDLE_EDIT_STRING));
             }
         };
 
         EditTextDialogFragment d = new EditTextDialogFragment(R.string.dialog_rename_partfile, fileName, h.obtainMessage(), null);
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "PartFileActivity.showRenameDialog: showing dialog");
         d.show(getSupportFragmentManager(), "rename_dialog");
     }
     
@@ -234,11 +236,13 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
         Handler h = new Handler() {
             @Override
             public void handleMessage(Message msg) {
+                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "PartFileActivity.showDeleteConfirmDialog: delete confirmed");
                 doPartFileAction(ECPartFileAction.DELETE, false);
             }
         };
         
         AlertDialogFragment d = new AlertDialogFragment(R.string.partfile_dialog_delete_confirm, h.obtainMessage(), null, true);
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "PartFileActivity.showRenameDialog: showing dialog");
         d.show(getSupportFragmentManager(), "delete_dialog");
     }
     

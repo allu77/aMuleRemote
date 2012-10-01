@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.os.DropBoxManager;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActionBar;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.DlQueueFragment.DlQueueFragmentContainer;
@@ -31,6 +33,7 @@ import com.iukonline.amule.android.amuleremote.UpdateChecker.UpdatesWatcher;
 import com.iukonline.amule.android.amuleremote.dialogs.AboutDialogFragment;
 import com.iukonline.amule.android.amuleremote.dialogs.AlertDialogFragment;
 import com.iukonline.amule.android.amuleremote.dialogs.EditTextDialogFragment;
+import com.iukonline.amule.android.amuleremote.dialogs.ManualBugReportDialogFragment;
 import com.iukonline.amule.android.amuleremote.dialogs.NewVersionDialogFragment;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.CategoriesWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
@@ -248,7 +251,7 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
         resetClientItem.setVisible(mServerConfigured);
         
         if (mApp != null) {
-            if (sendReportItem != null) sendReportItem.setVisible(mApp.enableDebugOptions);
+            if (sendReportItem != null) sendReportItem.setVisible(mApp.enableDebugOptions && mApp.enableLog);
             if (refreshCatItem != null) refreshCatItem.setVisible(mApp.enableDebugOptions);
             if (resetClientItem != null) resetClientItem.setVisible(mApp.enableDebugOptions);
         }
@@ -290,7 +293,8 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
             return true;
         case R.id.menu_opt_send_report:
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_send_report selected");
-            ErrorReporter.getInstance().handleException(new Exception("MANUAL BUG REPORT"));
+            //ErrorReporter.getInstance().handleException(new Exception("MANUAL BUG REPORT"));
+            showManualBugReportDialog();
             return true;
         default:
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onOptionsItemSelected: Unknown item selected. Calling super");
@@ -371,6 +375,40 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
         AboutDialogFragment d = new AboutDialogFragment(versionName, mApp.getReleaseNotes());
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showAboutDialog: showing dialog");
         d.show(getSupportFragmentManager(), "about_dialog");
+    }
+    
+    public void showManualBugReportDialog() {
+        // TODO: Create a dialog for manual bug report, then get the comment and handle silently with ErrorReporter.getInstance().handleSilentException(caughtException)
+        
+        Handler h = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                Bundle b = msg.getData();
+                if (b != null) {
+                    String u = b.getString(ManualBugReportDialogFragment.BUNDLE_COMMENTS);
+                    if (u != null) {
+                        Object o = getSystemService(DROPBOX_SERVICE);
+                        if (o != null) {
+                            DropBoxManager d = (DropBoxManager) o;
+                            Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showManualBugReportDialog: See dropbox for details...");
+                            d.addText(AmuleControllerApplication.AC_LOGTAG, "Manual report comment:");
+                            d.addText(AmuleControllerApplication.AC_LOGTAG, u);
+                        } else {
+                            Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showManualBugReportDialog: Dropbox not supported, using log");
+                            Log.d(AmuleControllerApplication.AC_LOGTAG, u);
+                        }
+                        
+                        ErrorReporter.getInstance().handleSilentException(new Exception("Manual report sent"));
+                        
+                        Toast.makeText(mApp, R.string.crash_dialog_ok_toast, Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        };
+
+        ManualBugReportDialogFragment d = new ManualBugReportDialogFragment(h.obtainMessage());
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showManualBugReportDialog: showing dialog");
+        d.show(getSupportFragmentManager(), "manual_bug_report_dialog");
     }
     
     

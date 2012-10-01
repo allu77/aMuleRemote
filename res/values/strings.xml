@@ -109,13 +109,13 @@
     <string name="label_new_version_available">A new version is available!</string>
     <string name="crash_toast_text">Ooooops! I crashed, but a you can send a report to my developer to help him fix the issue! Please click on the taskbar notification.</string>
 	<string name="crash_notif_ticker_text">Fatal error, please send a report&#8230;</string>
-	<string name="crash_notif_title">aMule Remote has crashedt&#8230;</string>
+	<string name="crash_notif_title">aMule Remote has crashed…</string>
 	<string name="crash_notif_text">Please click here to help fix the issue.</string>
 	<string name="crash_dialog_title">aMule Remote has crashed</string>
 	<string name="crash_dialog_text">An unexpected error occurred forcing the
-    application to stop. Please help us fix this by sending us error data,
-    all you have to do is click \'OK\'.</string>
-	<string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
+  application to stop. Please help me fix this by sending me error data,
+ all you have to do is click \'OK\'. If this happens frequently, please enable debug logging in the settings menu, so that I will get more information about this issue.</string>
+	<string name="crash_dialog_comment_prompt">Please consider adding some details about what were you doing when this crash happened. If you add your e-mail address to the comment I\'ll be able to get back to you and troubleshoot this issue. Issues without comments are very difficult to troubleshoot.</string>
 	<string name="crash_dialog_ok_toast">Thank you!</string>
 	<string name="dialog_added2k_title">Insert ED2K URI</string>
 	<string name="dialog_rename_partfile">Insert new file name</string>
@@ -139,7 +139,7 @@
 	This product includes software developed at\n
 	ACRA (http://acra.googlecode.com/).\n
 	</string>
-	<string name="error_unexpected">Wow! Something really unexpected just happened. Please contact application support if you want to help in avoiding this in the future. In the meanwhile, connection will be reset.</string>
+	<string name="error_unexpected">Wow! Something really unexpected just happened. Please contact amuleremote@iukonline.com if you want to help in avoiding this in the future. In the meanwhile, connection will be reset.</string>
 	<string name="error_server">aMule server retuned an error</string>
 	<string name="error_client">Error building request</string>
 	<string name="error_packet_parsing">Error parsing packet</string>
@@ -149,4 +149,7 @@
 	<string name="dlqueue_dialog_title_no_server_configured">No aMule server configured</string>
 	<string name="dlqueue_dialog_message_no_server_configured">Press OK to go to the settings screen</string>
 	<string name="error_null_client">Could not create client. Please check your settings.</string>
+	<string name="manual_bug_report_text">
+Please do not use this feature if you experienced a crash and you already sent the report.\nManual report should be used only to report issues which do not cause application crash.\nIf you need to send a report, add your e-mail address and a description of the problem in the following box.
+	</string>
 </resources>
