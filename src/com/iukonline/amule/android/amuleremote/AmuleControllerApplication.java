@@ -25,7 +25,7 @@ import com.iukonline.amule.android.amuleremote.echelper.ECHelper;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 
 
-@ReportsCrashes(formKey = "dDFweWxkWHBPanVGUEhUaG9yekhTdkE6MQ",
+@ReportsCrashes(formKey = "dEo0RnVFSjc2YjBQcW9LcG5wMGlJVHc6MA",
                 mode = ReportingInteractionMode.NOTIFICATION,
                 customReportContent = { 
                     ReportField.REPORT_ID, 
@@ -44,7 +44,7 @@ import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
                     ReportField.INITIAL_CONFIGURATION, 
                     ReportField.CRASH_CONFIGURATION 
                 },
-                logcatArguments = { "-t", "200", "-v", "time", "aMuleRemote:D", "*:S" },
+                logcatArguments = { "-t", "500", "-v", "time", "aMuleRemote:D", "*:S" },
                 additionalDropBoxTags = { "aMuleRemote" },
                 resToastText = R.string.crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
                 resNotifTickerText = R.string.crash_notif_ticker_text,
@@ -204,7 +204,8 @@ public class AmuleControllerApplication extends Application {
         enableDebugOptions = mSettings.getBoolean(AC_SETTING_ENABLE_DEBUG_OPTIONS, false);
         
         if (mECHelper != null) {
-            mECHelper.mDropBox = (DropBoxManager) getSystemService(DROPBOX_SERVICE);
+            Object o = getSystemService(DROPBOX_SERVICE);
+            if (o != null) mECHelper.mDropBox = (DropBoxManager) o;
         }
     }
 
@@ -274,6 +275,5 @@ public class AmuleControllerApplication extends Application {
         }
         return s.toString();
     }
-    
 
 }

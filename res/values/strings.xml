@@ -148,4 +148,5 @@
 	<string name="error_io">Unexpected end of connection to server</string>
 	<string name="dlqueue_dialog_title_no_server_configured">No aMule server configured</string>
 	<string name="dlqueue_dialog_message_no_server_configured">Press OK to go to the settings screen</string>
+	<string name="error_null_client">Could not create client. Please check your settings.</string>
 </resources>

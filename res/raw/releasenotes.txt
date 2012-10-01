@@ -1,3 +1,9 @@
+aMule Remote 0.5-alpha
+- Fixed crash on null server version (TO BE TESTED)
+- Fixed refresh button disappearing on resume (TO BE TESTED)
+- Added some logging for troubleshooting
+- Implemented timeouts for old data and old client
+
 aMule Remote 0.4
 - aMule 2.3.1 is now supported
 - Fixed login bug on aMule 2.2.2

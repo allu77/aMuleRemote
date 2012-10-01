@@ -60,8 +60,9 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
         
         if (mPreExecuteError != null) return mPreExecuteError;
         try {
-            if (mECHelper.mApplication.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Requesting ECClient");
+            if (mECHelper.mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Requesting ECClient");
             mECClient = mECHelper.getECClient();
+            if (mECClient == null) return new AmuleAsyncTaskException(mECHelper.mApp.getResources().getString(R.string.error_null_client));
         } catch (UnknownHostException e1) {
             return e1;
         } catch (IOException e1) {
@@ -69,9 +70,9 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
         }
         
         try {
-            if (mECHelper.mApplication.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Launching backgroundTask: " + getClass().getName());
+            if (mECHelper.mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Launching backgroundTask: " + getClass().getName());
             backgroundTask();
-            if (mECHelper.mApplication.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "backgroundTask finished");
+            if (mECHelper.mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "backgroundTask finished");
         } catch (IOException e) {
             
             if (mECClient.isStateful()) {
@@ -79,15 +80,16 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
             }
             if (isCancelled()) return null;
             
-            if (mECHelper.mApplication.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Resetting ECClient");
+            if (mECHelper.mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Resetting ECClient");
             mECHelper.resetClient();
             
             try {
-                if (mECHelper.mApplication.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Requesting ECClient");
+                if (mECHelper.mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Requesting ECClient");
                 mECClient = mECHelper.getECClient();
-                if (mECHelper.mApplication.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Launching backgroundTask: " + getClass().getName());
+                if (mECClient == null) return new AmuleAsyncTaskException(mECHelper.mApp.getResources().getString(R.string.error_null_client));
+                if (mECHelper.mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Launching backgroundTask: " + getClass().getName());
                 backgroundTask();
-                if (mECHelper.mApplication.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "backgroundTask finished");
+                if (mECHelper.mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "backgroundTask finished");
                 
             } catch (Exception e2) {
                 return isCancelled() ? null : e2;
@@ -114,24 +116,24 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
             notifyResult();
         } else {
 
-            Resources r = mECHelper.mApplication.getResources();
+            Resources r = mECHelper.mApp.getResources();
             String notifyText;
             
             if (result instanceof ECServerException) {
                 notifyText = r.getText(R.string.error_server) + " - " + result.getMessage();
             } else if (result instanceof ECClientException) {
                 notifyText = r.getText(R.string.error_client) + " - " + result.getMessage();
-                if (mECHelper.mApplication.enableLog) {
+                if (mECHelper.mApp.enableLog) {
                     Log.e(AmuleControllerApplication.AC_LOGTAG, notifyText);
                     ECPacket req = ((ECClientException)result).getRequestPacket();
                     ECPacket resp = ((ECClientException)result).getResponsePacket();
-                    if (req != null) {
+                    if (req != null && mECHelper.mDropBox != null) {
                         ECRawPacket rr = req.getRawPacket();
                         if (rr != null) {
                             mECHelper.mDropBox.addText(AmuleControllerApplication.AC_LOGTAG, "Request:\n" + rr.dump());
                         }
                     }
-                    if (resp != null) {
+                    if (resp != null && mECHelper.mDropBox != null) {
                         ECRawPacket rr = resp.getRawPacket();
                         if (rr != null) {
                             mECHelper.mDropBox.addText(AmuleControllerApplication.AC_LOGTAG, "Response:\n" + rr.dump());
@@ -141,10 +143,10 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
                 mECHelper.sendParsingExceptionIfEnabled(result);
             } else if (result instanceof ECPacketParsingException) {
                 notifyText = r.getText(R.string.error_packet_parsing) + " - " + result.getMessage();
-                if (mECHelper.mApplication.enableLog) {
+                if (mECHelper.mApp.enableLog) {
                     Log.e(AmuleControllerApplication.AC_LOGTAG, notifyText);
                     ECRawPacket p = ((ECPacketParsingException)result).getCausePacket();
-                    if (p != null) {
+                    if (p != null && mECHelper.mDropBox != null) {
                         mECHelper.mDropBox.addText(AmuleControllerApplication.AC_LOGTAG, "Packet");
                         
                         String[] lines = p.dump().split("\\n");
@@ -163,12 +165,12 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
                 notifyText = result.getMessage();
             } else {
                 notifyText = r.getText(R.string.error_unexpected).toString();
-                if (mECHelper.mApplication.enableLog) Log.e(AmuleControllerApplication.AC_LOGTAG, "Got an unexpected exception " + result.getClass().getName() + " for background task " + getClass().getName());
+                if (mECHelper.mApp.enableLog) Log.e(AmuleControllerApplication.AC_LOGTAG, "Got an unexpected exception " + result.getClass().getName() + " for background task " + getClass().getName());
             }
 
             Toast.makeText(mECHelper.getApplication(), notifyText, Toast.LENGTH_LONG).show();
             mECHelper.notifyAmuleClientStatusWatchers(ClientStatusWatcher.AmuleClientStatus.ERROR);
-            mECHelper.resetStaleClientData();
+            //mECHelper.resetStaleClientData();
 
         }
     }

@@ -14,6 +14,7 @@ import org.acra.ErrorReporter;
 
 import android.os.AsyncTask;
 import android.os.DropBoxManager;
+import android.util.Log;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.CategoriesWatcher;
@@ -40,7 +41,10 @@ import com.iukonline.amule.ec.v204.ECClientV204;
 
 public class ECHelper {
     
-    public AmuleControllerApplication mApplication;
+    private final static long DATA_MAX_AGE_MILLIS = 120000L;
+    private final static long IDLE_CLIENT_MAX_AGE_MILLIS = 60000L;
+    
+    public AmuleControllerApplication mApp;
 
     private boolean isClientStale = false;
     
@@ -54,6 +58,7 @@ public class ECHelper {
 
     private Socket mAmuleSocket;
     protected ECClient mECClient;
+    private long mECClientLastIdle = -1;
     
     public DropBoxManager mDropBox;
     
@@ -63,7 +68,7 @@ public class ECHelper {
     
     
     HashMap<String, ECPartFile> mDlQueue ;
-    long mDlQueueAge = -1;
+    long mDlQueueLasMod = -1;
     
     ECStats mStats;
     ECCategory[] mCategories;
@@ -157,12 +162,12 @@ public class ECHelper {
     
     
     public ECHelper(AmuleControllerApplication application) {
-        mApplication = application;
+        mApp = application;
     }
     
   
     public AmuleControllerApplication getApplication() {
-        return mApplication;
+        return mApp;
     }
     
     
@@ -243,6 +248,7 @@ public class ECHelper {
     public void notifyAmuleClientStatusWatchers (AmuleClientStatus status) {
         //Toast.makeText(getApplication(), "Client status changed to " + status.toString(), Toast.LENGTH_LONG).show();
         
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "ECHelper.notifyAmuleClientStatusWatchers: client status is " + status);
         mECClientStatus = status;
         if (status == AmuleClientStatus.ERROR) {
             // Moved in resetClient
@@ -253,6 +259,8 @@ public class ECHelper {
         }
         
         if (status != AmuleClientStatus.WORKING) {
+            mECClientLastIdle = System.currentTimeMillis();
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "ECHelper.notifyAmuleClientStatusWatchers: mECClientLastIdle set to " + Long.toString(mECClientLastIdle));
             mTaskQueue.poll();
             AmuleAsyncTask nextTask = this.getNextTask();
             
@@ -261,6 +269,7 @@ public class ECHelper {
                 case ERROR:
                 case NOT_CONNECTED:
                     emptyTaskQueue();
+                    return;
                 case IDLE:
                     processTaskQueue();
                     return; // Do not update status, since more task are running...
@@ -331,19 +340,17 @@ public class ECHelper {
 
     public void setDlQueue(HashMap<String, ECPartFile> dlQueue) {
         mDlQueue = dlQueue;
-        mDlQueueAge = System.currentTimeMillis();
+        mDlQueueLasMod = System.currentTimeMillis();
     }
     
     public void invalidateDlQueue() {
-        mDlQueueAge = -1;
+        mDlQueueLasMod = -1;
     }
     
     public boolean isDlQueueValid() {
-        return mDlQueueAge > 0 ? true : false;
+        return mDlQueueLasMod < 0 || (System.currentTimeMillis() - mDlQueueLasMod > DATA_MAX_AGE_MILLIS) ? false : true;
     }
 
-    
-    
     public Socket getAmuleSocket() throws UnknownHostException, IOException {
         if (mAmuleSocket == null && mServerHost != null) {
             //Log.d("ECHELPER", "Creating new socket");
@@ -351,24 +358,39 @@ public class ECHelper {
         }
         return mAmuleSocket;
     }
-
+    
     public ECClient getECClient() throws UnknownHostException, IOException {
+        
+        // TBV: This should prevent the null Exception on mServerVersion. However it's not clear why that happened.
+        // Need to check if client is null when calling getECClient
+        
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "ECHelper.getECClient: Validating server info");
+        if (! this.validateServerInfo()) return null;
+
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "ECHelper.getECClient: Client last idle at " + Long.toString(mECClientLastIdle));
+        
+        if (mECClient != null && System.currentTimeMillis() - mECClientLastIdle > IDLE_CLIENT_MAX_AGE_MILLIS) {
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "ECHelper.getECClient: Current client is too old. Resetting.");
+            resetClient();
+        }
+        
         Socket s = null;
         if (! mServerVersion.equals("Fake")) {
             s = getAmuleSocket();
             if (s.isClosed() || s.isInputShutdown() || s.isOutputShutdown()) {
-                //Log.d("ECHELPER", "Invalid socket! Resetting");
+                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "ECHelper.getECClient: Current socket is not valid. Resetting.");
                 resetSocket();
                 s = getAmuleSocket();
             }
             if (!s.isConnected()) {
-                //Log.d("ECHELPER", "Connecting socket");
+                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "ECHelper.getECClient: Current socket is not connected. Connecting.");
                 s.connect(new InetSocketAddress(InetAddress.getByName(mServerHost), mServerPort), mClientConnectTimeout);
                 s.setSoTimeout(mClientReadTimeout);
             }
         }
+        
         if (mECClient == null) {
-            //Log.d("ECHELPER", "Creating new client");
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "ECHelper.getECClient: Creating a " + mServerVersion + " client");
             ECClient c;
             if (mServerVersion.equals("V204")) {
                 c = new ECClientV204();
@@ -387,6 +409,7 @@ public class ECHelper {
             }
             c.setSocket(s);
             mECClient = c;
+            mECClientLastIdle = System.currentTimeMillis();
         }
         
         if (mECClient != null) {
@@ -407,6 +430,7 @@ public class ECHelper {
         }
         mECClient = null;
         resetSocket();
+        resetStaleClientData();
     }
     
     public void setClientStale() {
@@ -416,7 +440,7 @@ public class ECHelper {
     public void resetStaleClientData() {
         if (isClientStale) {
             mDlQueue = null;
-            mDlQueueAge = -1;
+            mDlQueueLasMod = -1;
             mStats = null;
             mCategories = null;
             
@@ -461,6 +485,10 @@ public class ECHelper {
         }
     }
 
+    public boolean validateServerInfo()  {
+        return (mServerHost != null && mServerHost.length() > 0 && mServerPort > 0 && mServerVersion != null && mServerPassword != null && mClientConnectTimeout > 0 && mClientReadTimeout > 0) ? true : false;
+    }
+    
     public ECStats getStats() {
         return mStats;
     }
@@ -474,7 +502,7 @@ public class ECHelper {
     }
     
     public void sendParsingExceptionIfEnabled(Exception e) {
-        if (mApplication.sendExceptions) ErrorReporter.getInstance().handleException(e);
+        if (mApp.sendExceptions) ErrorReporter.getInstance().handleException(e);
     }
 
 }
