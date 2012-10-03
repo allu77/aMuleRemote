@@ -218,7 +218,6 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
 
     @Override
     public String getWatcherId() {
-        // TODO Auto-generated method stub
         return this.getClass().getName();
     }
 

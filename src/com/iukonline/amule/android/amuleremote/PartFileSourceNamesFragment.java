@@ -102,8 +102,6 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
     
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
-        
         switch (item.getItemId()) {
         case R.id.sourcenames_context_rename:
             ((RenameDialogContainer) getActivity()).showRenameDialog(mLastSelected);

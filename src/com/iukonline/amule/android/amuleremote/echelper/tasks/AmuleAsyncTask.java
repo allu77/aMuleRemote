@@ -111,11 +111,15 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
     
     @Override
     protected void onPostExecute(Exception result) {
+        
+        // TBV: This should force GUI clean up for stateful clients if needed
+        mECHelper.checkStaleDataOnGUI();
+        
         if (result == null) {
             mECHelper.notifyAmuleClientStatusWatchers(ClientStatusWatcher.AmuleClientStatus.IDLE);
             notifyResult();
         } else {
-
+            
             Resources r = mECHelper.mApp.getResources();
             String notifyText;
             
@@ -170,7 +174,7 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
 
             Toast.makeText(mECHelper.getApplication(), notifyText, Toast.LENGTH_LONG).show();
             mECHelper.notifyAmuleClientStatusWatchers(ClientStatusWatcher.AmuleClientStatus.ERROR);
-            //mECHelper.resetStaleClientData();
+
 
         }
     }

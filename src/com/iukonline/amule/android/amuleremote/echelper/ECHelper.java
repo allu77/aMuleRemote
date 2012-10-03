@@ -46,7 +46,9 @@ public class ECHelper {
     
     public AmuleControllerApplication mApp;
 
-    private boolean isClientStale = false;
+    // TBV: Possiamo farne a meno? 
+    // private boolean isClientStale = false;
+    private boolean mNeedsGUICleanUp = false;
     
     private int mClientConnectTimeout;
     private int mClientReadTimeout;
@@ -65,7 +67,6 @@ public class ECHelper {
     private AmuleClientStatus mECClientStatus = ClientStatusWatcher.AmuleClientStatus.NOT_CONNECTED;
 
     // When adding new cached data, remeber to add the to resetStaleClientData() for stateful clients
-    
     
     HashMap<String, ECPartFile> mDlQueue ;
     long mDlQueueLasMod = -1;
@@ -414,7 +415,7 @@ public class ECHelper {
         
         if (mECClient != null) {
             ErrorReporter.getInstance().putCustomData("ServerVersion", mECClient.getServerVersion());
-            isClientStale = false;
+            // TBV: Can be removed? setClientStale(false);
         }
         return mECClient;
     }
@@ -423,34 +424,42 @@ public class ECHelper {
         return mServerHost;
     }
 
-
     public void resetClient() {
         if (mECClient != null && mECClient.isStateful()) {
             setClientStale();
         }
         mECClient = null;
         resetSocket();
-        resetStaleClientData();
     }
     
     public void setClientStale() {
-        isClientStale = true;
+        setClientStale(true);
     }
     
-    public void resetStaleClientData() {
-        if (isClientStale) {
+    public void setClientStale(boolean s) {
+        // TBV: Can be removed isClientStale = s;
+        
+        if (s) {
             mDlQueue = null;
             mDlQueueLasMod = -1;
             mStats = null;
             mCategories = null;
             
-            // This should reset stateful data
+            mNeedsGUICleanUp = true;
+        }
+    }
+    
+    public void checkStaleDataOnGUI () {
+        
+        // WARNING: Call this only on main thread
+        
+        if (mNeedsGUICleanUp) {
             notifyDlQueueWatchers(null);
             notifyECStatsWatchers(null);
             notifyCategoriesWatchers(null);
             notifyECPartFileWatchers(null);
             
-            isClientStale = false;
+            mNeedsGUICleanUp = false;
         }
     }
 

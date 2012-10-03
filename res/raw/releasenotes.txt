@@ -1,8 +1,7 @@
 aMule Remote 0.5-alpha
-- Fixed crash on null server version (TO BE TESTED)
-- Fixed refresh button disappearing on resume (TO BE TESTED)
+- Fixed crash on null server version
+- Fixed refresh button disappearing on resume
 - Added some logging for troubleshooting
-- Implemented timeouts for old data and old client
 - Fixed compatibility issue with Android 2.1
 
 aMule Remote 0.4
