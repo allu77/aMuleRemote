@@ -1,4 +1,4 @@
-aMule Remote 0.5-alpha
+aMule Remote 0.4.1
 - Fixed crash on null server version
 - Fixed refresh button disappearing on resume
 - Added some logging for troubleshooting
