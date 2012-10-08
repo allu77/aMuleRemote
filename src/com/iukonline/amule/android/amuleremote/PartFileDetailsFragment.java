@@ -89,10 +89,12 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
                 textCat = "Uncategorized";
             } else {
                 ECCategory[] catList = mApp.mECHelper.getCategories();
-                for (int i = 0; i < catList.length; i++) {
-                    if (catList[i].getId() == cat) {
-                        textCat = catList[i].getTitle();
-                        break;
+                if (catList != null) {
+                    for (int i = 0; i < catList.length; i++) {
+                        if (catList[i].getId() == cat) {
+                            textCat = catList[i].getTitle();
+                            break;
+                        }
                     }
                 }
             }
