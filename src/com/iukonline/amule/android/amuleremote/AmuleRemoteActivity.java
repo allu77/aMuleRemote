@@ -3,14 +3,12 @@ package com.iukonline.amule.android.amuleremote;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.acra.ErrorReporter;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.DropBoxManager;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActionBar;
@@ -18,6 +16,7 @@ import android.support.v4.app.ActionBar.OnNavigationListener;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
+import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuInflater;
@@ -25,7 +24,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.DlQueueFragment.DlQueueFragmentContainer;
@@ -33,7 +31,6 @@ import com.iukonline.amule.android.amuleremote.UpdateChecker.UpdatesWatcher;
 import com.iukonline.amule.android.amuleremote.dialogs.AboutDialogFragment;
 import com.iukonline.amule.android.amuleremote.dialogs.AlertDialogFragment;
 import com.iukonline.amule.android.amuleremote.dialogs.EditTextDialogFragment;
-import com.iukonline.amule.android.amuleremote.dialogs.ManualBugReportDialogFragment;
 import com.iukonline.amule.android.amuleremote.dialogs.NewVersionDialogFragment;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.CategoriesWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
@@ -251,7 +248,8 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
         resetClientItem.setVisible(mServerConfigured);
         
         if (mApp != null) {
-            if (sendReportItem != null) sendReportItem.setVisible(mApp.enableDebugOptions && mApp.enableLog);
+            //if (sendReportItem != null) sendReportItem.setVisible(mApp.enableDebugOptions && mApp.enableLog);
+            if (sendReportItem != null) sendReportItem.setVisible(mApp.enableDebugOptions);
             if (refreshCatItem != null) refreshCatItem.setVisible(mApp.enableDebugOptions);
             if (resetClientItem != null) resetClientItem.setVisible(mApp.enableDebugOptions);
         }
@@ -296,6 +294,9 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
             //ErrorReporter.getInstance().handleException(new Exception("MANUAL BUG REPORT"));
             showManualBugReportDialog();
             return true;
+        case R.id.menu_opt_help:
+            Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.iukonline.com/my-geek-activities/amule-remote/amule-remote-f-a-q/"));
+            startActivity(myIntent);
         default:
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onOptionsItemSelected: Unknown item selected. Calling super");
             return super.onOptionsItemSelected(item);
@@ -378,8 +379,25 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
     }
     
     public void showManualBugReportDialog() {
-        // TODO: Create a dialog for manual bug report, then get the comment and handle silently with ErrorReporter.getInstance().handleSilentException(caughtException)
         
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("text/html");
+
+        String subject = "[Bug report]";
+        String[] to = new String[1];
+        to[0] = "amuleremote@iukonline.com";
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, to);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        emailIntent.setType("text/html");
+
+        String data = "<p>Please describe your problem here.</p>";
+
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, Html.fromHtml(data));
+        startActivity(Intent.createChooser(emailIntent, "Email:"));
+        
+        
+        
+        /*
         Handler h = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -409,6 +427,7 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
         ManualBugReportDialogFragment d = new ManualBugReportDialogFragment(h.obtainMessage());
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showManualBugReportDialog: showing dialog");
         d.show(getSupportFragmentManager(), "manual_bug_report_dialog");
+        */
     }
     
     

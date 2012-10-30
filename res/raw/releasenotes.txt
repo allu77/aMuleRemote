@@ -1,3 +1,7 @@
+aMule Remote 0.4.2
+- Added basic help
+- Send bug report is now just sending an email to the developer as the previous implementation was causing a lot of spam
+
 aMule Remote 0.4.1
 - Fixed crash on null server version
 - Fixed refresh button disappearing on resume

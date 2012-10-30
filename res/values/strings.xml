@@ -152,4 +152,5 @@
 	<string name="manual_bug_report_text">
 Please do not use this feature if you experienced a crash and you already sent the report.\nManual report should be used only to report issues which do not cause application crash.\nIf you need to send a report, add your e-mail address and a description of the problem in the following box.
 	</string>
+	<string name="menu_opt_help">Help</string>
 </resources>
