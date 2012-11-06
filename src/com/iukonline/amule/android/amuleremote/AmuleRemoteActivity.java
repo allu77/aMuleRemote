@@ -11,20 +11,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.ActionBar;
-import android.support.v4.app.ActionBar.OnNavigationListener;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.DlQueueFragment.DlQueueFragmentContainer;
 import com.iukonline.amule.android.amuleremote.UpdateChecker.UpdatesWatcher;
@@ -46,7 +46,7 @@ import com.iukonline.amule.ec.ECStats;
 import com.iukonline.amule.ec.ECUtils;
 
 
-public class AmuleRemoteActivity extends FragmentActivity implements ClientStatusWatcher, DlQueueFragmentContainer, ECStatsWatcher, CategoriesWatcher, RefreshingActivity, UpdatesWatcher  {
+public class AmuleRemoteActivity extends SherlockFragmentActivity implements ClientStatusWatcher, DlQueueFragmentContainer, ECStatsWatcher, CategoriesWatcher, RefreshingActivity, UpdatesWatcher  {
     
     
     public final static String BUNDLE_PARAM_ERRSTR          = "errstr";
@@ -148,7 +148,7 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
         }
         
         // TBV: This should clear the disappearing refresh bug. Not elegant as onCreateMenu gets called twice...
-        invalidateOptionsMenu();
+        // supportInvalidateOptionsMenu();
 
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: registering for async activities");
         notifyStatusChange(mApp.mECHelper.registerForAmuleClientStatusUpdates(this));
@@ -209,7 +209,7 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
 
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreateOptionsMenu: Inflating menu");
 
-        MenuInflater inflater = getMenuInflater();
+        MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.main_options, menu);
 
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreateOptionsMenu: Saving MenuItems");
@@ -464,7 +464,7 @@ public class AmuleRemoteActivity extends FragmentActivity implements ClientStatu
         if (show == mIsProgressShown) return;
         
         mIsProgressShown = show;
-        invalidateOptionsMenu();
+        supportInvalidateOptionsMenu();
         
     }
 

@@ -2,10 +2,14 @@
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/menu_opt_settings" android:title="@string/menu_opt_settings" android:icon="@drawable/ic_menu_preferences"></item>
-    <item android:id="@+id/menu_opt_help" android:title="@string/menu_opt_help"></item><item android:id="@+id/menu_opt_added2k" android:title="@string/menu_opt_added2k" android:icon="@drawable/ic_menu_add"></item><item android:id="@+id/menu_opt_refresh" android:title="@string/menu_opt_refresh"  android:icon="@drawable/ic_menu_refresh" android:showAsAction="always" android:actionLayout="@layout/refresh_progress"></item>
+    <item android:id="@+id/menu_opt_help" android:title="@string/menu_opt_help"></item>
+    <item android:id="@+id/menu_opt_added2k" android:title="@string/menu_opt_added2k" android:icon="@drawable/ic_menu_add"></item>
+    <item android:id="@+id/menu_opt_refresh" android:title="@string/menu_opt_refresh"  android:icon="@drawable/ic_menu_refresh" android:showAsAction="always"></item>
     
     
-    <item android:id="@+id/menu_opt_about" android:title="@string/menu_opt_about" android:icon="@drawable/ic_menu_help"></item><item android:id="@+id/menu_opt_reset" android:title="@string/menu_opt_reset" android:icon="@drawable/ic_menu_revert" android:visible="false" android:enabled="true"></item>
-    <item android:id="@+id/menu_opt_send_report" android:title="@string/menu_opt_send_report" android:visible="false" android:enabled="true"></item><item android:id="@+id/menu_opt_refresh_cat" android:title="@string/menu_opt_refresh_cat"></item>
+    <item android:id="@+id/menu_opt_about" android:title="@string/menu_opt_about" android:icon="@drawable/ic_menu_help"></item>
+    <item android:id="@+id/menu_opt_reset" android:title="@string/menu_opt_reset" android:icon="@drawable/ic_menu_revert" android:visible="false" android:enabled="true"></item>
+    <item android:id="@+id/menu_opt_send_report" android:title="@string/menu_opt_send_report" android:visible="false" android:enabled="true"></item>
+    <item android:id="@+id/menu_opt_refresh_cat" android:title="@string/menu_opt_refresh_cat"></item>
     
 </menu>

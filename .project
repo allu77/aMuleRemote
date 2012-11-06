@@ -3,7 +3,7 @@
 	<name>AmuleRemote</name>
 	<comment></comment>
 	<projects>
-		<project>ActionBarSherlock</project>
+		<project>ActionBarSherlock 4.2</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

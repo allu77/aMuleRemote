@@ -4,13 +4,13 @@
         <item >2.2.0 to 2.2.6</item>
         <item >2.3.1rc1</item>
         <item >2.3.1 or higher</item>
-        <!-- <item >Fake server (only for debug)</item>  -->
+        <item >Fake server (only for debug)</item>
     </string-array>
     <string-array name="settings_server_version_value">
         <item >V200</item>
         <item >V203</item>
         <item >V204</item>
-        <!--  <item >Fake</item>  -->
+        <item >Fake</item> 
     </string-array>
     
 </resources>

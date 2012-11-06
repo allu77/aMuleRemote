@@ -4,26 +4,28 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.ActionBar;
-import android.support.v4.app.ActionBar.Tab;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.util.Log;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.Tab;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.PartFileSourceNamesFragment.RenameDialogContainer;
 import com.iukonline.amule.android.amuleremote.dialogs.AlertDialogFragment;
 import com.iukonline.amule.android.amuleremote.dialogs.EditTextDialogFragment;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
+import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher.AmuleClientStatus;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileActionWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileWatcher;
 import com.iukonline.amule.android.amuleremote.echelper.tasks.AmuleAsyncTask.TaskScheduleMode;
@@ -32,7 +34,8 @@ import com.iukonline.amule.android.amuleremote.echelper.tasks.ECPartFileActionAs
 import com.iukonline.amule.android.amuleremote.echelper.tasks.ECPartFileGetDetailsAsyncTask;
 import com.iukonline.amule.ec.ECPartFile;
 
-public class PartFileActivity extends FragmentActivity implements ClientStatusWatcher, ECPartFileWatcher, ECPartFileActionWatcher, RenameDialogContainer, RefreshingActivity {
+
+public class PartFileActivity extends SherlockFragmentActivity implements ClientStatusWatcher, ECPartFileWatcher, ECPartFileActionWatcher, RenameDialogContainer, RefreshingActivity {
     final static String BUNDLE_PARAM_HASH = "hash";
     final static String BUNDLE_SELECTED_TAB = "tab";
     final static String BUNDLE_NEEDS_REFRESH = "needs_refresh";
@@ -154,7 +157,7 @@ public class PartFileActivity extends FragmentActivity implements ClientStatusWa
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         
-        MenuInflater inflater = getMenuInflater();
+        MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.detail_options, menu);
         
         return super.onCreateOptionsMenu(menu);

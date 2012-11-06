@@ -4,13 +4,10 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
-import android.support.v4.view.MenuItem;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,13 +15,15 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockListFragment;
 import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileWatcher;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileSourceName;
 
 
 
-public class PartFileSourceNamesFragment extends ListFragment implements ECPartFileWatcher {
+
+public class PartFileSourceNamesFragment extends SherlockListFragment implements ECPartFileWatcher {
 
     
     interface RenameDialogContainer {
@@ -91,7 +90,10 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         
-        MenuInflater inflater = getActivity().getMenuInflater();
+        // For context menu, the standard menu inflater must be used
+        // https://groups.google.com/forum/?fromgroups=#!topic/actionbarsherlock/wQlIvR-jUYQ
+        
+        android.view.MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.sourcenames_context, menu);
         
         AdapterView.AdapterContextMenuInfo aMenuInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
@@ -101,7 +103,7 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
     
     
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
         case R.id.sourcenames_context_rename:
             ((RenameDialogContainer) getActivity()).showRenameDialog(mLastSelected);

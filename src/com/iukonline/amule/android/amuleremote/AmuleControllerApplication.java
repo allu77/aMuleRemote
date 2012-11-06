@@ -25,7 +25,7 @@ import com.iukonline.amule.android.amuleremote.echelper.ECHelper;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 
 
-@ReportsCrashes(formKey = "dEcyUXpSdlVIZGd6TWZYRlhaOUhvT3c6MA",
+@ReportsCrashes(formKey = "dF9oaGt2RWoyaG9OQ2xCdjY3YmRscWc6MA",
                 mode = ReportingInteractionMode.NOTIFICATION,
                 customReportContent = { 
                     ReportField.REPORT_ID, 
