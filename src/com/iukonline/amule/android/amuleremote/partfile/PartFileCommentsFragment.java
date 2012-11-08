@@ -1,4 +1,4 @@
-package com.iukonline.amule.android.amuleremote;
+package com.iukonline.amule.android.amuleremote.partfile;
 
 import java.util.ArrayList;
 
@@ -13,7 +13,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockListFragment;
-import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileWatcher;
+import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.R;
+import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECPartFileWatcher;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComment;
 

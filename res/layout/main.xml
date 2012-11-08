@@ -85,7 +85,7 @@
     
 
     
-        <fragment android:name="com.iukonline.amule.android.amuleremote.DlQueueFragment"
+        <fragment android:name="com.iukonline.amule.android.amuleremote.dlqueue.DlQueueFragment"
             android:id="@+id/fragment_dlqueue"
             android:layout_width="match_parent"
             android:layout_height="0dip"

@@ -1,4 +1,4 @@
-package com.iukonline.amule.android.amuleremote;
+package com.iukonline.amule.android.amuleremote.helpers;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +12,7 @@ public class UpdateChecker {
     private static final String AC_UPDATE_URL = "http://dl.dropbox.com/u/15068406/AmuleRemote/updates.xml";
     private static final long AC_UPDATE_INTERVAL = 24L*60L*60L*1000L;
     
-    interface UpdatesWatcher {
+    public interface UpdatesWatcher {
         public void notifyUpdate(String newReleaseURL, String releaseNotes);
     }
     
@@ -25,7 +25,7 @@ public class UpdateChecker {
     
     private int mCurrentVersionCode;
     
-    UpdateChecker(int currentVersionCode) {
+    public UpdateChecker(int currentVersionCode) {
         mCurrentVersionCode = currentVersionCode;
     }
     

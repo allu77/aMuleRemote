@@ -1,8 +1,8 @@
-package com.iukonline.amule.android.amuleremote.echelper;
+package com.iukonline.amule.android.amuleremote.helpers.ec;
 
 import java.util.HashMap;
 
-import com.iukonline.amule.android.amuleremote.echelper.tasks.ECPartFileActionAsyncTask.ECPartFileAction;
+import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.ECPartFileActionAsyncTask.ECPartFileAction;
 import com.iukonline.amule.ec.ECCategory;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.ECStats;

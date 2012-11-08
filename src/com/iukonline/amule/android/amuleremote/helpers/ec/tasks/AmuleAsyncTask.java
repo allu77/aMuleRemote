@@ -1,4 +1,4 @@
-package com.iukonline.amule.android.amuleremote.echelper.tasks;
+package com.iukonline.amule.android.amuleremote.helpers.ec.tasks;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.R;
-import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
-import com.iukonline.amule.android.amuleremote.echelper.ECHelper;
+import com.iukonline.amule.android.amuleremote.helpers.ec.ECHelper;
+import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
 import com.iukonline.amule.ec.ECClient;
 import com.iukonline.amule.ec.ECPacket;
 import com.iukonline.amule.ec.ECRawPacket;

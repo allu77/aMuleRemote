@@ -1,9 +1,8 @@
 package com.iukonline.amule.android.amuleremote;
 
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
-
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
+
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
 // TODO: Convert to new Fragment Preference Activiy
 

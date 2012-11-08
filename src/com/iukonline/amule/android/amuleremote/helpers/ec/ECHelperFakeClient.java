@@ -1,4 +1,5 @@
-/*package com.iukonline.amule.android.amuleremote.echelper;
+package com.iukonline.amule.android.amuleremote.helpers.ec;
+/*package com.iukonline.amule.android.amuleremote.helpers.ec;
 
 import java.io.IOException;
 import java.net.UnknownHostException;

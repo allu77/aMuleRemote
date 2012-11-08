@@ -1,4 +1,4 @@
-package com.iukonline.amule.android.amuleremote;
+package com.iukonline.amule.android.amuleremote.dlqueue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +21,10 @@ import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.DlQueueWatcher;
+import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.R;
+import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.DlQueueWatcher;
+import com.iukonline.amule.android.amuleremote.helpers.gui.GUIUtils;
 import com.iukonline.amule.ec.ECCategory;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;

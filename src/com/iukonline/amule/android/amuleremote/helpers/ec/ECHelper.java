@@ -1,4 +1,4 @@
-package com.iukonline.amule.android.amuleremote.echelper;
+package com.iukonline.amule.android.amuleremote.helpers.ec;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -17,17 +17,17 @@ import android.os.DropBoxManager;
 import android.util.Log;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
-import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.CategoriesWatcher;
-import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher;
-import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ClientStatusWatcher.AmuleClientStatus;
-import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.DlQueueWatcher;
-import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileActionWatcher;
-import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECPartFileWatcher;
-import com.iukonline.amule.android.amuleremote.echelper.AmuleWatcher.ECStatsWatcher;
-import com.iukonline.amule.android.amuleremote.echelper.tasks.AmuleAsyncTask;
-import com.iukonline.amule.android.amuleremote.echelper.tasks.AmuleAsyncTask.TaskScheduleMode;
-import com.iukonline.amule.android.amuleremote.echelper.tasks.AmuleAsyncTask.TaskScheduleQueueStatus;
-import com.iukonline.amule.android.amuleremote.echelper.tasks.ECPartFileActionAsyncTask.ECPartFileAction;
+import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.CategoriesWatcher;
+import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
+import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher.AmuleClientStatus;
+import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.DlQueueWatcher;
+import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECPartFileActionWatcher;
+import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECPartFileWatcher;
+import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECStatsWatcher;
+import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.AmuleAsyncTask;
+import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.AmuleAsyncTask.TaskScheduleMode;
+import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.AmuleAsyncTask.TaskScheduleQueueStatus;
+import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.ECPartFileActionAsyncTask.ECPartFileAction;
 import com.iukonline.amule.ec.ECCategory;
 import com.iukonline.amule.ec.ECClient;
 import com.iukonline.amule.ec.ECPartFile;

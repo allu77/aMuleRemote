@@ -1,4 +1,4 @@
-package com.iukonline.amule.android.amuleremote.echelper.tasks;
+package com.iukonline.amule.android.amuleremote.helpers.ec.tasks;
 
 public class AmuleAsyncTaskException extends Exception {
     

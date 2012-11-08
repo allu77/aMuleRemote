@@ -1,4 +1,4 @@
-package com.iukonline.amule.android.amuleremote.echelper.tasks;
+package com.iukonline.amule.android.amuleremote.helpers.ec.tasks;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;

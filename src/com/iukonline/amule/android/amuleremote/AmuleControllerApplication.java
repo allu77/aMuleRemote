@@ -21,7 +21,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.DropBoxManager;
 import android.preference.PreferenceManager;
 
-import com.iukonline.amule.android.amuleremote.echelper.ECHelper;
+import com.iukonline.amule.android.amuleremote.helpers.UpdateChecker;
+import com.iukonline.amule.android.amuleremote.helpers.ec.ECHelper;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 
 
@@ -105,14 +106,14 @@ public class AmuleControllerApplication extends Application {
     
     
     public SharedPreferences mSettings;
-    ECHelper mECHelper = new ECHelper(this);
+    public ECHelper mECHelper = new ECHelper(this);
     //ECHelper mECHelper = new ECHelperFakeClient(this);
     
     public boolean mainNeedsRefresh = true;
     
-    UpdateChecker mUpdateChecker;
+    public UpdateChecker mUpdateChecker;
     
-    interface RefreshingActivity {
+    public interface RefreshingActivity {
         public void refreshContent();
     }
 
@@ -231,7 +232,7 @@ public class AmuleControllerApplication extends Application {
     }
 
     
-    static ECPartFileComparator.ComparatorType getDlComparatorTypeFromSortSetting (byte sortSetting) {
+    public static ECPartFileComparator.ComparatorType getDlComparatorTypeFromSortSetting (byte sortSetting) {
         switch (sortSetting) {
         case AC_SETTING_SORT_FILENAME:
             return ECPartFileComparator.ComparatorType.FILENAME;

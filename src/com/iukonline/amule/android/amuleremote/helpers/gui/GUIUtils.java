@@ -1,7 +1,7 @@
-package com.iukonline.amule.android.amuleremote;
+package com.iukonline.amule.android.amuleremote.helpers.gui;
 
 public class GUIUtils {
-    static String longToBytesFormatted(long in) {
+    public static String longToBytesFormatted(long in) {
         if (in > 1073741824) {
             return String.format("%.1fGB", (float) in / 1073741824f);
         } else if (in > 1048576) {
@@ -13,7 +13,7 @@ public class GUIUtils {
         }
     }
     
-    static String getETA(long remaining, long speed) {
+    public static String getETA(long remaining, long speed) {
         
      // TODO Convert to string resources...
         
