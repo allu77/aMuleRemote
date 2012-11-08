@@ -12,7 +12,7 @@
     <color name="progressBlockedStart">#FFFA0000</color>
     <color name="progressBlockedMid">#FFDD0000</color>
     <color name="progressBlockedEnd">#FFF20000</color>
-    <color name="detailTitle">#ffffffff</color>
+    <color name="detailTitle">#00000000</color>
     <color name="ratingInvalid">#FFDD0000</color>
     <color name="ratingPoor">#FFDD0000</color>
     <color name="ratingFair">#ffffb600</color>

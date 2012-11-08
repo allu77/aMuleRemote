@@ -7,15 +7,15 @@
   
     <RelativeLayout android:id="@+id/partfile_detail_details" android:layout_height="wrap_content" android:layout_width="fill_parent">
 
-		<TextView 
-			android:text="FILENAME" 
-			android:layout_height="wrap_content" 
-			android:layout_width="wrap_content" 
-			android:id="@+id/partfile_detail_filename" 
-			android:layout_alignParentLeft="true"
-			android:layout_alignParentTop="true"
-			android:textColor="@color/detailTitle"
-			android:paddingTop="5dip">
+		<TextView
+		    android:id="@+id/partfile_detail_filename"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentLeft="true"
+		    android:layout_alignParentTop="true"
+		    android:paddingTop="5dip"
+		    android:text="FILENAME" >
+
 		</TextView>
 
 		<TextView android:layout_height="wrap_content" android:id="@+id/partfile_detail_label_category" android:layout_width="wrap_content" android:layout_below="@+id/partfile_detail_filename" android:layout_alignParentLeft="true" android:text="@string/partfile_detail_label_category" android:paddingTop="10dip"></TextView>

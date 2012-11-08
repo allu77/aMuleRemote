@@ -148,7 +148,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
         }
         
         // TBV: This should clear the disappearing refresh bug. Not elegant as onCreateMenu gets called twice...
-        // supportInvalidateOptionsMenu();
+        supportInvalidateOptionsMenu();
 
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: registering for async activities");
         notifyStatusChange(mApp.mECHelper.registerForAmuleClientStatusUpdates(this));
