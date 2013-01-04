@@ -25,7 +25,7 @@ import com.iukonline.amule.android.amuleremote.helpers.UpdateChecker;
 import com.iukonline.amule.android.amuleremote.helpers.ec.ECHelper;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 
-
+/*
 @ReportsCrashes(formKey = "dF9oaGt2RWoyaG9OQ2xCdjY3YmRscWc6MA",
                 mode = ReportingInteractionMode.NOTIFICATION,
                 customReportContent = { 
@@ -57,7 +57,7 @@ import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
                 resDialogTitle = R.string.crash_dialog_title, // optional. default is your application name
                 resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
                 resDialogOkToast = R.string.crash_dialog_ok_toast // optional. displays a Toast message when the user accepts to send a report.
-)
+)*/
 
 
 public class AmuleControllerApplication extends Application {

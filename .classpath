@@ -5,7 +5,7 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="libs/GoogleAdMobAdsSdk-4.3.1.jar"/>
 	<classpathentry kind="lib" path="libs/acra-4.2.3.jar"/>
-	<classpathentry kind="lib" path="libs/JavaAmuleEC-0.4.jar" sourcepath="D:/Users/***REMOVED***/workspace/JavaAmuleEC/src/com/iukonline/amule/ec"/>
+	<classpathentry kind="lib" path="libs/JavaAmuleEC-0.5-dev.jar"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

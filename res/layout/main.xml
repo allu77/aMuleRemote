@@ -1,105 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
-  android:orientation="vertical"
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent">
-  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
     <LinearLayout
         android:id="@+id/main_conn_bar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone"
         android:baselineAligned="false"
-        >
-        
+        android:orientation="horizontal"
+        android:visibility="gone" >
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="0dip"
-		    android:layout_weight="1"
-		    android:layout_height="fill_parent"
-		    android:gravity="bottom">
-		    
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:orientation="vertical" >
+
             <LinearLayout
-                android:orientation="horizontal"
-            	android:layout_width="wrap_content"
-		    	android:layout_height="wrap_content"
-		    	>
-		    	
-			    <TextView
-			        android:id="@+id/main_label_edonkey_status"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:gravity="top"
-			        android:text="eDonkey: " />
-			    
-	   		    <TextView
-			        android:id="@+id/main_edonkey_status"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:gravity="top"
-			        android:text="STATUS" />
-                
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/main_label_edonkey_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:text="eDonkey: " />
+
+                <TextView
+                    android:id="@+id/main_edonkey_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:text="STATUS" />
             </LinearLayout>
-            
-         	<LinearLayout
-                android:orientation="horizontal"
-            	android:layout_width="wrap_content"
-		    	android:layout_height="wrap_content"
-		    	>
-	   		    
-		   		<TextView
-			        android:id="@+id/main_label_kad_status"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:gravity="bottom"
-			        android:text="KAD: " /> 
-	 		        
-		 	    <TextView
-			        android:id="@+id/main_kad_status"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:gravity="bottom"
-			        android:text="STATUS" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/main_label_kad_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="bottom"
+                    android:text="KAD: " />
+
+                <TextView
+                    android:id="@+id/main_kad_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="bottom"
+                    android:text="STATUS" />
             </LinearLayout>
-            
-            
         </LinearLayout>
-		
-		<LinearLayout
-		    android:orientation="vertical"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:layout_marginLeft="10dip"
-		    >
-	        <TextView android:layout_gravity="right" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="--" android:id="@+id/main_dl_rate" android:textAppearance="?android:attr/textAppearanceMedium" />
-	        <TextView android:layout_gravity="right" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="--" android:id="@+id/main_ul_rate" android:textAppearance="?android:attr/textAppearanceMedium" />
-	        		    
-		</LinearLayout>
-		
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/main_dl_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="--"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/main_ul_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="--"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
     </LinearLayout>
 
-  
-    
+    <fragment
+        android:id="@+id/fragment_dlqueue"
+        android:name="com.iukonline.amule.android.amuleremote.dlqueue.DlQueueFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        tools:layout="@layout/dlqueue_fragment" >
+    </fragment>
 
-    
-        <fragment android:name="com.iukonline.amule.android.amuleremote.dlqueue.DlQueueFragment"
-            android:id="@+id/fragment_dlqueue"
-            android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="1" >
-            <!-- Preview: layout=@layout/dlqueue_fragment -->
-        </fragment>
-        
-                    <com.google.ads.AdView android:id="@+id/adView"
-                         android:layout_width="fill_parent"
-                         android:layout_height="wrap_content"
-                         ads:adUnitId="a14f67154359d47"
-                         ads:adSize="BANNER"
-                         ads:testDevices="TEST_EMULATOR"
-                         ads:loadAdOnCreate="true"/>
-        
+    <com.google.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        ads:adSize="BANNER"
+        ads:adUnitId="a14f67154359d47"
+        ads:loadAdOnCreate="true"
+        ads:testDevices="TEST_EMULATOR" />
 
 </LinearLayout>

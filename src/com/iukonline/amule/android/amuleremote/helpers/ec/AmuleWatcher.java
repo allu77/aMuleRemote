@@ -1,8 +1,10 @@
 package com.iukonline.amule.android.amuleremote.helpers.ec;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.ECPartFileActionAsyncTask.ECPartFileAction;
+import com.iukonline.amule.android.amuleremote.search.SearchContainer;
 import com.iukonline.amule.ec.ECCategory;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.ECStats;
@@ -37,7 +39,10 @@ public abstract interface AmuleWatcher {
     public interface ECPartFileActionWatcher extends AmuleWatcher {
         void notifyECPartFileActionDone(ECPartFileAction action);
     }
-
+    
+    public interface ECSearchListWatcher extends AmuleWatcher {
+        void updateECSearchList(ArrayList <SearchContainer> searches);
+    }
     
     String getWatcherId();
 }

@@ -153,4 +153,9 @@
 Please do not use this feature if you experienced a crash and you already sent the report.\nManual report should be used only to report issues which do not cause application crash.\nIf you need to send a report, add your e-mail address and a description of the problem in the following box.
 	</string>
 	<string name="menu_opt_help">Help</string>
+	<string name="search_label_file_name">File name</string>
+	<string name="search_label_search_type">Search type</string>
+	<string name="search_button_go">Go!</string>
+	<string name="search_no_results">No results to show yet</string>
+	<string name="menu_opt_search">Search</string>
 </resources>

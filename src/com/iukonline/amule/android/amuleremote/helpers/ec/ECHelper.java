@@ -6,6 +6,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -23,11 +24,14 @@ import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientSta
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.DlQueueWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECPartFileActionWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECPartFileWatcher;
+import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECSearchListWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECStatsWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.AmuleAsyncTask;
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.AmuleAsyncTask.TaskScheduleMode;
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.AmuleAsyncTask.TaskScheduleQueueStatus;
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.ECPartFileActionAsyncTask.ECPartFileAction;
+import com.iukonline.amule.android.amuleremote.search.SearchContainer;
+import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchStatus;
 import com.iukonline.amule.ec.ECCategory;
 import com.iukonline.amule.ec.ECClient;
 import com.iukonline.amule.ec.ECPartFile;
@@ -73,6 +77,8 @@ public class ECHelper {
     
     ECStats mStats;
     ECCategory[] mCategories;
+    
+    ArrayList <SearchContainer> mSearches = new ArrayList <SearchContainer>(); 
 
     // Watchers
     HashMap<String, DlQueueWatcher> mDlQueueWatchers = new HashMap<String, DlQueueWatcher>();
@@ -81,6 +87,7 @@ public class ECHelper {
     HashMap<String, ClientStatusWatcher> mAmuleStatusWatchers = new HashMap<String, ClientStatusWatcher>();
     HashMap<String, HashMap<String, ECPartFileWatcher>> mECPartFileWatchers = new HashMap<String, HashMap<String, ECPartFileWatcher>>();
     HashMap<String, HashMap<String, ECPartFileActionWatcher>> mECPartFileActionWatchers = new HashMap<String, HashMap<String, ECPartFileActionWatcher>>();
+    HashMap<String, ECSearchListWatcher> mECSearchListWatchers = new HashMap<String, ECSearchListWatcher>();
     
     ConcurrentLinkedQueue <AmuleAsyncTask> mTaskQueue = new ConcurrentLinkedQueue<AmuleAsyncTask>();
     
@@ -188,6 +195,11 @@ public class ECHelper {
         return this.getStats();
     }
     
+    public ArrayList <SearchContainer> registerForECSsearchList (ECSearchListWatcher watcher) {
+        registerWatcher(watcher, mECSearchListWatchers);
+        return mSearches;
+    }
+    
     public ECCategory[] registerForCategoriesUpdates (CategoriesWatcher watcher) {
         registerWatcher(watcher, mCategoriesWatchers);
         return this.getCategories();
@@ -226,6 +238,8 @@ public class ECHelper {
     
     public void unRegisterFromCategoriesUpdates (CategoriesWatcher watcher) { unRegisterWatcher(watcher, mCategoriesWatchers); }
     
+    public void unRegisterFromECSearchList (ECSearchListWatcher watcher) { unRegisterWatcher(watcher, mECSearchListWatchers); }
+    
     public void unRegisterFromECPartFileUpdates (ECPartFileWatcher watcher, byte[] hash) {
         String hashString = ECUtils.byteArrayToHexString(hash);
         if (mECPartFileWatchers.containsKey(hashString)) {
@@ -240,12 +254,16 @@ public class ECHelper {
         }
     }
     
+
+    
     private void unRegisterWatcher(AmuleWatcher watcher, @SuppressWarnings("rawtypes") HashMap from) {
         if (from.containsKey(watcher.getWatcherId()) && from.get(watcher.getWatcherId()) == watcher) {
             from.remove(watcher.getWatcherId());
         }
     }
 
+    
+    
     public void notifyAmuleClientStatusWatchers (AmuleClientStatus status) {
         //Toast.makeText(getApplication(), "Client status changed to " + status.toString(), Toast.LENGTH_LONG).show();
         
@@ -300,6 +318,19 @@ public class ECHelper {
         while (i.hasNext()) {
             i.next().updateECStats(stats);
         }
+    }
+    
+
+
+
+    public void notifyECSearchListWatcher (ArrayList<SearchContainer> s) {
+        for (ECSearchListWatcher w : mECSearchListWatchers.values()) {
+            w.updateECSearchList(s);
+        }
+    }
+    
+    public void notifyECSearchListWatcher() {
+        notifyECSearchListWatcher(mSearches);
     }
     
     public void notifyCategoriesWatchers(ECCategory[] categories) {
@@ -444,6 +475,7 @@ public class ECHelper {
             mDlQueueLasMod = -1;
             mStats = null;
             mCategories = null;
+            mSearches = new ArrayList<SearchContainer>();
             
             mNeedsGUICleanUp = true;
         }
@@ -458,6 +490,7 @@ public class ECHelper {
             notifyECStatsWatchers(null);
             notifyCategoriesWatchers(null);
             notifyECPartFileWatchers(null);
+            notifyECSearchListWatcher(null);
             
             mNeedsGUICleanUp = false;
         }
@@ -510,8 +543,18 @@ public class ECHelper {
         return mCategories;
     }
     
+    public void addSearchToList(SearchContainer s) {
+        mSearches.add(0, s);
+    }
+    
+    public SearchContainer getSearchItem(int position) {
+        if (mSearches != null && mSearches.size() > position) {
+            return mSearches.get(position);
+        }
+        return null;
+    }
+    
     public void sendParsingExceptionIfEnabled(Exception e) {
         if (mApp.sendExceptions) ErrorReporter.getInstance().handleException(e);
     }
-
 }

@@ -45,6 +45,7 @@ import com.iukonline.amule.android.amuleremote.helpers.gui.GUIUtils;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.EditTextDialogFragment;
 import com.iukonline.amule.android.amuleremote.partfile.PartFileActivity;
+import com.iukonline.amule.android.amuleremote.search.SearchActivity;
 import com.iukonline.amule.ec.ECCategory;
 import com.iukonline.amule.ec.ECConnState;
 import com.iukonline.amule.ec.ECStats;
@@ -73,7 +74,6 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
     
     MenuItem refreshItem;
     MenuItem addEd2kItem;
-    MenuItem sortItem;
     
     MenuItem sendReportItem;
     MenuItem refreshCatItem;
@@ -237,7 +237,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPrepareOptionsMenu: Setting items visibility");
+        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPrepareOptionsMenu: Setting items visibility");
         
         if (refreshItem != null) {
             refreshItem.setVisible(mServerConfigured);
@@ -259,9 +259,9 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
             if (resetClientItem != null) resetClientItem.setVisible(mApp.enableDebugOptions);
         }
 
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPrepareOptionsMenu: calling super");
+        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPrepareOptionsMenu: calling super");
         boolean superRet = super.onPrepareOptionsMenu(menu);
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPrepareOptionsMenu: super returned " + superRet + " - end");
+        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPrepareOptionsMenu: super returned " + superRet + " - end");
         return superRet;
     }
 
@@ -302,6 +302,10 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
         case R.id.menu_opt_help:
             Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.iukonline.com/my-geek-activities/amule-remote/amule-remote-f-a-q/"));
             startActivity(myIntent);
+        case R.id.menu_opt_search:
+            Intent searchActivity = new Intent(this, SearchActivity.class);
+            startActivity(searchActivity);
+            return true;
         default:
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onOptionsItemSelected: Unknown item selected. Calling super");
             return super.onOptionsItemSelected(item);

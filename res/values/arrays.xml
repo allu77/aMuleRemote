@@ -12,5 +12,13 @@
         <item >V204</item>
         <item >Fake</item> 
     </string-array>
+    <string-array name="search_search_type_description">
+        <item >Local</item>
+        <item >Global</item>
+        <item >Kad</item>
+        <item >Web</item>
+    </string-array>
+
+    
     
 </resources>

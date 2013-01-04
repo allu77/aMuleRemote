@@ -11,5 +11,6 @@
     <item android:id="@+id/menu_opt_reset" android:title="@string/menu_opt_reset" android:icon="@drawable/ic_menu_revert" android:visible="false" android:enabled="true"></item>
     <item android:id="@+id/menu_opt_send_report" android:title="@string/menu_opt_send_report" android:visible="false" android:enabled="true"></item>
     <item android:id="@+id/menu_opt_refresh_cat" android:title="@string/menu_opt_refresh_cat"></item>
+    <item android:id="@+id/menu_opt_search" android:title="@string/menu_opt_search"></item>
     
 </menu>
