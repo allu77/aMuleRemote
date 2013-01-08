@@ -1,0 +1,201 @@
+package com.iukonline.amule.android.amuleremote.search;
+
+import java.util.ArrayList;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
+import com.iukonline.amule.android.amuleremote.R;
+import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
+import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECSearchListWatcher;
+import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.AmuleAsyncTask.TaskScheduleMode;
+import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.SearchAsyncTask;
+import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchStatus;
+import com.iukonline.amule.android.amuleremote.search.SearchInputFragment.SearchInputFragmentContainter;
+import com.iukonline.amule.android.amuleremote.search.SearchResultsListFragment.SearchResultsListFragmentContainter;
+
+public class SearchActivity extends SherlockFragmentActivity implements RefreshingActivity, SearchInputFragmentContainter, SearchResultsListFragmentContainter, ClientStatusWatcher, ECSearchListWatcher {
+    AmuleControllerApplication mApp;
+    MenuItem refreshItem;
+    boolean mIsProgressShown = false;
+    SearchContainer lastSearch = null;
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        mApp = (AmuleControllerApplication) getApplication();
+        
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onCreate: Calling super");
+        super.onCreate(savedInstanceState);
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onCreate: Back from super");
+        
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onCreate: Calling setContentView");
+        setContentView(R.layout.act_search);
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onCreate: Back from setContentView");
+        
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mApp.registerRefreshActivity(null);
+        mApp.mECHelper.unRegisterFromAmuleClientStatusUpdates(this);
+        mApp.mECHelper.unRegisterFromECSearchList(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mApp.registerRefreshActivity(this);
+        notifyStatusChange(mApp.mECHelper.registerForAmuleClientStatusUpdates(this));
+        updateECSearchList(mApp.mECHelper.registerForECSsearchList(this));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onCreateOptionsMenu: Inflating menu");
+
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.search_options, menu);
+
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onCreateOptionsMenu: Saving MenuItems");
+        
+        refreshItem = menu.findItem(R.id.menu_search_opt_refresh);
+        
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onCreateOptionsMenu: Calling super");
+        boolean superRet = super.onCreateOptionsMenu(menu);
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onCreateOptionsMenu: super returned " + superRet + " - end");
+        return superRet;
+    }
+    
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        
+        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onPrepareOptionsMenu: Setting items visibility");
+        
+        if (refreshItem != null)  {
+            
+            if (lastSearch != null && (lastSearch.mSearchStatus== ECSearchStatus.STARTING || lastSearch.mSearchStatus == ECSearchStatus.RUNNING)) {
+                if (mIsProgressShown) {
+                    refreshItem.setActionView(R.layout.refresh_progress);
+                } else {
+                    refreshItem.setActionView(null);
+                }
+                refreshItem.setVisible(true);
+            } else {
+                refreshItem.setVisible(false);
+            }
+        }
+        
+        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onPrepareOptionsMenu: calling super");
+        boolean superRet = super.onPrepareOptionsMenu(menu);
+        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onPrepareOptionsMenu: super returned " + superRet + " - end");
+        return superRet;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.menu_search_opt_refresh:
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onOptionsItemSelected: menu_opt_refresh selected");
+            refreshSearchList(TaskScheduleMode.QUEUE);
+            return true;
+        default:
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onOptionsItemSelected: Unknown item selected. Calling super");
+            return super.onOptionsItemSelected(item);
+        }
+    }
+    
+    @Override
+    public void startSearch(SearchContainer s) {
+        
+        if (lastSearch != null && (lastSearch.mSearchStatus== ECSearchStatus.STARTING || lastSearch.mSearchStatus == ECSearchStatus.RUNNING)) {
+            //TODO Alert Dialog
+            lastSearch.mSearchStatus = ECSearchStatus.STOPPED;
+        }
+        
+        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.startSearch: Adding search");
+        mApp.mECHelper.addSearchToList(s);
+        mApp.mECHelper.notifyECSearchListWatcher();
+        
+        SearchAsyncTask t = (SearchAsyncTask) mApp.mECHelper.getNewTask(SearchAsyncTask.class);
+        t.setSearchContainer(s);
+        t.setTargetStatus(ECSearchStatus.RUNNING);
+        
+        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.startSearch: Scheduling start task");
+        mApp.mECHelper.executeTask(t, TaskScheduleMode.QUEUE);
+    }
+    
+    public void refreshSearchList(TaskScheduleMode mode)  {
+        
+        if (lastSearch != null && (lastSearch.mSearchStatus== ECSearchStatus.STARTING || lastSearch.mSearchStatus == ECSearchStatus.RUNNING)) {
+            SearchAsyncTask t = (SearchAsyncTask) mApp.mECHelper.getNewTask(SearchAsyncTask.class);
+            t.setSearchContainer(lastSearch);
+            t.setTargetStatus(ECSearchStatus.RUNNING);
+            
+            mApp.mECHelper.executeTask(t, mode);
+        }
+    }
+    
+    
+    // ClientStatusWatcher interface
+    
+    @Override
+    public String getWatcherId() {
+        return this.getClass().getName();
+    }
+
+    @Override
+    public void notifyStatusChange(AmuleClientStatus status) {
+        switch (status) {
+        case WORKING:
+            showProgress(true);
+            break;
+        default:
+            showProgress(false);
+        }
+    }
+    
+    public void showProgress(boolean show) {
+        if (show == mIsProgressShown) return;
+        
+        mIsProgressShown = show;
+        supportInvalidateOptionsMenu();
+        
+    }
+
+    @Override
+    public void refreshContent() {
+        refreshSearchList(TaskScheduleMode.BEST_EFFORT);
+    }
+
+
+
+    @Override
+    public void updateECSearchList(ArrayList<SearchContainer> searches) {
+        if (searches == null) finish();
+        
+        if (searches.size() == 0) {
+            lastSearch = null;
+        } else {
+            lastSearch = searches.get(0);
+        }
+        supportInvalidateOptionsMenu();
+    }
+
+    @Override
+    public void viewResultDetails(int selected) {
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.viewResultDetails: Result " +  selected + " selected , starting SearchDetailsActivity");
+
+        Intent i = new Intent(this, SearchDetailsActivity.class);
+        i.putExtra(SearchDetailsActivity.BUNDLE_PARAM_POSITION, selected);
+        startActivity(i);
+    }
+    
+}

@@ -22,6 +22,7 @@ import android.os.DropBoxManager;
 import android.preference.PreferenceManager;
 
 import com.iukonline.amule.android.amuleremote.helpers.UpdateChecker;
+import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher.AmuleClientStatus;
 import com.iukonline.amule.android.amuleremote.helpers.ec.ECHelper;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 
@@ -136,7 +137,13 @@ public class AmuleControllerApplication extends Application {
                             ((Activity) mRefreshingActivity).runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (mRefreshingActivity != null) mRefreshingActivity.refreshContent();
+                                    if (mRefreshingActivity != null) {
+                                        mRefreshingActivity.refreshContent();
+                                    } else {
+                                        if (mECHelper != null && mECHelper.getECClientStatus() == AmuleClientStatus.IDLE) {
+                                            // TODO: need to send some keepalive command
+                                        }
+                                    }
                                 }
                             });
                         }

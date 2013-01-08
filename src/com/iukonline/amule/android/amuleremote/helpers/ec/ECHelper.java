@@ -91,6 +91,10 @@ public class ECHelper {
     
     ConcurrentLinkedQueue <AmuleAsyncTask> mTaskQueue = new ConcurrentLinkedQueue<AmuleAsyncTask>();
     
+    public AmuleClientStatus getECClientStatus() {
+        return mECClientStatus;
+    }
+    
     public AmuleAsyncTask getNewTask(Class<? extends AmuleAsyncTask> taskType) {
         AmuleAsyncTask newTask;
         try {
