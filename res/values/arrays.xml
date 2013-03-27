@@ -16,7 +16,22 @@
         <item >Local</item>
         <item >Global</item>
         <item >Kad</item>
-        <item >Web</item>
+    </string-array>
+    <string-array name="search_size_dim_description">
+        <item >Bytes</item>
+        <item >KiloBytes</item>
+        <item >MegaBytes</item>
+        <item >GigaBytes</item>
+    </string-array>
+    <string-array name="search_file_type">
+        <item>Any</item><item >Archives</item>
+        
+        <item >Audio</item>
+        <item >CD-Images</item>
+        <item >Pictures</item>
+        <item >Programs</item>
+        <item >Texts</item>
+        <item >Videos</item>
     </string-array>
 
     

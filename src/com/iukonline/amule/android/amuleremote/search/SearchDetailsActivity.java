@@ -3,6 +3,8 @@ package com.iukonline.amule.android.amuleremote.search;
 import java.util.ArrayList;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -14,13 +16,20 @@ import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.Refres
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECSearchListWatcher;
-import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.SearchAsyncTask;
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.AmuleAsyncTask.TaskScheduleMode;
+import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.GetCategoriesAsyncTask;
+import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.SearchAsyncTask;
+import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.SearchStartResultAsyncTask;
+import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment;
 import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchStatus;
+import com.iukonline.amule.android.amuleremote.search.SearchResultDetailsFragment.SearchResultDetailsFragmentContainter;
+import com.iukonline.amule.ec.ECSearchFile;
 
-public class SearchDetailsActivity extends SherlockFragmentActivity implements RefreshingActivity, ClientStatusWatcher, ECSearchListWatcher {
+public class SearchDetailsActivity extends SherlockFragmentActivity implements SearchResultDetailsFragmentContainter, RefreshingActivity, ClientStatusWatcher, ECSearchListWatcher {
     
     public final static String BUNDLE_PARAM_POSITION = "position";
+    
+    public final static int MSG_ADD_SEARCHFILE = 1;
     
     AmuleControllerApplication mApp;
     MenuItem refreshItem;
@@ -132,6 +141,10 @@ public class SearchDetailsActivity extends SherlockFragmentActivity implements R
             t.setTargetStatus(ECSearchStatus.RUNNING);
             
             mApp.mECHelper.executeTask(t, mode);
+        } else {
+            // TODO: Launch a no-op or default task
+            GetCategoriesAsyncTask t = (GetCategoriesAsyncTask) mApp.mECHelper.getNewTask(GetCategoriesAsyncTask.class);
+            mApp.mECHelper.executeTask(t, mode);
         }
     }
     
@@ -172,6 +185,31 @@ public class SearchDetailsActivity extends SherlockFragmentActivity implements R
     @Override
     public void refreshContent() {
         refreshSearchDetails(TaskScheduleMode.BEST_EFFORT);
+    }
+
+    @Override
+    public void startSearchResult(ECSearchFile sf) {
+        
+        Handler h = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.startSearchResult: delete confirmed");
+                SearchStartResultAsyncTask t = (SearchStartResultAsyncTask)mApp.mECHelper.getNewTask(SearchStartResultAsyncTask.class);
+                t.setECSearchFile((ECSearchFile) msg.obj);
+                mApp.mECHelper.executeTask(t, TaskScheduleMode.QUEUE);
+            }
+        };
+        
+        Message mOk = h.obtainMessage(MSG_ADD_SEARCHFILE, sf);
+        
+        String dialogMsg = getResources().getString(R.string.dialog_add_search_file, sf.getFileName());
+        AlertDialogFragment d = new AlertDialogFragment(null, dialogMsg, mOk, null, true);
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.startSearchResult: showing dialog");
+        d.show(getSupportFragmentManager(), "add_search_dialog");
+        
+        
+        
+
     }
 
 }

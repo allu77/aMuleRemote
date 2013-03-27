@@ -1,5 +1,5 @@
 aMule Remote 0.5-dev
-- ICS look
+- Search feature for aMule 2.3.1
 
 aMule Remote 0.4.2
 - Added basic help

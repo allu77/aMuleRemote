@@ -7,17 +7,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.iukonline.amule.android.amuleremote.R;
+import com.iukonline.amule.android.amuleremote.helpers.gui.GUIUtils;
+import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchStatus;
 
 public class SearchResultsListAdapter extends ArrayAdapter<SearchContainer> {
     
     static class SearchResultsHolder {
         TextView mFileName;
         TextView mResults;
-        TextView mStatus;
-        TextView mProgress;
+        TextView mParams;
+        ProgressBar mProgressBar;
         
     }
     
@@ -42,8 +45,9 @@ public class SearchResultsListAdapter extends ArrayAdapter<SearchContainer> {
             
             holder.mFileName = (TextView) v.findViewById(R.id.search_result_filename);
             holder.mResults = (TextView) v.findViewById(R.id.search_result_results);
-            holder.mStatus = (TextView) v.findViewById(R.id.search_result_status);
-            holder.mProgress = (TextView) v.findViewById(R.id.search_result_progress);
+            holder.mParams = (TextView) v.findViewById(R.id.search_result_params);
+            holder.mProgressBar = (ProgressBar) v.findViewById(R.id.search_result_progress_bar);
+            
             
             v.setTag(holder);
         } else {
@@ -54,12 +58,31 @@ public class SearchResultsListAdapter extends ArrayAdapter<SearchContainer> {
         if (position < getCount()) {
             SearchContainer o = getItem(position);
             holder.mFileName.setText(o.mFileName);
-            holder.mStatus.setText(" - " + o.mSearchStatus.toString());
-            holder.mProgress.setText(" - " + o.mSearchProgress + "%");
+            
+            switch (o.mSearchStatus) {
+            case STARTING:
+            case RUNNING:
+                holder.mProgressBar.setVisibility(View.VISIBLE);
+                break;
+            default:
+                holder.mProgressBar.setVisibility(View.GONE);
+                break;
+            }
+            
+            // TODO: Provide string resources
+            StringBuilder params = new StringBuilder();
+            params.append(getContext().getResources().getStringArray(R.array.search_search_type_description)[o.mSearchType]);
+            if (o.mType != null && o.mType.length() > 0) params.append(", " + o.mType);
+            if (o.mExtension != null && o.mExtension.length() > 0) params.append(", *." + o.mExtension);
+            if (o.mMinSize > 0) params.append(", min " + GUIUtils.longToBytesFormatted(o.mMinSize));
+            if (o.mMaxSize > 0) params.append(", max " + GUIUtils.longToBytesFormatted(o.mMaxSize));
+            if (o.mAvailability > 0) params.append(", avail " + o.mAvailability); 
+            holder.mParams.setText(params.toString());
+            
             if (o.mResults != null && o.mResults.resultMap != null) {
-                holder.mResults.setText(" - " + Integer.toString(o.mResults.resultMap.size()));
+                holder.mResults.setText("Found " + Integer.toString(o.mResults.resultMap.size()) + " files");
             } else {
-                holder.mResults.setText(" - 0");
+                holder.mResults.setText("No files");
             }
         }
         return v;

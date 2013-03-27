@@ -295,6 +295,8 @@ public class PartFileActivity extends SherlockFragmentActivity implements Client
 
         if (mPartFile != null) {
             
+            mBar.setTitle(mPartFile.getFileName());
+            
             if (mPartFile.getCommentCount() == 0) {
                 if (mBar.getTabCount() == 3) {
                     Tab prevSelected = mBar.getSelectedTab();

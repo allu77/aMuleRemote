@@ -75,7 +75,10 @@ public class AmuleControllerApplication extends Application {
     public static final String AC_SETTING_AUTOREFRESH = "amule_client_autorefresh";
     public static final String AC_SETTING_AUTOREFRESH_INTERVAL = "amule_client_autorefresh_interval";
     
+    
+    // Hidden settings (remeber last value)
     public static final String AC_SETTING_SORT          = "amule_client_sort";
+    public static final String AC_SETTING_SEARCH_TYPE   = "amule_client_search_type";
     
     public static final String AC_SETTING_ENABLE_LOG    = "debug_enable_log";
     public static final String AC_SETTING_ENABLE_EXCEPTIONS = "debug_enable_exceptions";

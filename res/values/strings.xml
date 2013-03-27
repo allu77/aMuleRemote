@@ -158,4 +158,13 @@ Please do not use this feature if you experienced a crash and you already sent t
 	<string name="search_button_go">Go!</string>
 	<string name="search_no_results">No results to show yet</string>
 	<string name="menu_opt_search">Search</string>
+	<string name="search_label_filetype">File type</string>
+	<string name="search_label_file_type">File type</string>
+	<string name="search_label_extension">Extension</string>
+	<string name="search_label_min_size">Minimum size</string>
+	<string name="search_label_max_size">Maximum size</string>
+	<string name="search_label_availability">Availability</string>
+	<string name="search_button_advanced_params_on">Hide extended parameters</string>
+	<string name="search_button_advanced_params_off">Show extended parameters</string>
+	<string name="dialog_add_search_file">Add file %s to download queue?</string>
 </resources>

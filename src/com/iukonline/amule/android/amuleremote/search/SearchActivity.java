@@ -16,6 +16,7 @@ import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECSearchListWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.AmuleAsyncTask.TaskScheduleMode;
+import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.GetCategoriesAsyncTask;
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.SearchAsyncTask;
 import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchStatus;
 import com.iukonline.amule.android.amuleremote.search.SearchInputFragment.SearchInputFragmentContainter;
@@ -140,6 +141,11 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
             t.setTargetStatus(ECSearchStatus.RUNNING);
             
             mApp.mECHelper.executeTask(t, mode);
+        } else {
+            // TODO: Launch a no-op or default task
+            GetCategoriesAsyncTask t = (GetCategoriesAsyncTask) mApp.mECHelper.getNewTask(GetCategoriesAsyncTask.class);
+            mApp.mECHelper.executeTask(t, mode);
+
         }
     }
     

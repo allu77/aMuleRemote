@@ -19,7 +19,6 @@ public class SearchResultDetailsListAdapter extends ArrayAdapter<ECSearchFile> {
         TextView mFileName;
         TextView mSize;
         TextView mSources;
-        TextView mSourcesXfer;
         
     }
     
@@ -41,19 +40,18 @@ public class SearchResultDetailsListAdapter extends ArrayAdapter<ECSearchFile> {
             holder.mFileName = (TextView) v.findViewById(R.id.search_result_detail_filename);
             holder.mSize = (TextView) v.findViewById(R.id.search_result_detail_size);
             holder.mSources = (TextView) v.findViewById(R.id.search_result_detail_sources);
-            holder.mSourcesXfer = (TextView) v.findViewById(R.id.search_result_detail_sources_xfer);
             
             v.setTag(holder);
         } else {
             holder = (SearchResultsHolder) v.getTag();
         }
         
+        // TODO: Provide resources
         if (position < getCount()) {
             ECSearchFile o = getItem(position);
             holder.mFileName.setText(o.getFileName());
             holder.mSize.setText(GUIUtils.longToBytesFormatted(o.getSizeFull()));
-            holder.mSources.setText(Integer.toString(o.getSourceCount()));
-            holder.mSourcesXfer.setText(Integer.toString(o.getSourceXfer()));
+            holder.mSources.setText("Sources: " + Integer.toString(o.getSourceCount()) + "(" + Integer.toString(o.getSourceXfer()) + ")");
         }
         return v;
     }

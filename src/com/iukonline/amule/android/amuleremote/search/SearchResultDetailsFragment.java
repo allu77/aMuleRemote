@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
@@ -15,10 +16,17 @@ import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECSearchListWatcher;
 import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchStatus;
 import com.iukonline.amule.ec.ECSearchFile;
+import com.iukonline.amule.ec.ECSearchFile.ECSearchFileComparator;
 
 public class SearchResultDetailsFragment extends SherlockListFragment implements ECSearchListWatcher {
+
+    public interface SearchResultDetailsFragmentContainter {
+        public void startSearchResult(ECSearchFile sf) ;
+    }
+    
     AmuleControllerApplication mApp;
     SearchResultDetailsListAdapter mAdapter;
+    ECSearchFileComparator mComparator;
     
     int mPosition;
     SearchContainer mSearch;
@@ -62,6 +70,13 @@ public class SearchResultDetailsFragment extends SherlockListFragment implements
         super.onPause();
     }
 
+    
+    
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        ((SearchResultDetailsFragmentContainter) getActivity()).startSearchResult(mAdapter.getItem(position));
+    }
+
     @Override
     public String getWatcherId() {
         return this.getClass().getName();
@@ -74,6 +89,7 @@ public class SearchResultDetailsFragment extends SherlockListFragment implements
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultDetailsFragment.updateECSearchList: Creating new adapter");
             mAdapter = new SearchResultDetailsListAdapter(getActivity(), R.layout.frag_search_results_list, new ArrayList<ECSearchFile>());
             setListAdapter(mAdapter);
+            mComparator = new ECSearchFileComparator(ECSearchFileComparator.ComparatorType.SOURCES_COUNT);
         }
         
         mSearch = searches.get(mPosition);
@@ -110,6 +126,7 @@ public class SearchResultDetailsFragment extends SherlockListFragment implements
             
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultDetailsFragment.updateECSearchList: Refreshing data");
             
+            mAdapter.sort(mComparator);
             mAdapter.notifyDataSetChanged();
         }
     }
