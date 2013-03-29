@@ -48,8 +48,8 @@ public class AlertDialogFragment extends SherlockDialogFragment {
         mShowCancel = showCancel;
     }
     
-    public AlertDialogFragment(int title, Message okMessage, Message cancelMessage, boolean showCancel) {
-        mTitle = title;
+    public AlertDialogFragment(int message, Message okMessage, Message cancelMessage, boolean showCancel) {
+        mMessage = message;
         mOkMessage = okMessage;
         mCancelMessage = cancelMessage;
         mShowCancel = showCancel;

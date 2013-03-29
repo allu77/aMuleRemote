@@ -51,6 +51,7 @@ public class SearchDetailsActivity extends SherlockFragmentActivity implements S
         
         mPosition = getIntent().getExtras().getInt(BUNDLE_PARAM_POSITION);
         mSearch = mApp.mECHelper.getSearchItem(mPosition);
+        if (mSearch != null) getSupportActionBar().setTitle(mSearch.mFileName);
         
         if (savedInstanceState == null) {
             SearchResultDetailsFragment f = new SearchResultDetailsFragment();
@@ -177,9 +178,11 @@ public class SearchDetailsActivity extends SherlockFragmentActivity implements S
 
     @Override
     public void updateECSearchList(ArrayList<SearchContainer> searches) {
-        if (searches == null) finish();
-        
-        supportInvalidateOptionsMenu();
+        if (searches == null) {
+            finish();
+        } else {
+            supportInvalidateOptionsMenu();
+        }
     }
 
     @Override

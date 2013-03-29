@@ -58,7 +58,7 @@ public class UpdateChecker {
                     if (result != null) parseUpdatesXML(result);
                 }
             };
-            fetchReleaseXML.execute(AC_UPDATE_URL);
+            fetchReleaseXML.execute(AC_UPDATE_URL + mCurrentVersionCode);
             mLatestUpdatesCheck = now;
         }
     }

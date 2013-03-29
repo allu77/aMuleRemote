@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.gui.GUIUtils;
-import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchStatus;
 
 public class SearchResultsListAdapter extends ArrayAdapter<SearchContainer> {
     

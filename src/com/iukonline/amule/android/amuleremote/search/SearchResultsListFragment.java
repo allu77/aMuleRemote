@@ -77,6 +77,10 @@ public class SearchResultsListFragment extends SherlockListFragment implements E
     @Override
     public void updateECSearchList(ArrayList<SearchContainer> searches) {
         
+        if (searches == null) {
+            if (mAdapter != null) mAdapter.clear();
+            return;
+        }
         if (mAdapter == null) {
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultsListFragment.updateECSearchList: Creating new adapter");
             mAdapter = new SearchResultsListAdapter(getActivity(), R.layout.frag_search_results_list, new ArrayList<SearchContainer>());

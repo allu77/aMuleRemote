@@ -1,4 +1,4 @@
-package com.iukonline.amule.android.amuleremote;
+package com.iukonline.amule.android.amuleremote.helpers.gui.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.iukonline.amule.android.amuleremote.R;
-import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment;
 
 public class NewVersionDialogFragment extends AlertDialogFragment {
     

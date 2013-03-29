@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentManager;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
@@ -29,7 +30,6 @@ import com.iukonline.amule.android.amuleremote.AboutDialogFragment;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.AmuleControllerPreferences;
-import com.iukonline.amule.android.amuleremote.NewVersionDialogFragment;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.dlqueue.DlQueueFragment.DlQueueFragmentContainer;
 import com.iukonline.amule.android.amuleremote.helpers.UpdateChecker.UpdatesWatcher;
@@ -44,6 +44,7 @@ import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.GetECStatsAsyncT
 import com.iukonline.amule.android.amuleremote.helpers.gui.GUIUtils;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.EditTextDialogFragment;
+import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.NewVersionDialogFragment;
 import com.iukonline.amule.android.amuleremote.partfile.PartFileActivity;
 import com.iukonline.amule.android.amuleremote.search.SearchActivity;
 import com.iukonline.amule.ec.ECCategory;
@@ -60,7 +61,9 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
     
     private final static String BUNDLE_CATEGORY_FILTER = "category";
     
-    public final static String NO_URI_TO_HANDLE       = "NO_URI"; 
+    public final static String NO_URI_TO_HANDLE       = "NO_URI";
+    
+    private final static String TAG_DIALOG_NO_SERVER = "dialog_no_server";
     
     private AmuleControllerApplication mApp;
     private String mHandleURI;
@@ -78,6 +81,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
     MenuItem sendReportItem;
     MenuItem refreshCatItem;
     MenuItem resetClientItem;
+    MenuItem resetAppVersionInfoItem;
     
     TextView mTextDlRate;
     TextView mTextUlRate;
@@ -86,11 +90,16 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
     View mViewConnBar;
     
     ActionBar mActionBar;
+    
+    FragmentManager mFragManager;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         mApp = (AmuleControllerApplication) getApplication();
         mApp.refreshDebugSettings();
+        
+        mFragManager = getSupportFragmentManager();
         
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreate: Calling super");
         super.onCreate(savedInstanceState);
@@ -135,22 +144,28 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: Back from super");
         
         if (! mServerConfigured) {
-            Handler h = new Handler() {
-                @Override
-                public void handleMessage(Message msg) {
-                    Intent settingsActivity = new Intent(AmuleRemoteActivity.this, AmuleControllerPreferences.class);
-                    startActivity(settingsActivity);
-                    return;
-                }
-            };
-            
-            AlertDialogFragment d = new AlertDialogFragment(R.string.dlqueue_dialog_title_no_server_configured, R.string.dlqueue_dialog_message_no_server_configured, h.obtainMessage(), null, true);
-            
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: no server configured - showing dialog");
-            d.show(getSupportFragmentManager(), "no_server_dialog");
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: no server configured - end");
+            if (mFragManager.findFragmentByTag(TAG_DIALOG_NO_SERVER) == null) {
+                    Handler h = new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        Intent settingsActivity = new Intent(AmuleRemoteActivity.this, AmuleControllerPreferences.class);
+                        startActivity(settingsActivity);
+                        return;
+                    }
+                };
+                
+                AlertDialogFragment d = new AlertDialogFragment(R.string.dlqueue_dialog_title_no_server_configured, R.string.dlqueue_dialog_message_no_server_configured, h.obtainMessage(), null, true);
+                
+                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: no server configured - showing dialog");
+                d.show(mFragManager, TAG_DIALOG_NO_SERVER);
+                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: no server configured - end");
+            } else {
+                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: no server configured - dialog already shown");
+            }
             return;
         }
+        
+        mApp.showWhatsNew(mFragManager);
         
         // TBV: This should clear the disappearing refresh bug. Not elegant as onCreateMenu gets called twice...
         supportInvalidateOptionsMenu();
@@ -227,6 +242,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
         sendReportItem = menu.findItem(R.id.menu_opt_send_report);
         refreshCatItem = menu.findItem(R.id.menu_opt_refresh_cat);
         resetClientItem = menu.findItem(R.id.menu_opt_reset);
+        resetAppVersionInfoItem = menu.findItem(R.id.menu_opt_reset_app_version_info);
         
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreateOptionsMenu: Calling super");
         boolean superRet = super.onCreateOptionsMenu(menu);
@@ -257,6 +273,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
             if (sendReportItem != null) sendReportItem.setVisible(mApp.enableDebugOptions);
             if (refreshCatItem != null) refreshCatItem.setVisible(mApp.enableDebugOptions);
             if (resetClientItem != null) resetClientItem.setVisible(mApp.enableDebugOptions);
+            if (resetAppVersionInfoItem != null) resetAppVersionInfoItem.setVisible(mApp.enableDebugOptions);
         }
 
         if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPrepareOptionsMenu: calling super");
@@ -306,6 +323,9 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
             Intent searchActivity = new Intent(this, SearchActivity.class);
             startActivity(searchActivity);
             return true;
+        case R.id.menu_opt_reset_app_version_info:
+            mApp.resetAppVersionInfo();
+            return true; 
         default:
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onOptionsItemSelected: Unknown item selected. Calling super");
             return super.onOptionsItemSelected(item);
@@ -485,26 +505,25 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
             mTextDlRate.setText(GUIUtils.longToBytesFormatted(newStats.getDlSpeed()) + "/s \u2193");
             mTextUlRate.setText(GUIUtils.longToBytesFormatted(newStats.getUlSpeed()) + "/s \u2191");
             
-            // TODO STRING RESOURCES
             ECConnState c = newStats.getConnState();
             if (c == null) {
-                mTextEDonkeyStatus.setText("Not Connected");
-                mTextKADStatus.setText("Not Connected");
+                mTextEDonkeyStatus.setText(R.string.stats_status_not_connected);
+                mTextKADStatus.setText(R.string.stats_status_not_connected);
             } else {
                 if (c.isKadFirewalled()) {
-                    mTextKADStatus.setText("Firewalled");
+                    mTextKADStatus.setText(R.string.stats_status_firewalled);
                 } else if (c.isKadRunning()) {
-                    mTextKADStatus.setText("Connected");
+                    mTextKADStatus.setText(R.string.stats_status_connected);
                 } else {
-                    mTextKADStatus.setText("Not Connected");
+                    mTextKADStatus.setText(R.string.stats_status_not_connected);
                 }
                 
                 if (c.isConnectedEd2k()) {
-                    mTextEDonkeyStatus.setText("Connected");
+                    mTextEDonkeyStatus.setText(R.string.stats_status_connected);
                 } else if (c.isConnectingEd2k()) {
-                    mTextEDonkeyStatus.setText("Connecting");
+                    mTextEDonkeyStatus.setText(R.string.stats_status_connecting);
                 } else {
-                    mTextEDonkeyStatus.setText("Not Connected");
+                    mTextEDonkeyStatus.setText(R.string.stats_status_not_connected);
                 }
             }
             

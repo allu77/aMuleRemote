@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AmuleRemoteActionButtonStyle" parent="@android:style/Widget.Holo.Light.ActionButton">
+    <style name="AmuleRemoteActionButtonStyle" parent="@android:style/Widget.Holo.ActionButton">
 
         
         	<item name="android:layout_marginLeft">0dip</item>

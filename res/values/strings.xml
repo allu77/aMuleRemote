@@ -13,7 +13,7 @@
     <string name="partfile_status_waiting">Waiting</string>
     <string name="partfile_status_paused">Paused</string>
     <string name="partfile_status_downloading">Downloading</string>
-    <string name="settings_label_server_host">Amule Server</string>
+    <string name="settings_label_server_host">aMule PC</string>
     <string name="settings_label_server_port">Port</string>
     <string name="settings_label_server_password">Password</string>
     <string name="settings_label_server">Server settings</string>
@@ -40,7 +40,7 @@
     <string name="label_total_ul_rate">UL: </string>
     <string name="settings_label_client">Client</string>
     <string name="settings_label_client_autorefresh">Autorefresh</string>
-    <string name="settings_summary_server_host">Your EC enabled aMule server hostname</string>
+    <string name="settings_summary_server_host">The hostname or IP of the PC running aMule daemon</string>
     <string name="settings_summary_server_port">TCP port for EC</string>
     <string name="settings_summary_server_password">Your EC password</string>
     <string name="settings_summary_client_autorefresh">Enable automatic refresh</string>
@@ -124,8 +124,8 @@
 	<string name="partfile_detail_label_lastseencomplete">Last Seen Complete:</string>
 	<string name="partfile_detail_label_category">Category: </string>
 	<string name="menu_opt_send_report">Send Bug Report</string>
-	<string name="settings_label_server_version">Server version</string>
-	<string name="settings_summary_server_version">EC Protocol Version</string>
+	<string name="settings_label_server_version">aMule version</string>
+	<string name="settings_summary_server_version">Version of aMule installed on the PC</string>
 	<string name="settings_label_debug">Debug</string>
 	<string name="settings_label_debug_enable_exceptions">Send bug report on compatibility exceptions</string>
 	<string name="settings_summary_debug_enable_exceptions">Please enable this only if requested by the developer</string>
@@ -167,4 +167,14 @@ Please do not use this feature if you experienced a crash and you already sent t
 	<string name="search_button_advanced_params_on">Hide extended parameters</string>
 	<string name="search_button_advanced_params_off">Show extended parameters</string>
 	<string name="dialog_add_search_file">Add file %s to download queue?</string>
+	<string name="stats_status_not_connected">Not Connected</string>
+	<string name="stats_status_firewalled">Firewalled</string>
+	<string name="stats_status_connected">Connected</string>
+	<string name="stats_status_connecting">Connecting</string>
+	<string name="dialog_start_search">aMule do not support multiple concurrent searches from remote GUIs. Starting this search will stop the one currently running. Do you want to continue?</string>
+	<string name="search_title">Searches</string>
+	<string name="dialog_whats_new_welcome">Welcome to aMule Remote %s!</string>
+	<string name="dialog_whats_new_whats_new">What\'s new:</string>
+	<string name="dialog_whats_new_features">- Search feature is finally available (only for aMule 2.3.1)!</string>
+	<string name="menu_opt_reset_app_version_info">Reset app version info</string>
 </resources>

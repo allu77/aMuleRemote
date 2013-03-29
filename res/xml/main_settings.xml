@@ -9,7 +9,7 @@
     	<ListPreference android:key="amule_server_version" android:title="@string/settings_label_server_version" android:summary="@string/settings_summary_server_version" android:entryValues="@array/settings_server_version_value" android:entries="@array/settings_server_version_description"/>
    	</PreferenceCategory>
     <PreferenceCategory android:key="amule_client" android:title="@string/settings_label_client">
-        <CheckBoxPreference android:key="amule_client_autorefresh" android:title="@string/settings_label_client_autorefresh" android:summary="@string/settings_summary_client_autorefresh" android:disableDependentsState="false"></CheckBoxPreference>
+        <CheckBoxPreference android:key="amule_client_autorefresh" android:title="@string/settings_label_client_autorefresh" android:summary="@string/settings_summary_client_autorefresh" android:disableDependentsState="false" android:defaultValue="true"></CheckBoxPreference>
         <EditTextPreference android:key="amule_client_autorefresh_interval" android:dependency="amule_client_autorefresh" android:defaultValue="10" android:shouldDisableView="true" android:summary="@string/settings_summary_client_autorefresh_interval" android:title="@string/settings_label_client_autorefresh_interval"></EditTextPreference><EditTextPreference android:key="amule_client_connect_timeout" android:title="@string/settings_label_client_connect_timeout" android:defaultValue="10" android:summary="@string/settings_summary_client_connect_timeout" android:numeric="integer"/>
         <EditTextPreference android:key="amule_client_read_timeout" android:title="@string/settings_label_client_read_timeout" android:defaultValue="30" android:summary="@string/settings_summary_client_read_timeout" android:numeric="integer"/>
         

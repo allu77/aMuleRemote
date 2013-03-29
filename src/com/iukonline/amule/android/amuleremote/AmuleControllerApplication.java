@@ -20,13 +20,15 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.DropBoxManager;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
 
 import com.iukonline.amule.android.amuleremote.helpers.UpdateChecker;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher.AmuleClientStatus;
 import com.iukonline.amule.android.amuleremote.helpers.ec.ECHelper;
+import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.WhatsNewDialogFragment;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 
-/*
+
 @ReportsCrashes(formKey = "dF9oaGt2RWoyaG9OQ2xCdjY3YmRscWc6MA",
                 mode = ReportingInteractionMode.NOTIFICATION,
                 customReportContent = { 
@@ -58,7 +60,7 @@ import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
                 resDialogTitle = R.string.crash_dialog_title, // optional. default is your application name
                 resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
                 resDialogOkToast = R.string.crash_dialog_ok_toast // optional. displays a Toast message when the user accepts to send a report.
-)*/
+)
 
 
 public class AmuleControllerApplication extends Application {
@@ -76,9 +78,11 @@ public class AmuleControllerApplication extends Application {
     public static final String AC_SETTING_AUTOREFRESH_INTERVAL = "amule_client_autorefresh_interval";
     
     
-    // Hidden settings (remeber last value)
+    // Hidden settings 
     public static final String AC_SETTING_SORT          = "amule_client_sort";
     public static final String AC_SETTING_SEARCH_TYPE   = "amule_client_search_type";
+    public static final String AC_SETTING_LAST_APP_VER  = "amule_client_last_app_ver";
+    public static final String AC_SETTING_TIPS_SHOWN    = "amule_client_tips_shown";
     
     public static final String AC_SETTING_ENABLE_LOG    = "debug_enable_log";
     public static final String AC_SETTING_ENABLE_EXCEPTIONS = "debug_enable_exceptions";
@@ -99,9 +103,14 @@ public class AmuleControllerApplication extends Application {
     public static final String AC_SETTING_CONNECT_TIMEOUT = "amule_client_connect_timeout";
     public static final String AC_SETTING_READ_TIMEOUT = "amule_client_read_timeout";
     
+    
+    private final static String TAG_DIALOG_WHATS_NEW = "dialog_whats_new";
+    
     public boolean sendExceptions = false;
     public boolean enableLog = false;
     public boolean enableDebugOptions = false; 
+    public int mVersionCode = -1;
+    public String mVersionName;
     
     RefreshingActivity mRefreshingActivity;
     private Timer mAutoRefreshTimer;
@@ -194,7 +203,6 @@ public class AmuleControllerApplication extends Application {
                         connTimeout,
                         readTimeout
         );
-        
         return true;
     }
     
@@ -230,9 +238,9 @@ public class AmuleControllerApplication extends Application {
         
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            mUpdateChecker = new UpdateChecker(pInfo.versionCode);
-
-            //mUpdateChecker = new UpdateChecker(1);
+            mVersionCode = pInfo.versionCode;
+            mVersionName = pInfo.versionName;
+            mUpdateChecker = new UpdateChecker(mVersionCode);
         } catch (NameNotFoundException e) {
         }
         
@@ -285,6 +293,29 @@ public class AmuleControllerApplication extends Application {
         } catch (IOException e) {
         }
         return s.toString();
+    }
+    
+    public boolean showWhatsNew(FragmentManager fm) {
+        
+        if (mVersionCode > mSettings.getInt(AC_SETTING_LAST_APP_VER, -1)) {
+            if (fm.findFragmentByTag(TAG_DIALOG_WHATS_NEW) == null) {
+                WhatsNewDialogFragment d = new WhatsNewDialogFragment(getResources().getString(R.string.dialog_whats_new_welcome,  mVersionName));
+                d.show(fm, TAG_DIALOG_WHATS_NEW);
+                SharedPreferences.Editor e = mSettings.edit();
+                e.putInt(AmuleControllerApplication.AC_SETTING_LAST_APP_VER, mVersionCode);
+                e.commit();
+            }
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
+    
+    public void resetAppVersionInfo() {
+        SharedPreferences.Editor e = mSettings.edit();
+        e.remove(AmuleControllerApplication.AC_SETTING_LAST_APP_VER);
+        e.commit();
     }
 
 }

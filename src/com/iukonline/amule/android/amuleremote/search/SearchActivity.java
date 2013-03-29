@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -18,11 +20,15 @@ import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECSearchL
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.AmuleAsyncTask.TaskScheduleMode;
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.GetCategoriesAsyncTask;
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.SearchAsyncTask;
+import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment;
 import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchStatus;
 import com.iukonline.amule.android.amuleremote.search.SearchInputFragment.SearchInputFragmentContainter;
 import com.iukonline.amule.android.amuleremote.search.SearchResultsListFragment.SearchResultsListFragmentContainter;
 
 public class SearchActivity extends SherlockFragmentActivity implements RefreshingActivity, SearchInputFragmentContainter, SearchResultsListFragmentContainter, ClientStatusWatcher, ECSearchListWatcher {
+    
+    public final static int MSG_START_SEARCH = 1;
+    
     AmuleControllerApplication mApp;
     MenuItem refreshItem;
     boolean mIsProgressShown = false;
@@ -31,6 +37,7 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         mApp = (AmuleControllerApplication) getApplication();
+        getSupportActionBar().setTitle(R.string.search_title);
         
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onCreate: Calling super");
         super.onCreate(savedInstanceState);
@@ -117,11 +124,30 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
     public void startSearch(SearchContainer s) {
         
         if (lastSearch != null && (lastSearch.mSearchStatus== ECSearchStatus.STARTING || lastSearch.mSearchStatus == ECSearchStatus.RUNNING)) {
-            //TODO Alert Dialog
-            lastSearch.mSearchStatus = ECSearchStatus.STOPPED;
+            
+            Handler h = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.startSearch: delete confirmed");
+                    lastSearch.mSearchStatus = ECSearchStatus.STOPPED;
+                    startSearchTask((SearchContainer) msg.obj);
+                }
+            };
+            
+            Message mOk = h.obtainMessage(MSG_START_SEARCH, s);
+            
+            AlertDialogFragment d = new AlertDialogFragment(R.string.dialog_start_search, mOk, null, true);
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.startSearch: showing dialog");
+            d.show(getSupportFragmentManager(), "start_search_dialog");
+            
+        } else {
+            startSearchTask(s);
         }
         
-        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.startSearch: Adding search");
+    }
+    
+    private void startSearchTask(SearchContainer s) {
+        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.startSearchTask: Adding search");
         mApp.mECHelper.addSearchToList(s);
         mApp.mECHelper.notifyECSearchListWatcher();
         
@@ -129,7 +155,7 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
         t.setSearchContainer(s);
         t.setTargetStatus(ECSearchStatus.RUNNING);
         
-        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.startSearch: Scheduling start task");
+        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.startSearchTask: Scheduling start task");
         mApp.mECHelper.executeTask(t, TaskScheduleMode.QUEUE);
     }
     
@@ -185,14 +211,16 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
 
     @Override
     public void updateECSearchList(ArrayList<SearchContainer> searches) {
-        if (searches == null) finish();
-        
-        if (searches.size() == 0) {
-            lastSearch = null;
+        if (searches == null) {
+            finish();
         } else {
-            lastSearch = searches.get(0);
+            if (searches.size() == 0) {
+                lastSearch = null;
+            } else {
+                lastSearch = searches.get(0);
+                supportInvalidateOptionsMenu();
+            }
         }
-        supportInvalidateOptionsMenu();
     }
 
     @Override

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.iukonline.amule.android.amuleremote"
       android:versionCode="11"
-      android:versionName="0.5-dev"
+      android:versionName="0.5-alpha"
       android:installLocation="auto">
     <uses-sdk android:targetSdkVersion="16" android:minSdkVersion="7"/>
     <uses-permission android:name="android.permission.INTERNET"/>

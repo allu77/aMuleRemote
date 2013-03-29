@@ -31,7 +31,6 @@ import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.AmuleAsyncTask.T
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.AmuleAsyncTask.TaskScheduleQueueStatus;
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.ECPartFileActionAsyncTask.ECPartFileAction;
 import com.iukonline.amule.android.amuleremote.search.SearchContainer;
-import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchStatus;
 import com.iukonline.amule.ec.ECCategory;
 import com.iukonline.amule.ec.ECClient;
 import com.iukonline.amule.ec.ECPartFile;
