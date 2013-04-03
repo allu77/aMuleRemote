@@ -1,4 +1,11 @@
-aMule Remote 0.5-dev
+aMule Remote 0.5-beta
+- Added sort option for search result
+- Moved show/hide advanced parameters to a menu item
+- Added clear search fields menu item
+- On search GUI, soft keyboard is disabled unless the user clicks on a text field
+- Go! button brings you directly to search results 
+
+aMule Remote 0.5-alpha
 - Search feature for aMule 2.3.1
 
 aMule Remote 0.4.2
