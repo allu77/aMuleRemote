@@ -157,6 +157,9 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
         
         if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.startSearchTask: Scheduling start task");
         mApp.mECHelper.executeTask(t, TaskScheduleMode.QUEUE);
+        
+        
+        viewResultDetails(0);
     }
     
     public void refreshSearchList(TaskScheduleMode mode)  {

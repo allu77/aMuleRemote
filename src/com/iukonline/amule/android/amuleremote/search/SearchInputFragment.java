@@ -1,5 +1,6 @@
 package com.iukonline.amule.android.amuleremote.search;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,12 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.R;
 
@@ -37,7 +41,6 @@ public class SearchInputFragment extends SherlockFragment {
     
     EditText mFileNameEdit;
     Button mGoButton;
-    ToggleButton mAdvancedParamsButton;
     View mAdvancedParamsLayout;
     Spinner mTypeSpinner;
     Spinner mFileTypeSpinner;
@@ -48,10 +51,15 @@ public class SearchInputFragment extends SherlockFragment {
     Spinner mMaxSizeDimSpinner;
     EditText mAvailabilityEdit;
     
+    MenuItem mShowAdvancedItem;
+    MenuItem mHideAdvancedItem;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         mApp = (AmuleControllerApplication) getActivity().getApplication();
         super.onCreate(savedInstanceState);
+        
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -59,7 +67,6 @@ public class SearchInputFragment extends SherlockFragment {
         
         if (mFileNameEdit != null) outState.putString(BUNDLE_FILE_NAME, mFileNameEdit.getEditableText().toString());
         if (mTypeSpinner != null) outState.putInt(BUNDLE_SEARCH_TYPE, mTypeSpinner.getSelectedItemPosition());
-        if (mAdvancedParamsButton != null) outState.putBoolean(BUNDLE_SHOW_ADVANCED, mAdvancedParamsButton.isChecked());
         if (mFileTypeSpinner != null) outState.putInt(BUNDLE_FILE_TYPE, mFileTypeSpinner.getSelectedItemPosition());
         if (mExtensionEdit != null) outState.putString(BUNDLE_EXTENSION, mExtensionEdit.getEditableText().toString());
         if (mMinSizeEdit != null) outState.putString(BUNDLE_MIN_SIZE, mMinSizeEdit.getEditableText().toString());
@@ -67,6 +74,7 @@ public class SearchInputFragment extends SherlockFragment {
         if (mMaxSizeEdit != null) outState.putString(BUNDLE_MAX_SIZE, mMaxSizeEdit.getEditableText().toString());
         if (mMaxSizeDimSpinner != null) outState.putInt(BUNDLE_MAX_SIZE_DIM, mMaxSizeDimSpinner.getSelectedItemPosition());
         if (mAvailabilityEdit != null) outState.putString(BUNDLE_AVAILABILITY, mAvailabilityEdit.getEditableText().toString());
+        if (mAdvancedParamsLayout != null) outState.putBoolean(BUNDLE_SHOW_ADVANCED, mAdvancedParamsLayout.getVisibility() == View.VISIBLE ? true : false);
         
         super.onSaveInstanceState(outState);
     }
@@ -120,11 +128,25 @@ public class SearchInputFragment extends SherlockFragment {
         mAvailabilityEdit = (EditText) v.findViewById(R.id.search_availability);
         
         mGoButton = (Button) v.findViewById(R.id.search_button_go);
-        mAdvancedParamsButton = (ToggleButton) v.findViewById(R.id.search_button_advanced_params);
         mAdvancedParamsLayout = v.findViewById(R.id.search_layout_advanced);
 
         if (savedInstanceState != null) {
-            mFileNameEdit.setText(savedInstanceState.getString(BUNDLE_FILE_NAME));
+            
+            this.setInputFields(
+                            savedInstanceState.getString(BUNDLE_FILE_NAME), 
+                            savedInstanceState.getInt(BUNDLE_SEARCH_TYPE),
+                            savedInstanceState.getInt(BUNDLE_FILE_TYPE),
+                            savedInstanceState.getString(BUNDLE_EXTENSION),
+                            savedInstanceState.getString(BUNDLE_MIN_SIZE),
+                            savedInstanceState.getInt(BUNDLE_MIN_SIZE_DIM),
+                            savedInstanceState.getString(BUNDLE_MAX_SIZE),
+                            savedInstanceState.getInt(BUNDLE_MAX_SIZE_DIM),
+                            savedInstanceState.getString(BUNDLE_AVAILABILITY)
+                            );
+            showAdvancedParams(savedInstanceState.getBoolean(BUNDLE_SHOW_ADVANCED));
+            
+            
+/*            mFileNameEdit.setText(savedInstanceState.getString(BUNDLE_FILE_NAME));
             mTypeSpinner.setSelection(savedInstanceState.getInt(BUNDLE_SEARCH_TYPE));
             mFileTypeSpinner.setSelection(savedInstanceState.getInt(BUNDLE_FILE_TYPE));
             mMinSizeEdit.setText(savedInstanceState.getString(BUNDLE_MIN_SIZE));
@@ -132,13 +154,12 @@ public class SearchInputFragment extends SherlockFragment {
             mMaxSizeEdit.setText(savedInstanceState.getString(BUNDLE_MAX_SIZE));
             mMaxSizeDimSpinner.setSelection(savedInstanceState.getInt(BUNDLE_MAX_SIZE_DIM));
             mAvailabilityEdit.setText(savedInstanceState.getString(BUNDLE_AVAILABILITY));
-            mAdvancedParamsButton.setChecked(savedInstanceState.getBoolean(BUNDLE_SHOW_ADVANCED));
+            mAdvancedParamsButton.setChecked(savedInstanceState.getBoolean(BUNDLE_SHOW_ADVANCED)); */
         } else {
-            mAdvancedParamsButton.setChecked(false);
+            showAdvancedParams(false);
             mTypeSpinner.setSelection((int) mApp.mSettings.getLong(AmuleControllerApplication.AC_SETTING_SEARCH_TYPE, 0));
         }
         
-        showAdvancedParams(mAdvancedParamsButton.isChecked());
         
         mGoButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
@@ -211,27 +232,109 @@ public class SearchInputFragment extends SherlockFragment {
                 } catch (NumberFormatException e) {
                     // Do Nothing
                 }
+    
+                // Hide softkeyboard on click
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(mFileNameEdit.getWindowToken(), 0);
                 
                 if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchInputFragment.goButton.onClick: Starting search");
                 ((SearchInputFragmentContainter) getActivity()).startSearch(s);
             }
         });
         
-        mAdvancedParamsButton.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                showAdvancedParams(mAdvancedParamsButton.isChecked());
-            }
-        });
-        
-        
         
         return v;
         
     }
     
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.search_input_options, menu);
+        
+        mShowAdvancedItem = menu.findItem(R.id.menu_search_input_opt_show_advanced_params);
+        mHideAdvancedItem = menu.findItem(R.id.menu_search_input_opt_hide_advanced_params);
+        
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+        case R.id.menu_search_input_opt_clear_input_form:
+            setInputFields(null);
+            return true;
+        case R.id.menu_search_input_opt_show_advanced_params:
+            showAdvancedParams(true);
+            return true;
+        case R.id.menu_search_input_opt_hide_advanced_params:
+            showAdvancedParams(false);
+            return true;
+
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+        
+    }
+
+    
     private void showAdvancedParams(boolean show) {
         //mAdvancedParamsButton.setChecked(show);
         mAdvancedParamsLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+        if (mShowAdvancedItem != null) mShowAdvancedItem.setVisible(! show);
+        if (mHideAdvancedItem != null) mHideAdvancedItem.setVisible(show);
     }
+    
+    public void setInputFields(SearchContainer s) {
+        if (s != null) {
+            int minSizeDim = 0;
+            while (s.mMinSize / Math.pow(1024, minSizeDim ) > 0) {
+                minSizeDim++;
+            }
+            int maxSizeDim = 0;
+            while (s.mMaxSize / Math.pow(1024, maxSizeDim ) > 0) {
+                maxSizeDim++;
+            }
+            
+            
+            int fileType = 0;
+            if (s.mType == null || s.mType.length() == 0) {
+                fileType = 0;
+            } else if (s.mType.equals("Arc")) {
+                fileType = 1;
+            } else if (s.mType.equals("Audio")) {
+                fileType = 2;
+            } else if (s.mType.equals("Iso")) {
+                fileType = 3;
+            } else if (s.mType.equals("Image")) {
+                fileType = 4;
+            } else if (s.mType.equals("Pro")) {
+                fileType = 5;
+            } else if (s.mType.equals("Doc")) {
+                fileType = 6;
+            } else if (s.mType.equals("Video")) {
+                fileType = 7;
+            } 
+            
+            String minSize = s.mMinSize < 0 ? "" : Integer.toString((int) (s.mMinSize / Math.pow(1024, minSizeDim)));
+            String maxSize = s.mMaxSize < 0 ? "" : Integer.toString((int) (s.mMaxSize / Math.pow(1024, maxSizeDim)));
+            String availability = s.mAvailability < 0 ? "" : Long.toString(s.mAvailability);
+            
+            setInputFields(s.mFileName, (int) s.mSearchType, fileType, s.mExtension, minSize, minSizeDim, maxSize, maxSizeDim, availability);
 
+        } else {
+            setInputFields("", (int) mApp.mSettings.getLong(AmuleControllerApplication.AC_SETTING_SEARCH_TYPE, 0), 0, "", "", 0, "", 0, "");
+        }
+    }
+    
+    public void setInputFields(String fileName, int searchType, int fileType, String extension, String minSize, int minSizeDim, String maxSize, int maxSizeDim, String availability) {
+        if (mFileNameEdit != null) mFileNameEdit.setText(fileName);
+        if (mTypeSpinner != null) mTypeSpinner.setSelection(searchType);
+        if (mFileTypeSpinner != null) mFileTypeSpinner.setSelection(fileType);
+        if (mExtensionEdit != null) mExtensionEdit.setText(extension);
+        if (mMinSizeEdit != null) mMinSizeEdit.setText(minSize);
+        if (mMinSizeDimSpinner != null) mMinSizeDimSpinner.setSelection(minSizeDim);
+        if (mMaxSizeEdit != null) mMaxSizeEdit.setText(maxSize);
+        if (mMaxSizeDimSpinner != null) mMaxSizeDimSpinner.setSelection(maxSizeDim);
+        if (mAvailabilityEdit != null) mAvailabilityEdit.setText(availability);
+    }
 }

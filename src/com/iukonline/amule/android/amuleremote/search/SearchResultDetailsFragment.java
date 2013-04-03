@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECSearchListWatcher;
@@ -23,6 +26,15 @@ public class SearchResultDetailsFragment extends SherlockListFragment implements
     public interface SearchResultDetailsFragmentContainter {
         public void startSearchResult(ECSearchFile sf) ;
     }
+
+    private final static int SETTINGS_SORT_FILENAME = 1;
+    private final static int SETTINGS_SORT_SIZE = 2;
+    private final static int SETTINGS_SORT_SOURCES = 3;
+    private final static int SETTINGS_SORT_SOURCES_COMPLETE = 4;
+    
+    private final static String BUNDLE_SORT_BY = "sort_by";
+    
+    private int mSortBy = SETTINGS_SORT_SOURCES;
     
     AmuleControllerApplication mApp;
     SearchResultDetailsListAdapter mAdapter;
@@ -37,6 +49,21 @@ public class SearchResultDetailsFragment extends SherlockListFragment implements
         // mSearch = mApp.mECHelper.getSearchItem(mPosition);
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultDetailsFragment.onCreate: Will show details for position " + mPosition);
         super.onCreate(savedInstanceState);
+        
+        if (savedInstanceState != null) {
+            mSortBy = savedInstanceState.getInt(BUNDLE_SORT_BY, SETTINGS_SORT_SOURCES);
+        }
+        
+        setHasOptionsMenu(true);
+        
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        
+        outState.putInt(BUNDLE_SORT_BY, mSortBy);
+        
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -76,6 +103,46 @@ public class SearchResultDetailsFragment extends SherlockListFragment implements
     public void onListItemClick(ListView l, View v, int position, long id) {
         ((SearchResultDetailsFragmentContainter) getActivity()).startSearchResult(mAdapter.getItem(position));
     }
+    
+    
+    
+    
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.searches_result_details_options, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+        case R.id.menu_search_details_opt_sort_filename:
+            mSortBy = SETTINGS_SORT_FILENAME;
+            if (mComparator != null) mComparator.setCompType(ECSearchFileComparator.ComparatorType.FILENAME);
+            break;
+        case R.id.menu_search_details_opt_sort_size:
+            mSortBy = SETTINGS_SORT_SIZE;
+            if (mComparator != null) mComparator.setCompType(ECSearchFileComparator.ComparatorType.SIZE);
+            break;
+        case R.id.menu_search_details_opt_sort_sources:
+            mSortBy = SETTINGS_SORT_SOURCES;
+            if (mComparator != null) mComparator.setCompType(ECSearchFileComparator.ComparatorType.SOURCES_COUNT);
+            break;
+        case R.id.menu_search_details_opt_sort_sources_complete:
+            mSortBy = SETTINGS_SORT_SOURCES_COMPLETE;
+            if (mComparator != null) mComparator.setCompType(ECSearchFileComparator.ComparatorType.SOURCES_XFER);
+            break;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+        
+        if (mAdapter != null && mComparator != null) mAdapter.sort(mComparator);
+        return true;
+    }
+
+    
+    
+    
 
     @Override
     public String getWatcherId() {
@@ -85,12 +152,34 @@ public class SearchResultDetailsFragment extends SherlockListFragment implements
     @Override
     public void updateECSearchList(ArrayList<SearchContainer> searches) {
 
+        if (searches == null || mPosition >= searches.size()) {
+            getActivity().finish();
+            return;
+        }
+        
         if (mAdapter == null) {
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultDetailsFragment.updateECSearchList: Creating new adapter");
             mAdapter = new SearchResultDetailsListAdapter(getActivity(), R.layout.frag_search_results_list, new ArrayList<ECSearchFile>());
             setListAdapter(mAdapter);
-            mComparator = new ECSearchFileComparator(ECSearchFileComparator.ComparatorType.SOURCES_COUNT);
+            switch (mSortBy) {
+            case SETTINGS_SORT_FILENAME:
+                mComparator = new ECSearchFileComparator(ECSearchFileComparator.ComparatorType.FILENAME);
+                break;
+            case SETTINGS_SORT_SIZE:
+                mComparator = new ECSearchFileComparator(ECSearchFileComparator.ComparatorType.SIZE);
+                break;
+            case SETTINGS_SORT_SOURCES:
+                mComparator = new ECSearchFileComparator(ECSearchFileComparator.ComparatorType.SOURCES_COUNT);
+                break;
+            case SETTINGS_SORT_SOURCES_COMPLETE:
+                mComparator = new ECSearchFileComparator(ECSearchFileComparator.ComparatorType.SOURCES_XFER);
+                break;
+            default:
+                mComparator = new ECSearchFileComparator(ECSearchFileComparator.ComparatorType.SOURCES_COUNT);
+                break;
+            }
         }
+        
         
         mSearch = searches.get(mPosition);
         if (mSearch.mSearchStatus != ECSearchStatus.STARTING && mSearch.mSearchStatus != ECSearchStatus.RUNNING) mApp.mECHelper.unRegisterFromECSearchList(this);

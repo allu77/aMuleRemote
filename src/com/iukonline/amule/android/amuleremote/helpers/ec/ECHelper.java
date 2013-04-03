@@ -479,6 +479,7 @@ public class ECHelper {
             mStats = null;
             mCategories = null;
             mSearches = new ArrayList<SearchContainer>();
+            //mSearches = null;
             
             mNeedsGUICleanUp = true;
         }

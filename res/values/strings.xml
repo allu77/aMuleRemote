@@ -13,7 +13,7 @@
     <string name="partfile_status_waiting">Waiting</string>
     <string name="partfile_status_paused">Paused</string>
     <string name="partfile_status_downloading">Downloading</string>
-    <string name="settings_label_server_host">aMule PC</string>
+    <string name="settings_label_server_host">aMule PC address</string>
     <string name="settings_label_server_port">Port</string>
     <string name="settings_label_server_password">Password</string>
     <string name="settings_label_server">Server settings</string>
@@ -146,7 +146,7 @@
 	<string name="error_host">Cannot resolve server hostname/IP</string>
 	<string name="error_timeout">Connection to server timed out</string>
 	<string name="error_io">Unexpected end of connection to server</string>
-	<string name="dlqueue_dialog_title_no_server_configured">No aMule server configured</string>
+	<string name="dlqueue_dialog_title_no_server_configured">aMule PC not configured</string>
 	<string name="dlqueue_dialog_message_no_server_configured">Press OK to go to the settings screen</string>
 	<string name="error_null_client">Could not create client. Please check your settings.</string>
 	<string name="manual_bug_report_text">
@@ -177,4 +177,9 @@ Please do not use this feature if you experienced a crash and you already sent t
 	<string name="dialog_whats_new_whats_new">What\'s new:</string>
 	<string name="dialog_whats_new_features">- Search feature is finally available (only for aMule 2.3.1)!</string>
 	<string name="menu_opt_reset_app_version_info">Reset app version info</string>
+	<string name="menu_search_details_opt_sort_sources">Sources</string>
+	<string name="menu_search_details_opt_sort_sources_complete">Complete sources</string>
+	<string name="menu_search_input_opt_show_advanced_params">Show advanced parameters</string>
+	<string name="menu_search_input_opt_hide_advanced_params">Hide advanced parameters</string>
+	<string name="menu_search_input_opt_clear_input_form">Clear search parameters</string>
 </resources>
