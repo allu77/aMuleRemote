@@ -18,6 +18,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -619,6 +620,9 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
         
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            
+            //TODO: handle convertView
+            
             TextView v = new TextView(getContext());
             ECCategory c = getItem(position);
             if (c.getId() == 0L) {
@@ -632,12 +636,21 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
 
         @Override
         public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            //TODO: handle convertView
+            
+            //TODO: this is quick and dirty. 
             TextView v = (TextView) getView(position, convertView, parent);
             
-            v.setMinHeight(60);
+            float d = getContext().getResources().getDisplayMetrics().density;
+            v.setMinHeight((int) (30 * d));
             v.setGravity(Gravity.CENTER_VERTICAL);
+            LinearLayout l = new LinearLayout(getContext());
+            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             
-            return v;
+            p.setMargins((int) (20 * d), (int) (5 * d), (int) (10 * d), (int) (5 * d));
+            l.addView(v,  p);
+            
+            return l;
         }
 
         @Override
