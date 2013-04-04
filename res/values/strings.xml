@@ -133,11 +133,11 @@
 	<string name="settings_summary_debug_enable_options">Enable additional debugging options in menu</string>
 	<string name="settings_label_debug_enable_log">Enable debug logging</string>
 	<string name="settings_summary_debug_enable_log">Enable this only if requested by the developer</string>
-	<string name="about_dialog_intro">&#169; 2011-2012 by iuk\n
+	<string name="about_dialog_intro">© 2011-2013 by iuk\n
 	http://www.iukonline.com/\n
 	\n
 	This product includes software developed at\n
-	ACRA (http://acra.googlecode.com/).\n
+	ACRA ( http://acra.googlecode.com/ ).\n
 	</string>
 	<string name="error_unexpected">Wow! Something really unexpected just happened. Please contact amuleremote@iukonline.com if you want to help in avoiding this in the future. In the meanwhile, connection will be reset.</string>
 	<string name="error_server">aMule server retuned an error</string>
