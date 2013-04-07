@@ -54,6 +54,8 @@ public class SearchInputFragment extends SherlockFragment {
     MenuItem mShowAdvancedItem;
     MenuItem mHideAdvancedItem;
     
+    private boolean mShowAdvanced = false;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         mApp = (AmuleControllerApplication) getActivity().getApplication();
@@ -74,7 +76,7 @@ public class SearchInputFragment extends SherlockFragment {
         if (mMaxSizeEdit != null) outState.putString(BUNDLE_MAX_SIZE, mMaxSizeEdit.getEditableText().toString());
         if (mMaxSizeDimSpinner != null) outState.putInt(BUNDLE_MAX_SIZE_DIM, mMaxSizeDimSpinner.getSelectedItemPosition());
         if (mAvailabilityEdit != null) outState.putString(BUNDLE_AVAILABILITY, mAvailabilityEdit.getEditableText().toString());
-        if (mAdvancedParamsLayout != null) outState.putBoolean(BUNDLE_SHOW_ADVANCED, mAdvancedParamsLayout.getVisibility() == View.VISIBLE ? true : false);
+        if (mAdvancedParamsLayout != null) outState.putBoolean(BUNDLE_SHOW_ADVANCED, mShowAdvanced);
         
         super.onSaveInstanceState(outState);
     }
@@ -144,17 +146,6 @@ public class SearchInputFragment extends SherlockFragment {
                             savedInstanceState.getString(BUNDLE_AVAILABILITY)
                             );
             showAdvancedParams(savedInstanceState.getBoolean(BUNDLE_SHOW_ADVANCED));
-            
-            
-/*            mFileNameEdit.setText(savedInstanceState.getString(BUNDLE_FILE_NAME));
-            mTypeSpinner.setSelection(savedInstanceState.getInt(BUNDLE_SEARCH_TYPE));
-            mFileTypeSpinner.setSelection(savedInstanceState.getInt(BUNDLE_FILE_TYPE));
-            mMinSizeEdit.setText(savedInstanceState.getString(BUNDLE_MIN_SIZE));
-            mMinSizeDimSpinner.setSelection(savedInstanceState.getInt(BUNDLE_MIN_SIZE_DIM));
-            mMaxSizeEdit.setText(savedInstanceState.getString(BUNDLE_MAX_SIZE));
-            mMaxSizeDimSpinner.setSelection(savedInstanceState.getInt(BUNDLE_MAX_SIZE_DIM));
-            mAvailabilityEdit.setText(savedInstanceState.getString(BUNDLE_AVAILABILITY));
-            mAdvancedParamsButton.setChecked(savedInstanceState.getBoolean(BUNDLE_SHOW_ADVANCED)); */
         } else {
             showAdvancedParams(false);
             mTypeSpinner.setSelection((int) mApp.mSettings.getLong(AmuleControllerApplication.AC_SETTING_SEARCH_TYPE, 0));
@@ -256,6 +247,15 @@ public class SearchInputFragment extends SherlockFragment {
         
         super.onCreateOptionsMenu(menu, inflater);
     }
+    
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        if (mShowAdvancedItem != null) mShowAdvancedItem.setVisible(! mShowAdvanced);
+        if (mHideAdvancedItem != null) mHideAdvancedItem.setVisible(mShowAdvanced);
+        
+        super.onPrepareOptionsMenu(menu);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -279,9 +279,9 @@ public class SearchInputFragment extends SherlockFragment {
     
     private void showAdvancedParams(boolean show) {
         //mAdvancedParamsButton.setChecked(show);
+        mShowAdvanced = show;
         mAdvancedParamsLayout.setVisibility(show ? View.VISIBLE : View.GONE);
-        if (mShowAdvancedItem != null) mShowAdvancedItem.setVisible(! show);
-        if (mHideAdvancedItem != null) mHideAdvancedItem.setVisible(show);
+        getActivity().invalidateOptionsMenu();
     }
     
     public void setInputFields(SearchContainer s) {
