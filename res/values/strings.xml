@@ -156,7 +156,7 @@ Please do not use this feature if you experienced a crash and you already sent t
 	<string name="search_label_file_name">File name</string>
 	<string name="search_label_search_type">Search type</string>
 	<string name="search_button_go">Go!</string>
-	<string name="search_no_results">No results to show yet</string>
+	<string name="search_no_results_yet">No results to show yet&#8230;\nKeep refreshing until results show up!</string>
 	<string name="menu_opt_search">Search</string>
 	<string name="search_label_filetype">File type</string>
 	<string name="search_label_file_type">File type</string>
@@ -186,4 +186,5 @@ Please do not use this feature if you experienced a crash and you already sent t
 	<string name="url_help">http://www.iukonline.com/my-geek-activities/amule-remote/amule-remote-f-a-q/</string>
 	<string name="dialog_search_not_available_title">Search not available</string>
 	<string name="dialog_search_not_available_message">Sorry, search feature is currently available only for aMule 2.3.1. :-(</string>
+	<string name="search_no_results">Search found no matching file.</string>
 </resources>

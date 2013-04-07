@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
@@ -16,6 +17,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.R;
+import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECSearchListWatcher;
 import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchStatus;
 import com.iukonline.amule.ec.ECSearchFile;
@@ -179,10 +181,13 @@ public class SearchResultDetailsFragment extends SherlockListFragment implements
                 break;
             }
         }
-        
+
         
         mSearch = searches.get(mPosition);
-        if (mSearch.mSearchStatus != ECSearchStatus.STARTING && mSearch.mSearchStatus != ECSearchStatus.RUNNING) mApp.mECHelper.unRegisterFromECSearchList(this);
+        if (mSearch.mSearchStatus != ECSearchStatus.STARTING && mSearch.mSearchStatus != ECSearchStatus.RUNNING) {
+            ((TextView) getListView().getEmptyView()).setText(R.string.search_no_results);
+            mApp.mECHelper.unRegisterFromECSearchList(this);
+        }
 
         Collection<ECSearchFile> newList = null;
         if (mSearch.mResults != null) newList = mSearch.mResults.resultMap.values();
@@ -219,4 +224,5 @@ public class SearchResultDetailsFragment extends SherlockListFragment implements
             mAdapter.notifyDataSetChanged();
         }
     }
+
 }
