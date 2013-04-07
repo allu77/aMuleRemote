@@ -306,7 +306,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
             showManualBugReportDialog();
             return true;
         case R.id.menu_opt_help:
-            Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.iukonline.com/my-geek-activities/amule-remote/amule-remote-f-a-q/"));
+            Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.url_help)));
             startActivity(myIntent);
             return true;
         case R.id.menu_opt_search:

@@ -183,4 +183,5 @@ Please do not use this feature if you experienced a crash and you already sent t
 	<string name="menu_search_input_opt_hide_advanced_params">Hide advanced parameters</string>
 	<string name="menu_search_input_opt_clear_input_form">Clear search parameters</string>
 	<string name="menu_opt_debug">Debug options</string>
+	<string name="url_help">http://www.iukonline.com/my-geek-activities/amule-remote/amule-remote-f-a-q/</string>
 </resources>
