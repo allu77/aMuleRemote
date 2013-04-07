@@ -29,7 +29,7 @@ import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.WhatsNewDialo
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 
 
-@ReportsCrashes(formKey = "dHdHcXN6Mkw1aDdfOEg5V2pUNDBYc0E6MA",
+@ReportsCrashes(formKey = "dDg4NDdzTUhxWmtQY2pVeDVPVF82WlE6MA",
                 mode = ReportingInteractionMode.NOTIFICATION,
                 customReportContent = { 
                     ReportField.REPORT_ID, 
