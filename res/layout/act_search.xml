@@ -6,15 +6,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <fragment
-        android:name="com.iukonline.amule.android.amuleremote.search.SearchInputFragment"
+<!--         android:name="com.iukonline.amule.android.amuleremote.search.SearchInputFragment"
+ -->    
+    <FrameLayout
         android:id="@+id/frag_search_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:layout="@layout/frag_search_input" />
-
-    <fragment
-        android:name="com.iukonline.amule.android.amuleremote.search.SearchResultsListFragment"
+<!--         android:name="com.iukonline.amule.android.amuleremote.search.SearchResultsListFragment"
+ -->
+    <FrameLayout
+        android:id="@+id/frag_search_results"
         android:layout_width="match_parent"
         tools:layout="@layout/frag_search_results_list" 
         android:layout_height="0dip"

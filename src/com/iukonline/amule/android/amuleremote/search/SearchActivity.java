@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -29,15 +31,23 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
     
     public final static int MSG_START_SEARCH = 1;
     
+    private final static String TAG_DIALOG_SERVER_VERSION = "dialog_server_version";
+    private final static String TAG_FRAGMENT_SEARCH_INPUT = "frag_search_input";
+    private final static String TAG_FRAGMENT_SEARCH_RESULTS = "frag_search_results";
+
+    
+    
     AmuleControllerApplication mApp;
     MenuItem refreshItem;
     boolean mIsProgressShown = false;
     SearchContainer lastSearch = null;
+    FragmentManager mFragManager;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         mApp = (AmuleControllerApplication) getApplication();
         getSupportActionBar().setTitle(R.string.search_title);
+        mFragManager = getSupportFragmentManager();
         
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onCreate: Calling super");
         super.onCreate(savedInstanceState);
@@ -63,6 +73,40 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
         mApp.registerRefreshActivity(this);
         notifyStatusChange(mApp.mECHelper.registerForAmuleClientStatusUpdates(this));
         updateECSearchList(mApp.mECHelper.registerForECSsearchList(this));
+        
+        String serverVersion = mApp.mECHelper.getServerVersion();
+        
+        
+        
+        if (serverVersion == null || !serverVersion.equals("V204")) {
+            
+            if (mFragManager.findFragmentByTag(TAG_DIALOG_SERVER_VERSION) == null) {
+                Handler h = new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        finish();
+                    }
+                };
+                
+                AlertDialogFragment d = new AlertDialogFragment(R.string.dialog_search_not_available_title, R.string.dialog_search_not_available_message, h.obtainMessage(), null, false);
+                
+                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onResume: search not available - showing dialog");
+                d.show(mFragManager, TAG_DIALOG_SERVER_VERSION);
+                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onResume: search not available - end");
+
+            }
+        } else {
+            FragmentTransaction ft = mFragManager.beginTransaction();
+            if (mFragManager.findFragmentByTag(TAG_FRAGMENT_SEARCH_INPUT) == null) {
+                ft.replace(R.id.frag_search_input, new SearchInputFragment(), TAG_FRAGMENT_SEARCH_INPUT);
+            }
+            if (mFragManager.findFragmentByTag(TAG_FRAGMENT_SEARCH_RESULTS) == null) {
+                ft.replace(R.id.frag_search_results, new SearchResultsListFragment(), TAG_FRAGMENT_SEARCH_RESULTS);
+            }
+            ft.commit();
+
+        }
+        
     }
 
     @Override

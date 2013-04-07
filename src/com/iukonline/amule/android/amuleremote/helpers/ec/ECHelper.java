@@ -457,6 +457,10 @@ public class ECHelper {
     public String getServerHost() {
         return mServerHost;
     }
+    
+    public String getServerVersion() {
+        return mServerVersion;
+    }
 
     public void resetClient() {
         if (mECClient != null && mECClient.isStateful()) {
