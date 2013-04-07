@@ -79,10 +79,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
     MenuItem refreshItem;
     MenuItem addEd2kItem;
     
-    MenuItem sendReportItem;
-    MenuItem refreshCatItem;
-    MenuItem resetClientItem;
-    MenuItem resetAppVersionInfoItem;
+    MenuItem debugOptionsItem;
     
     TextView mTextDlRate;
     TextView mTextUlRate;
@@ -240,10 +237,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
         addEd2kItem = menu.findItem(R.id.menu_opt_added2k);
         //if (addEd2kItem == null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreateOptionsMenu: addEd2kItem is null");
         
-        sendReportItem = menu.findItem(R.id.menu_opt_send_report);
-        refreshCatItem = menu.findItem(R.id.menu_opt_refresh_cat);
-        resetClientItem = menu.findItem(R.id.menu_opt_reset);
-        resetAppVersionInfoItem = menu.findItem(R.id.menu_opt_reset_app_version_info);
+        debugOptionsItem = menu.findItem(R.id.menu_opt_debug);
         
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreateOptionsMenu: Calling super");
         boolean superRet = super.onCreateOptionsMenu(menu);
@@ -266,15 +260,9 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
         }
 
         addEd2kItem.setVisible(mServerConfigured);
-        refreshCatItem.setVisible(mServerConfigured);
-        resetClientItem.setVisible(mServerConfigured);
         
         if (mApp != null) {
-            //if (sendReportItem != null) sendReportItem.setVisible(mApp.enableDebugOptions && mApp.enableLog);
-            if (sendReportItem != null) sendReportItem.setVisible(mApp.enableDebugOptions);
-            if (refreshCatItem != null) refreshCatItem.setVisible(mApp.enableDebugOptions);
-            if (resetClientItem != null) resetClientItem.setVisible(mApp.enableDebugOptions);
-            if (resetAppVersionInfoItem != null) resetAppVersionInfoItem.setVisible(mApp.enableDebugOptions);
+            if (debugOptionsItem != null) debugOptionsItem.setVisible(mApp.enableDebugOptions);
         }
 
         if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPrepareOptionsMenu: calling super");
