@@ -2,6 +2,7 @@ package com.iukonline.amule.android.amuleremote.helpers;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -9,7 +10,7 @@ import android.os.AsyncTask;
 
 public class UpdateChecker {
     
-    private static final String AC_UPDATE_URL = "http://dl.dropbox.com/u/15068406/AmuleRemote/updates.xml";
+    private static final String AC_UPDATE_URL = "https://dl.dropbox.com/u/15068406/AmuleRemote/updates.xml";
     private static final long AC_UPDATE_INTERVAL = 24L*60L*60L*1000L;
     
     public interface UpdatesWatcher {
@@ -119,12 +120,12 @@ public class UpdateChecker {
     
     
     private String getTextFileFromURL(String url) {
-        URL getURL;
         StringBuilder sb = new StringBuilder();
         try {
-            getURL = new URL(url);
-            getURL.openConnection();
-            InputStream reader = getURL.openStream();
+            HttpURLConnection con = (HttpURLConnection)(new URL(url).openConnection());
+            con.setInstanceFollowRedirects(true);
+            con.connect();
+            InputStream reader = con.getInputStream();
             byte[] buffer = new byte[8096];
 
             int bytesRead = 0;
