@@ -143,7 +143,7 @@ public class SearchResultsListFragment extends SherlockListFragment implements E
                 mAdapter.notifyDataSetChanged();
             } else {
                 // TODO Raise exception
-                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultsListFragment.updateECSearchList: This should nevere happen...");
+                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultsListFragment.updateECSearchList: This should never happen...");
                 mAdapter.clear();
             }
         }

@@ -215,7 +215,7 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
             
             mApp.mECHelper.executeTask(t, mode);
         } else {
-            // TODO: Launch a no-op or default task
+            // We are doing something else to keep connection alive... 
             GetCategoriesAsyncTask t = (GetCategoriesAsyncTask) mApp.mECHelper.getNewTask(GetCategoriesAsyncTask.class);
             mApp.mECHelper.executeTask(t, mode);
 

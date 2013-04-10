@@ -156,7 +156,7 @@ Please do not use this feature if you experienced a crash and you already sent t
 	<string name="search_label_file_name">File name</string>
 	<string name="search_label_search_type">Search type</string>
 	<string name="search_button_go">Go!</string>
-	<string name="search_no_results_yet">No results to show yet&#8230;\nKeep refreshing until results show up!</string>
+	<string name="search_no_results_yet">No result to show yet…\nKeep refreshing until results show up!</string>
 	<string name="menu_opt_search">Search</string>
 	<string name="search_label_filetype">File type</string>
 	<string name="search_label_file_type">File type</string>
@@ -175,7 +175,7 @@ Please do not use this feature if you experienced a crash and you already sent t
 	<string name="search_title">Searches</string>
 	<string name="dialog_whats_new_welcome">Welcome to aMule Remote %s!</string>
 	<string name="dialog_whats_new_whats_new">What\'s new:</string>
-	<string name="dialog_whats_new_features">- Search feature is finally available (only for aMule 2.3.1)!</string>
+	<string name="dialog_whats_new_features">Search feature is finally available (only for aMule 2.3.1)!</string>
 	<string name="menu_opt_reset_app_version_info">Reset app version info</string>
 	<string name="menu_search_details_opt_sort_sources">Sources</string>
 	<string name="menu_search_details_opt_sort_sources_complete">Complete sources</string>
@@ -187,4 +187,7 @@ Please do not use this feature if you experienced a crash and you already sent t
 	<string name="dialog_search_not_available_title">Search not available</string>
 	<string name="dialog_search_not_available_message">Sorry, search feature is currently available only for aMule 2.3.1. :-(</string>
 	<string name="search_no_results">Search found no matching file.</string>
+	<string name="search_no_search">No search executed yet</string>
+	<string name="category_uncategorized">Uncategorized</string>
+	<string name="search_details_label_sources">Sources: %1$d (%2$d)</string>
 </resources>

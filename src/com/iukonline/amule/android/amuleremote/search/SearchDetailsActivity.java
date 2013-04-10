@@ -143,7 +143,7 @@ public class SearchDetailsActivity extends SherlockFragmentActivity implements S
             
             mApp.mECHelper.executeTask(t, mode);
         } else {
-            // TODO: Launch a no-op or default task
+            // We are doing something else to keep connection alive... 
             GetCategoriesAsyncTask t = (GetCategoriesAsyncTask) mApp.mECHelper.getNewTask(GetCategoriesAsyncTask.class);
             mApp.mECHelper.executeTask(t, mode);
         }

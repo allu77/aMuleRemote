@@ -615,8 +615,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
             TextView v = new TextView(getContext());
             ECCategory c = getItem(position);
             if (c.getId() == 0L) {
-                // TODO: Provide string resource
-                v.setText("Uncategorized");
+                v.setText(R.string.category_uncategorized);
             } else {
                 v.setText(c.getTitle());
             }

@@ -11,12 +11,12 @@
                android:layout_width="fill_parent" 
                android:layout_weight="1">
      </ListView>
-
-     <TextView android:id="@android:id/empty"
-               android:layout_width="fill_parent"
-               android:layout_height="fill_parent"
-               android:gravity="center"
-               android:text="@string/search_no_results"
-	 />
+
+     <TextView
+         android:id="@android:id/empty"
+         android:layout_width="fill_parent"
+         android:layout_height="fill_parent"
+         android:gravity="center"
+         android:text="@string/search_no_search" />
     
 </LinearLayout>

@@ -38,11 +38,11 @@ public class SearchAsyncTask extends AmuleAsyncTask {
             if (mSearch.mSearchStatus == ECSearchStatus.RUNNING) {
                 mECClient.searchStop();
                 
-                // TODO Provide string resource
+                // TODO: Provide string resource
                 mResult = "Search stopped";
                 mSearch.mSearchStatus = ECSearchStatus.STOPPED;
             } else {
-                // TODO Provide string resource
+                // TODO: Provide string resource
                 throw new AmuleAsyncTaskException("Only running searches can be stopped");
             }
             break;
@@ -68,7 +68,7 @@ public class SearchAsyncTask extends AmuleAsyncTask {
                 mSearch.mResults = mECClient.searchGetReults(mSearch.mResults);
                 break;
             default:
-                // TODO Provide string resource
+                // TODO: Provide string resource
                 throw new AmuleAsyncTaskException("This search can't be started or refreshed");
             }
             

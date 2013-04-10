@@ -81,13 +81,7 @@ public class SearchInputFragment extends SherlockFragment {
         super.onSaveInstanceState(outState);
     }
 
-    @Override
-    public void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
-    }
 
-    
     @Override
     public void onPause() {
         
@@ -281,7 +275,7 @@ public class SearchInputFragment extends SherlockFragment {
         //mAdvancedParamsButton.setChecked(show);
         mShowAdvanced = show;
         mAdvancedParamsLayout.setVisibility(show ? View.VISIBLE : View.GONE);
-        getActivity().invalidateOptionsMenu();
+        getActivity().supportInvalidateOptionsMenu();
     }
     
     public void setInputFields(SearchContainer s) {

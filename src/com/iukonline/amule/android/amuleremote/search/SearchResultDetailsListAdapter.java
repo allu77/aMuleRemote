@@ -46,12 +46,12 @@ public class SearchResultDetailsListAdapter extends ArrayAdapter<ECSearchFile> {
             holder = (SearchResultsHolder) v.getTag();
         }
         
-        // TODO: Provide resources
         if (position < getCount()) {
             ECSearchFile o = getItem(position);
             holder.mFileName.setText(o.getFileName());
             holder.mSize.setText(GUIUtils.longToBytesFormatted(o.getSizeFull()));
-            holder.mSources.setText("Sources: " + Integer.toString(o.getSourceCount()) + "(" + Integer.toString(o.getSourceXfer()) + ")");
+            //holder.mSources.setText("Sources: " + Integer.toString(o.getSourceCount()) + "(" + Integer.toString(o.getSourceXfer()) + ")");
+            holder.mSources.setText(getContext().getResources().getString(R.string.search_details_label_sources, o.getSourceCount(), o.getSourceXfer()));
         }
         return v;
     }
