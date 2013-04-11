@@ -1,19 +1,7 @@
-aMule Remote 0.5-rc1
-- Fixed show/hide advanced parameters bug
-- Added popup dialog for unsupported server version in search form
-- Fixed actionbar size issue on refresh for 7'' tablets
-- Fixed bug: search activity launched when coming back from help
-- Fixed crash on some orientation change with dialog box in foreground
-
-aMule Remote 0.5-beta
-- Added sort option for search result
-- Moved show/hide advanced parameters to a menu item
-- Added clear search fields menu item
-- On search GUI, soft keyboard is disabled unless the user clicks on a text field
-- Go! button brings you directly to search results 
-
-aMule Remote 0.5-alpha
+aMule Remote 0.5
 - Search feature for aMule 2.3.1
+- Some GUI tweaks
+- Various bugfixes
 
 aMule Remote 0.4.2
 - Added basic help
