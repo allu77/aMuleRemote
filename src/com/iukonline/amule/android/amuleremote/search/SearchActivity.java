@@ -78,7 +78,7 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
         
         
         
-        if (serverVersion == null || !serverVersion.equals("V204")) {
+        if (serverVersion == null || !(serverVersion.equals("V204") || serverVersion.equals("V203"))) {
             
             if (mFragManager.findFragmentByTag(TAG_DIALOG_SERVER_VERSION) == null) {
                 Handler h = new Handler() {
