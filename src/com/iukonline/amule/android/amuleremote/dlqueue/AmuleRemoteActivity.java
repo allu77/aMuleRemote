@@ -65,6 +65,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
     public final static String NO_URI_TO_HANDLE       = "NO_URI";
     
     private final static String TAG_DIALOG_NO_SERVER = "dialog_no_server";
+    private final static String TAG_DIALOG_ADD_ED2K = "dialog_add_ed2k";
     
     private AmuleControllerApplication mApp;
     private String mHandleURI;
@@ -141,6 +142,43 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
         super.onResume();
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: Back from super");
         
+
+        // TBV: Everyting that creats a dialog should be in onPostResume due to a bug in ICS
+        // https://code.google.com/p/android/issues/detail?id=23096
+        
+        // TBV: This should clear the disappearing refresh bug. Not elegant as onCreateMenu gets called twice...
+        supportInvalidateOptionsMenu();
+
+        
+        
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: registering for async activities");
+        notifyStatusChange(mApp.mECHelper.registerForAmuleClientStatusUpdates(this));
+        updateECStats(mApp.mECHelper.registerForECStatsUpdates(this));
+        updateCategories(mApp.mECHelper.registerForCategoriesUpdates(this));
+        
+        mApp.registerRefreshActivity(this);
+
+        
+        
+        if (! mApp.mECHelper.isDlQueueValid()) {
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: launching refreshDlQueue");
+            refreshDlQueue();
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: back from refreshDlQueue");
+        }
+
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: end");
+        
+    }
+    
+    
+    
+    @Override
+    protected void onPostResume() {
+        
+        // Everyting that creats a dialog should be in onPostResume
+        // https://code.google.com/p/android/issues/detail?id=23096
+        super.onPostResume();
+        
         if (! mServerConfigured) {
             if (mFragManager.findFragmentByTag(TAG_DIALOG_NO_SERVER) == null) {
                     Handler h = new Handler() {
@@ -164,35 +202,18 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
         }
         
         mApp.showWhatsNew(mFragManager);
-        
-        // TBV: This should clear the disappearing refresh bug. Not elegant as onCreateMenu gets called twice...
-        supportInvalidateOptionsMenu();
+        mApp.mUpdateChecker.registerUpdatesWatcher(this);        
 
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: registering for async activities");
-        notifyStatusChange(mApp.mECHelper.registerForAmuleClientStatusUpdates(this));
-        updateECStats(mApp.mECHelper.registerForECStatsUpdates(this));
-        updateCategories(mApp.mECHelper.registerForCategoriesUpdates(this));
-        
-        mApp.registerRefreshActivity(this);
-        mApp.mUpdateChecker.registerUpdatesWatcher(this);
-        
         if (! mHandleURI.equals(NO_URI_TO_HANDLE)) {
             String parURI = new String(mHandleURI);
             mHandleURI = new String(NO_URI_TO_HANDLE);
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: handling ed2k URI");
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPostResume: handling ed2k URI");
             showAddED2KDialog(parURI);
         }
         
-        if (! mApp.mECHelper.isDlQueueValid()) {
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: launching refreshDlQueue");
-            refreshDlQueue();
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: back from refreshDlQueue");
-        }
-
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: end");
-        
     }
-    
+
+
     @Override
     protected void onPause() {
 
@@ -355,32 +376,34 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
     
     public void showAddED2KDialog(String url) {
         
-        Handler h = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                Bundle b = msg.getData();
-                if (b != null) {
-                    String u = b.getString(EditTextDialogFragment.BUNDLE_EDIT_STRING);
-                    if (u != null) {
-
-                        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showAddED2KDialog: ed2k URI provided, scheduling add task");
-                        
-                        AddEd2kAsyncTask ed2kTask = (AddEd2kAsyncTask) mApp.mECHelper.getNewTask(AddEd2kAsyncTask.class);
-                        ed2kTask.setEd2kUrl(u);
-                        
-                        if (mApp.mECHelper.executeTask(ed2kTask, TaskScheduleMode.QUEUE)) {
-                            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showAddED2KDialog: ed2k URI provided, scheduling refreshDlQueue task");
-                            refreshDlQueue(TaskScheduleMode.QUEUE);
+        if (mFragManager.findFragmentByTag(TAG_DIALOG_ADD_ED2K) == null) {
+            Handler h = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    Bundle b = msg.getData();
+                    if (b != null) {
+                        String u = b.getString(EditTextDialogFragment.BUNDLE_EDIT_STRING);
+                        if (u != null) {
+    
+                            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showAddED2KDialog: ed2k URI provided, scheduling add task");
+                            
+                            AddEd2kAsyncTask ed2kTask = (AddEd2kAsyncTask) mApp.mECHelper.getNewTask(AddEd2kAsyncTask.class);
+                            ed2kTask.setEd2kUrl(u);
+                            
+                            if (mApp.mECHelper.executeTask(ed2kTask, TaskScheduleMode.QUEUE)) {
+                                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showAddED2KDialog: ed2k URI provided, scheduling refreshDlQueue task");
+                                refreshDlQueue(TaskScheduleMode.QUEUE);
+                            }
                         }
                     }
                 }
-            }
-        };
-        
-        EditTextDialogFragment d = new EditTextDialogFragment(R.string.dialog_added2k_title, url, h.obtainMessage(), null);
-
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showAddED2KDialog: showing dialog");
-        d.show(getSupportFragmentManager(), "add_ed2k_dialog");
+            };
+            
+            EditTextDialogFragment d = new EditTextDialogFragment(R.string.dialog_added2k_title, url, h.obtainMessage(), null);
+    
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showAddED2KDialog: showing dialog");
+            d.show(mFragManager, TAG_DIALOG_ADD_ED2K);
+        }
     }
     
     public void showAboutDialog() {

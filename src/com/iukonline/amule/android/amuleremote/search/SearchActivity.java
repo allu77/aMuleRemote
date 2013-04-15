@@ -76,8 +76,27 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
         
         String serverVersion = mApp.mECHelper.getServerVersion();
         
+        // TBV: Everyting that creats a dialog should be in onPostResume due to a bug in ICS
+        // https://code.google.com/p/android/issues/detail?id=23096
         
+        if (serverVersion != null && (serverVersion.equals("V204") || serverVersion.equals("V203"))) {
+            FragmentTransaction ft = mFragManager.beginTransaction();
+            if (mFragManager.findFragmentByTag(TAG_FRAGMENT_SEARCH_INPUT) == null) {
+                ft.replace(R.id.frag_search_input, new SearchInputFragment(), TAG_FRAGMENT_SEARCH_INPUT);
+            }
+            if (mFragManager.findFragmentByTag(TAG_FRAGMENT_SEARCH_RESULTS) == null) {
+                ft.replace(R.id.frag_search_results, new SearchResultsListFragment(), TAG_FRAGMENT_SEARCH_RESULTS);
+            }
+            ft.commit();
+        }
         
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        
+        String serverVersion = mApp.mECHelper.getServerVersion();
         if (serverVersion == null || !(serverVersion.equals("V204") || serverVersion.equals("V203"))) {
             
             if (mFragManager.findFragmentByTag(TAG_DIALOG_SERVER_VERSION) == null) {
@@ -95,17 +114,8 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
                 if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onResume: search not available - end");
 
             }
-        } else {
-            FragmentTransaction ft = mFragManager.beginTransaction();
-            if (mFragManager.findFragmentByTag(TAG_FRAGMENT_SEARCH_INPUT) == null) {
-                ft.replace(R.id.frag_search_input, new SearchInputFragment(), TAG_FRAGMENT_SEARCH_INPUT);
-            }
-            if (mFragManager.findFragmentByTag(TAG_FRAGMENT_SEARCH_RESULTS) == null) {
-                ft.replace(R.id.frag_search_results, new SearchResultsListFragment(), TAG_FRAGMENT_SEARCH_RESULTS);
-            }
-            ft.commit();
-
         }
+
         
     }
 
