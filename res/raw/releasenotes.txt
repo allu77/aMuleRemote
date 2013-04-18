@@ -1,3 +1,7 @@
+aMule Remote 0.5.1
+- Search feature also for aMule 2.3.1-rc1
+- Various bugfixes
+
 aMule Remote 0.5
 - Search feature for aMule 2.3.1
 - Some GUI tweaks

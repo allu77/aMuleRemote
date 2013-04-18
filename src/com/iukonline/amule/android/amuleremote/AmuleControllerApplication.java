@@ -31,7 +31,7 @@ import com.iukonline.amule.ec.ECSearchFile;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 
 
-@ReportsCrashes(formKey = "dDlyeHRtcEJZTmJSVS1KajZUV3g4d3c6MA",
+@ReportsCrashes(formKey = "***REMOVED***",
                 mode = ReportingInteractionMode.NOTIFICATION,
                 customReportContent = { 
                     ReportField.REPORT_ID, 

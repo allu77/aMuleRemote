@@ -175,7 +175,7 @@ Please do not use this feature if you experienced a crash and you already sent t
 	<string name="search_title">Searches</string>
 	<string name="dialog_whats_new_welcome">Welcome to aMule Remote %s!</string>
 	<string name="dialog_whats_new_whats_new">What\'s new:</string>
-	<string name="dialog_whats_new_features">Search feature is finally available (only for aMule 2.3.1)!</string>
+	<string name="dialog_whats_new_features">Search feature is finally available (only for aMule 2.3.1 and 2.3.1-rc1)!</string>
 	<string name="menu_opt_reset_app_version_info">Reset app version info</string>
 	<string name="menu_search_details_opt_sort_sources">Sources</string>
 	<string name="menu_search_details_opt_sort_sources_complete">Complete sources</string>
