@@ -3,8 +3,6 @@ package com.iukonline.amule.android.amuleremote.search;
 import java.util.ArrayList;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -21,21 +19,23 @@ import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.GetCategoriesAsy
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.SearchAsyncTask;
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.SearchStartResultAsyncTask;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment;
+import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment.AlertDialogListener;
 import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchStatus;
 import com.iukonline.amule.android.amuleremote.search.SearchResultDetailsFragment.SearchResultDetailsFragmentContainter;
 import com.iukonline.amule.ec.ECSearchFile;
 
-public class SearchDetailsActivity extends SherlockFragmentActivity implements SearchResultDetailsFragmentContainter, RefreshingActivity, ClientStatusWatcher, ECSearchListWatcher {
+public class SearchDetailsActivity extends SherlockFragmentActivity implements AlertDialogListener, SearchResultDetailsFragmentContainter, RefreshingActivity, ClientStatusWatcher, ECSearchListWatcher {
     
     public final static String BUNDLE_PARAM_POSITION = "position";
     
-    public final static int MSG_ADD_SEARCHFILE = 1;
+    public final static String TAG_DIALOG_ADD_SEARCH = "add_search_dialog";
     
     AmuleControllerApplication mApp;
     MenuItem refreshItem;
     boolean mIsProgressShown = false;
     int mPosition;
     SearchContainer mSearch;
+
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -193,26 +193,34 @@ public class SearchDetailsActivity extends SherlockFragmentActivity implements S
     @Override
     public void startSearchResult(ECSearchFile sf) {
         
-        Handler h = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.startSearchResult: delete confirmed");
-                SearchStartResultAsyncTask t = (SearchStartResultAsyncTask)mApp.mECHelper.getNewTask(SearchStartResultAsyncTask.class);
-                t.setECSearchFile((ECSearchFile) msg.obj);
-                mApp.mECHelper.executeTask(t, TaskScheduleMode.QUEUE);
-            }
-        };
-        
-        Message mOk = h.obtainMessage(MSG_ADD_SEARCHFILE, sf);
+        mApp.mStartDownload = sf;
         
         String dialogMsg = getResources().getString(R.string.dialog_add_search_file, sf.getFileName());
-        AlertDialogFragment d = new AlertDialogFragment(null, dialogMsg, mOk, null, true);
+        AlertDialogFragment d = new AlertDialogFragment(null, dialogMsg, true);
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.startSearchResult: showing dialog");
         d.show(getSupportFragmentManager(), "add_search_dialog");
-        
-        
-        
 
+    }
+
+    @Override
+    public void alertDialogEvent(AlertDialogFragment dialog, int event, Bundle values) {
+        String tag = dialog.getTag();
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.alertDialogEvent: dialog tag " + tag + ", event " + event);
+        if (tag != null) {
+            if (tag.equals(TAG_DIALOG_ADD_SEARCH)) {
+                if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK) {
+                    if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.alertDialogEvent: add to download");
+                    if (mApp.mStartDownload != null) {
+                        SearchStartResultAsyncTask t = (SearchStartResultAsyncTask)mApp.mECHelper.getNewTask(SearchStartResultAsyncTask.class);
+                        t.setECSearchFile(mApp.mStartDownload);
+                        mApp.mECHelper.executeTask(t, TaskScheduleMode.QUEUE);
+                        mApp.mStartDownload = null;
+                    }
+                } else if (event == AlertDialogFragment.ALERTDIALOG_EVENT_CANCEL) {
+                    mApp.mStartDownload = null;
+                }
+            }
+        }
     }
 
 }

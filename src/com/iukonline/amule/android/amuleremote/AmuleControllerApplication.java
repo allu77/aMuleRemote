@@ -26,6 +26,8 @@ import com.iukonline.amule.android.amuleremote.helpers.UpdateChecker;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher.AmuleClientStatus;
 import com.iukonline.amule.android.amuleremote.helpers.ec.ECHelper;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.WhatsNewDialogFragment;
+import com.iukonline.amule.android.amuleremote.search.SearchContainer;
+import com.iukonline.amule.ec.ECSearchFile;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 
 
@@ -111,6 +113,11 @@ public class AmuleControllerApplication extends Application {
     public boolean enableDebugOptions = false; 
     public int mVersionCode = -1;
     public String mVersionName;
+    
+    public ECSearchFile mStartDownload;
+    public SearchContainer mStartSearch;
+    
+    
     
     RefreshingActivity mRefreshingActivity;
     private Timer mAutoRefreshTimer;

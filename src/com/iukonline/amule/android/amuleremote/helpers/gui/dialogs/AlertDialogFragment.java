@@ -1,5 +1,6 @@
 package com.iukonline.amule.android.amuleremote.helpers.gui.dialogs;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -10,6 +11,13 @@ import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.iukonline.amule.android.amuleremote.R;
 
 public class AlertDialogFragment extends SherlockDialogFragment {
+    
+    public final static int ALERTDIALOG_EVENT_OK = 1;
+    public final static int ALERTDIALOG_EVENT_CANCEL = 2;
+    
+    public interface AlertDialogListener {
+        public void alertDialogEvent(AlertDialogFragment dialog, int event, Bundle values);
+    }
     
     protected final static String BUNDLE_TITLE = "title";
     protected final static String BUNDLE_MESSAGE = "message";
@@ -32,6 +40,28 @@ public class AlertDialogFragment extends SherlockDialogFragment {
     public AlertDialogFragment() {
     }
     
+    // NEW
+    
+    public AlertDialogFragment(int title, int message, boolean showCancel) {
+        mTitle = title;
+        mMessage = message;
+        mShowCancel = showCancel;
+    }
+
+    public AlertDialogFragment(String title, String message, boolean showCancel) {
+        mTitleStr = title;
+        mMessageStr = message;
+        mShowCancel = showCancel;
+    }
+    
+    public AlertDialogFragment(int message, boolean showCancel) {
+        mMessage = message;
+        mShowCancel = showCancel;
+    }
+
+    
+    // OLD
+    /*
     public AlertDialogFragment(int title, int message, Message okMessage, Message cancelMessage, boolean showCancel) {
         mTitle = title;
         mMessage = message;
@@ -54,7 +84,7 @@ public class AlertDialogFragment extends SherlockDialogFragment {
         mCancelMessage = cancelMessage;
         mShowCancel = showCancel;
     }
-
+    */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         
@@ -100,6 +130,7 @@ public class AlertDialogFragment extends SherlockDialogFragment {
         builder.setPositiveButton(R.string.alert_dialog_ok,
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
+                                    sendEventToListener(ALERTDIALOG_EVENT_OK, null);
                                     if (mOkMessage != null) mOkMessage.sendToTarget();
                                 }
                             }
@@ -109,10 +140,13 @@ public class AlertDialogFragment extends SherlockDialogFragment {
             builder.setNegativeButton(R.string.alert_dialog_cancel,
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
+                                    sendEventToListener(ALERTDIALOG_EVENT_CANCEL, null);
                                     if (mCancelMessage != null) mCancelMessage.sendToTarget();
                                 }
                             }
                         );
+        } else {
+            setCancelable(false);
         }
         
         return builder;
@@ -121,6 +155,15 @@ public class AlertDialogFragment extends SherlockDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return getDefaultAlertDialogBuilder(savedInstanceState).create();
+    }
+    
+    protected void sendEventToListener(int event, Bundle values) {
+        try {
+            Activity a = getActivity();
+            if (a != null) ((AlertDialogListener) a).alertDialogEvent(this, event, values);
+        } catch (ClassCastException e) {
+            // Do Nothing
+        }
     }
 
 

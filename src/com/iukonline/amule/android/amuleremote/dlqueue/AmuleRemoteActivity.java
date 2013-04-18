@@ -9,8 +9,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.text.Html;
 import android.util.Log;
@@ -44,6 +42,7 @@ import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.GetDlQueueAsyncT
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.GetECStatsAsyncTask;
 import com.iukonline.amule.android.amuleremote.helpers.gui.GUIUtils;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment;
+import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment.AlertDialogListener;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.EditTextDialogFragment;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.NewVersionDialogFragment;
 import com.iukonline.amule.android.amuleremote.partfile.PartFileActivity;
@@ -54,7 +53,7 @@ import com.iukonline.amule.ec.ECStats;
 import com.iukonline.amule.ec.ECUtils;
 
 
-public class AmuleRemoteActivity extends SherlockFragmentActivity implements ClientStatusWatcher, DlQueueFragmentContainer, ECStatsWatcher, CategoriesWatcher, RefreshingActivity, UpdatesWatcher  {
+public class AmuleRemoteActivity extends SherlockFragmentActivity implements AlertDialogListener, ClientStatusWatcher, DlQueueFragmentContainer, ECStatsWatcher, CategoriesWatcher, RefreshingActivity, UpdatesWatcher  {
     
     
     public final static String BUNDLE_PARAM_ERRSTR          = "errstr";
@@ -180,18 +179,10 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
         super.onPostResume();
         
         if (! mServerConfigured) {
+            
+            
             if (mFragManager.findFragmentByTag(TAG_DIALOG_NO_SERVER) == null) {
-                    Handler h = new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
-                        Intent settingsActivity = new Intent(AmuleRemoteActivity.this, AmuleControllerPreferences.class);
-                        startActivity(settingsActivity);
-                        return;
-                    }
-                };
-                
-                AlertDialogFragment d = new AlertDialogFragment(R.string.dlqueue_dialog_title_no_server_configured, R.string.dlqueue_dialog_message_no_server_configured, h.obtainMessage(), null, true);
-                
+                AlertDialogFragment d = new AlertDialogFragment(R.string.dlqueue_dialog_title_no_server_configured, R.string.dlqueue_dialog_message_no_server_configured, true);
                 if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: no server configured - showing dialog");
                 d.show(mFragManager, TAG_DIALOG_NO_SERVER);
                 if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: no server configured - end");
@@ -377,29 +368,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
     public void showAddED2KDialog(String url) {
         
         if (mFragManager.findFragmentByTag(TAG_DIALOG_ADD_ED2K) == null) {
-            Handler h = new Handler() {
-                @Override
-                public void handleMessage(Message msg) {
-                    Bundle b = msg.getData();
-                    if (b != null) {
-                        String u = b.getString(EditTextDialogFragment.BUNDLE_EDIT_STRING);
-                        if (u != null) {
-    
-                            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showAddED2KDialog: ed2k URI provided, scheduling add task");
-                            
-                            AddEd2kAsyncTask ed2kTask = (AddEd2kAsyncTask) mApp.mECHelper.getNewTask(AddEd2kAsyncTask.class);
-                            ed2kTask.setEd2kUrl(u);
-                            
-                            if (mApp.mECHelper.executeTask(ed2kTask, TaskScheduleMode.QUEUE)) {
-                                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showAddED2KDialog: ed2k URI provided, scheduling refreshDlQueue task");
-                                refreshDlQueue(TaskScheduleMode.QUEUE);
-                            }
-                        }
-                    }
-                }
-            };
-            
-            EditTextDialogFragment d = new EditTextDialogFragment(R.string.dialog_added2k_title, url, h.obtainMessage(), null);
+            EditTextDialogFragment d = new EditTextDialogFragment(R.string.dialog_added2k_title, url);
     
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showAddED2KDialog: showing dialog");
             d.show(mFragManager, TAG_DIALOG_ADD_ED2K);
@@ -436,40 +405,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
 
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, Html.fromHtml(data));
         startActivity(Intent.createChooser(emailIntent, "Email:"));
-        
-        
-        
-        /*
-        Handler h = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                Bundle b = msg.getData();
-                if (b != null) {
-                    String u = b.getString(ManualBugReportDialogFragment.BUNDLE_COMMENTS);
-                    if (u != null) {
-                        Object o = getSystemService(DROPBOX_SERVICE);
-                        if (o != null) {
-                            DropBoxManager d = (DropBoxManager) o;
-                            Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showManualBugReportDialog: See dropbox for details...");
-                            d.addText(AmuleControllerApplication.AC_LOGTAG, "Manual report comment:");
-                            d.addText(AmuleControllerApplication.AC_LOGTAG, u);
-                        } else {
-                            Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showManualBugReportDialog: Dropbox not supported, using log");
-                            Log.d(AmuleControllerApplication.AC_LOGTAG, u);
-                        }
-                        
-                        ErrorReporter.getInstance().handleSilentException(new Exception("Manual report sent"));
-                        
-                        Toast.makeText(mApp, R.string.crash_dialog_ok_toast, Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-        };
 
-        ManualBugReportDialogFragment d = new ManualBugReportDialogFragment(h.obtainMessage());
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showManualBugReportDialog: showing dialog");
-        d.show(getSupportFragmentManager(), "manual_bug_report_dialog");
-        */
     }
     
     
@@ -674,6 +610,36 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Cli
             return true;
         }
 
+    }
+
+
+    @Override
+    public void alertDialogEvent(AlertDialogFragment dialog, int event, Bundle values) {
+        String tag = dialog.getTag();
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.alertDialogEvent: dialog tag " + tag + ", event " + event);
+        if (tag != null) {
+            if (tag.equals(TAG_DIALOG_NO_SERVER)) {
+                if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK) {
+                    Intent settingsActivity = new Intent(AmuleRemoteActivity.this, AmuleControllerPreferences.class);
+                    startActivity(settingsActivity);
+                }
+            } else if (tag.equals(TAG_DIALOG_ADD_ED2K)) {
+                if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK && values != null) {
+                    String u = values.getString(EditTextDialogFragment.BUNDLE_EDIT_STRING);
+                    if (u != null) {
+                        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.alertDialogEvent: ed2k URI provided, scheduling add task");
+                        
+                        AddEd2kAsyncTask ed2kTask = (AddEd2kAsyncTask) mApp.mECHelper.getNewTask(AddEd2kAsyncTask.class);
+                        ed2kTask.setEd2kUrl(u);
+                        
+                        if (mApp.mECHelper.executeTask(ed2kTask, TaskScheduleMode.QUEUE)) {
+                            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.alertDialogEvent: ed2k URI provided, scheduling refreshDlQueue task");
+                            refreshDlQueue(TaskScheduleMode.QUEUE);
+                        }
+                    }
+                }                
+            }
+        }
     }
 
 

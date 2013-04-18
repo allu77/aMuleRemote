@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -23,15 +21,17 @@ import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.AmuleAsyncTask.T
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.GetCategoriesAsyncTask;
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.SearchAsyncTask;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment;
+import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment.AlertDialogListener;
 import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchStatus;
 import com.iukonline.amule.android.amuleremote.search.SearchInputFragment.SearchInputFragmentContainter;
 import com.iukonline.amule.android.amuleremote.search.SearchResultsListFragment.SearchResultsListFragmentContainter;
 
-public class SearchActivity extends SherlockFragmentActivity implements RefreshingActivity, SearchInputFragmentContainter, SearchResultsListFragmentContainter, ClientStatusWatcher, ECSearchListWatcher {
+public class SearchActivity extends SherlockFragmentActivity implements AlertDialogListener, RefreshingActivity, SearchInputFragmentContainter, SearchResultsListFragmentContainter, ClientStatusWatcher, ECSearchListWatcher {
     
-    public final static int MSG_START_SEARCH = 1;
     
     private final static String TAG_DIALOG_SERVER_VERSION = "dialog_server_version";
+    private final static String TAG_DIALOG_START_SEARCH = "dialog_start_search";
+    
     private final static String TAG_FRAGMENT_SEARCH_INPUT = "frag_search_input";
     private final static String TAG_FRAGMENT_SEARCH_RESULTS = "frag_search_results";
 
@@ -41,6 +41,7 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
     MenuItem refreshItem;
     boolean mIsProgressShown = false;
     SearchContainer lastSearch = null;
+
     FragmentManager mFragManager;
     
     @Override
@@ -100,19 +101,13 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
         if (serverVersion == null || !(serverVersion.equals("V204") || serverVersion.equals("V203"))) {
             
             if (mFragManager.findFragmentByTag(TAG_DIALOG_SERVER_VERSION) == null) {
-                Handler h = new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
-                        finish();
-                    }
-                };
                 
-                AlertDialogFragment d = new AlertDialogFragment(R.string.dialog_search_not_available_title, R.string.dialog_search_not_available_message, h.obtainMessage(), null, false);
+                AlertDialogFragment d = new AlertDialogFragment(R.string.dialog_search_not_available_title, R.string.dialog_search_not_available_message, false);
                 
                 if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onResume: search not available - showing dialog");
                 d.show(mFragManager, TAG_DIALOG_SERVER_VERSION);
                 if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onResume: search not available - end");
-
+                
             }
         }
 
@@ -143,7 +138,7 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
         
         if (refreshItem != null)  {
             
-            if (lastSearch != null && (lastSearch.mSearchStatus== ECSearchStatus.STARTING || lastSearch.mSearchStatus == ECSearchStatus.RUNNING)) {
+            if (lastSearch != null && (lastSearch.mSearchStatus == ECSearchStatus.STARTING || lastSearch.mSearchStatus == ECSearchStatus.RUNNING)) {
                 if (mIsProgressShown) {
                     refreshItem.setActionView(R.layout.refresh_progress);
                 } else {
@@ -177,22 +172,12 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
     @Override
     public void startSearch(SearchContainer s) {
         
-        if (lastSearch != null && (lastSearch.mSearchStatus== ECSearchStatus.STARTING || lastSearch.mSearchStatus == ECSearchStatus.RUNNING)) {
+        if (lastSearch != null && (lastSearch.mSearchStatus == ECSearchStatus.STARTING || lastSearch.mSearchStatus == ECSearchStatus.RUNNING)) {
             
-            Handler h = new Handler() {
-                @Override
-                public void handleMessage(Message msg) {
-                    if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.startSearch: delete confirmed");
-                    lastSearch.mSearchStatus = ECSearchStatus.STOPPED;
-                    startSearchTask((SearchContainer) msg.obj);
-                }
-            };
-            
-            Message mOk = h.obtainMessage(MSG_START_SEARCH, s);
-            
-            AlertDialogFragment d = new AlertDialogFragment(R.string.dialog_start_search, mOk, null, true);
+            mApp.mStartSearch = s;
+            AlertDialogFragment d = new AlertDialogFragment(R.string.dialog_start_search, true);
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.startSearch: showing dialog");
-            d.show(getSupportFragmentManager(), "start_search_dialog");
+            d.show(getSupportFragmentManager(), TAG_DIALOG_START_SEARCH);
             
         } else {
             startSearchTask(s);
@@ -218,7 +203,7 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
     
     public void refreshSearchList(TaskScheduleMode mode)  {
         
-        if (lastSearch != null && (lastSearch.mSearchStatus== ECSearchStatus.STARTING || lastSearch.mSearchStatus == ECSearchStatus.RUNNING)) {
+        if (lastSearch != null && (lastSearch.mSearchStatus == ECSearchStatus.STARTING || lastSearch.mSearchStatus == ECSearchStatus.RUNNING)) {
             SearchAsyncTask t = (SearchAsyncTask) mApp.mECHelper.getNewTask(SearchAsyncTask.class);
             t.setSearchContainer(lastSearch);
             t.setTargetStatus(ECSearchStatus.RUNNING);
@@ -287,6 +272,28 @@ public class SearchActivity extends SherlockFragmentActivity implements Refreshi
         Intent i = new Intent(this, SearchDetailsActivity.class);
         i.putExtra(SearchDetailsActivity.BUNDLE_PARAM_POSITION, selected);
         startActivity(i);
+    }
+
+    @Override
+    public void alertDialogEvent(AlertDialogFragment dialog, int event, Bundle values) {
+        String tag = dialog.getTag();
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.alertDialogEvent: dialog tag " + tag + ", event " + event);
+        if (tag != null) {
+            if (tag.equals(TAG_DIALOG_SERVER_VERSION)) {
+                finish();
+            } else if (tag.equals(TAG_DIALOG_START_SEARCH)) {
+                if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK) {
+                    if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.alertDialogEvent: running search termination confirmed");
+                    if (mApp.mStartSearch != null) {
+                        lastSearch.mSearchStatus = ECSearchStatus.STOPPED;
+                        startSearchTask(mApp.mStartSearch);
+                        mApp.mStartSearch = null;
+                    }
+                } else if (event == AlertDialogFragment.ALERTDIALOG_EVENT_CANCEL) {
+                    mApp.mStartSearch = null;
+                }
+            }
+        }
     }
     
 }
