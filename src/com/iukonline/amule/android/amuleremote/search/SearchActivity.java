@@ -285,7 +285,7 @@ public class SearchActivity extends SherlockFragmentActivity implements AlertDia
                 if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK) {
                     if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.alertDialogEvent: running search termination confirmed");
                     if (mApp.mStartSearch != null) {
-                        lastSearch.mSearchStatus = ECSearchStatus.STOPPED;
+                        if (lastSearch != null) lastSearch.mSearchStatus = ECSearchStatus.STOPPED;
                         startSearchTask(mApp.mStartSearch);
                         mApp.mStartSearch = null;
                     }
