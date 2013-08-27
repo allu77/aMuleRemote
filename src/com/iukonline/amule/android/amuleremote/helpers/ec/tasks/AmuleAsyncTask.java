@@ -67,6 +67,8 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
             return e1;
         } catch (IOException e1) {
             return e1;
+        } catch (IllegalArgumentException e1) {
+            return e1;            
         }
         
         try {

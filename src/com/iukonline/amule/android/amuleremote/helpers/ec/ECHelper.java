@@ -394,7 +394,7 @@ public class ECHelper {
         return mAmuleSocket;
     }
     
-    public ECClient getECClient() throws UnknownHostException, IOException {
+    public ECClient getECClient() throws UnknownHostException, IOException, IllegalArgumentException {
         
         // TBV: This should prevent the null Exception on mServerVersion. However it's not clear why that happened.
         // Need to check if client is null when calling getECClient
