@@ -252,8 +252,19 @@ public class AmuleControllerApplication extends Application {
         }
         
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        normalizeSettings();
         refreshServerSettings();
         refreshRefreshSettings();
+    }
+    
+    private void normalizeSettings() {
+
+        SharedPreferences.Editor e = mSettings.edit();
+        if (mSettings.getInt(AC_SETTING_LAST_APP_VER, -1) < 17) {
+            e.remove(AmuleControllerApplication.AC_SETTING_ENABLE_EXCEPTIONS);
+        }
+        e.commit();
+        
     }
 
     

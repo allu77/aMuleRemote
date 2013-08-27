@@ -16,7 +16,7 @@
         
     </PreferenceCategory>
     <PreferenceCategory android:key="debug" android:title="@string/settings_label_debug">
-        <CheckBoxPreference android:key="debug_enable_exceptions" android:title="@string/settings_label_debug_enable_exceptions" android:summary="@string/settings_summary_debug_enable_exceptions"/>
+  <!--       <CheckBoxPreference android:key="debug_enable_exceptions" android:title="@string/settings_label_debug_enable_exceptions" android:summary="@string/settings_summary_debug_enable_exceptions" android:enabled="false" android:selectable="false"/> -->
         <CheckBoxPreference android:key="debug_enable_log"        android:title="@string/settings_label_debug_enable_log"        android:summary="@string/settings_summary_debug_enable_log" />
         <CheckBoxPreference android:key="debug_enable_options"    android:title="@string/settings_label_debug_enable_options"    android:summary="@string/settings_summary_debug_enable_options"/>
     </PreferenceCategory>
