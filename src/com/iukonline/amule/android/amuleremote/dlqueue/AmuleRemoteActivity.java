@@ -123,7 +123,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Ale
         Intent i = getIntent();
         String a = i.getAction();
         
-        mHandleURI = a.equals(Intent.ACTION_VIEW) ? i.getData().toString() : NO_URI_TO_HANDLE; 
+        mHandleURI = (a != null && a.equals(Intent.ACTION_VIEW)) ? i.getData().toString() : NO_URI_TO_HANDLE; 
 
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreate: end");
 
