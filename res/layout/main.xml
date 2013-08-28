@@ -31,14 +31,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="top"
-                    android:text="eDonkey: " />
+                    android:text="@string/stats_label_edonkey" />
 
                 <TextView
                     android:id="@+id/main_edonkey_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="top"
-                    android:text="STATUS" />
+                    android:text="STATUS"
+                    tools:ignore="HardcodedText" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -51,14 +53,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="bottom"
-                    android:text="KAD: " />
+                    android:text="@string/stats_label_kad" />
 
                 <TextView
                     android:id="@+id/main_kad_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="bottom"
-                    android:text="STATUS" />
+                    android:text="STATUS"
+                    tools:ignore="HardcodedText" />
+
             </LinearLayout>
         </LinearLayout>
 
@@ -74,7 +78,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:text="--"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/main_ul_rate"
@@ -82,7 +87,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:text="--"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                tools:ignore="HardcodedText" />
+
         </LinearLayout>
     </LinearLayout>
 

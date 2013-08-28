@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">"aMule Remote"</string>
     <string name="dlqueue_empty">"Nessun file nella coda di download"</string>
-    <string name="menu_dl_pause">"Pausa"</string>
-    <string name="menu_dl_resume">"Riprendi"</string>
-    <string name="menu_dl_delete">"Elimina"</string>
     <string name="label_filename">"Nome file:"</string>
     <string name="menu_opt_settings">"Impostazioni"</string>
     <string name="partfile_status_waiting">"In attesa"</string>
@@ -48,9 +45,6 @@
     <string name="menu_detail_opt_a4af_auto">"Sposta ogni A4AF su questo file (auto)"</string>
     <string name="menu_detail_opt_a4af_away">"Sposta ogni A4AF sugli altri file"</string>
     <string name="menu_opt_added2k">"Aggiungi link ED2K"</string>
-    <string name="added2k_label_ed2k">"Incolla il link ED2K"</string>
-    <string name="added2k_button_ok">"OK"</string>
-    <string name="added2k_button_cancel">"Annulla"</string>
     <string name="partfile_prio_low">"Bassa"</string>
     <string name="partfile_prio_normal">"Normale"</string>
     <string name="partfile_prio_high">"Alta"</string>
@@ -62,7 +56,7 @@
     <string name="menu_detail_opt_prio">"Cambia priorità"</string>
     <string name="partfile_prio_auto">"Automatica"</string>
     <string name="menu_detail_opt_a4af">"A4AF"</string>
-    <string name="menu_opt_sort">"Ordina per#8230;"</string>
+    <string name="menu_opt_sort">"Ordina per&#8230;"</string>
     <string name="menu_opt_sort_filename">"Nome del file"</string>
     <string name="menu_opt_sort_status">"Stato"</string>
     <string name="menu_opt_sort_transfered">"Trasferito"</string>
@@ -76,8 +70,6 @@
     <string name="settings_label_client_read_timeout">"Timeout di lettura (secondi)"</string>
     <string name="settings_summary_client_connect_timeout">"Numero massimo di secondi di attesa per la realizzazione del collegamento"</string>
     <string name="settings_summary_client_read_timeout">"Numero massimo di secondi di attesa di una risposta"</string>
-    <string name="partfile_detail_label_comments">"Commenti"</string>
-    <string name="partfile_detail_label_sorucenames">"Nomi delle sorgenti"</string>
     <string name="dlqueue_server_not_queried">"Non connesso al server aMule"</string>
     <string name="alert_dialog_ok">"OK"</string>
     <string name="alert_dialog_cancel">"Annulla"</string>
@@ -98,8 +90,8 @@
     <string name="label_release_notes">"Release notes:"</string>
     <string name="label_new_version_available">"E' disponibile una nuova versione!"</string>
     <string name="crash_toast_text">"Ooooops! Mi sono bloccato, ma è possibile inviare un rapporto al mio sviluppatore per aiutarlo a risolvere il problema! Per favore clicca sulla notifica della barra delle applicazioni."</string>
-	<string name="crash_notif_ticker_text">"Errore fatale, si prega di inviare un rapporto#8230;"</string>
-	<string name="crash_notif_title">"aMule Remote è andato in crash#8230;"</string>
+	<string name="crash_notif_ticker_text">"Errore fatale, si prega di inviare un rapporto&#8230;"</string>
+	<string name="crash_notif_title">"aMule Remote è andato in crash&#8230;"</string>
 	<string name="crash_notif_text">"Per favore clicca qui per aiutare a correggere questo problema."</string>
 	<string name="crash_dialog_title">"aMule Remote è andato in crash"</string>
 	<string name="crash_dialog_text">"Si è verificato un errore imprevisto, che ha costratto l'applicazione a fermarsi. Per favore, aiutami a risolvere questo problema inviandomi i dettagli dell'errore. Tutto quello che devi fare è cliccare su 'OK'. Se questo problema si verifica frequentemente, per favore abilita il tracciamento di debug nel menu delle impostazioni, in modo che possa in futuro ottenere ulteriori informazioni su questo problema."</string>
@@ -135,14 +127,11 @@ ACRA (http://acra.googlecode.com/).\n
 	<string name="dlqueue_dialog_title_no_server_configured">"PC aMule non configurato"</string>
 	<string name="dlqueue_dialog_message_no_server_configured">"Premere OK per passare alla schermata delle impostazioni"</string>
 	<string name="error_null_client">"Impossibile creare il client. Verifica le impostazioni."</string>
-	<string name="manual_bug_report_text">"
-Si prega di non utilizzare questa funzione se si è verificato un incidente e hai già inviato il report. \ Rapporto nManual deve essere utilizzato solo per segnalare problemi che non causano crash dell'applicazione. \ NSe è necessario inviare un rapporto, aggiungete il vostro indirizzo e-mail e una descrizione del problema nella casella qui sotto.
-	"</string>
 	<string name="menu_opt_help">"Aiuto"</string>
 	<string name="search_label_file_name">"Nome file"</string>
 	<string name="search_label_search_type">"Tipo di ricerca"</string>
 	<string name="search_button_go">"Vai!"</string>
-	<string name="search_no_results_yet">"Nessun risultato da mostrare#8230;\nContinua ad aggiornare fino a quando non comprariranno dei risultati!"</string>
+	<string name="search_no_results_yet">"Nessun risultato da mostrare&#8230;\nContinua ad aggiornare fino a quando non comprariranno dei risultati!"</string>
 	<string name="menu_opt_search">"Cerca"</string>
 	<string name="search_label_file_type">"Tipo di file"</string>
 	<string name="search_label_extension">"Estensione"</string>

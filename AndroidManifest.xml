@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.READ_LOGS"/>
 
-    <application android:label="@string/app_name" android:name=".AmuleControllerApplication" android:icon="@drawable/amule_icon" android:theme="@style/Theme.AmuleRemote">
+    <application android:label="@string/app_name" android:name=".AmuleControllerApplication" android:icon="@drawable/amule_icon" android:theme="@style/Theme.AmuleRemote" android:allowBackup="true">
         
         <activity android:name=".dlqueue.AmuleRemoteActivity" android:label="@string/app_name">
             <intent-filter>

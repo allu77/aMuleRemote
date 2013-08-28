@@ -1,207 +1,296 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:id="@+id/LinearLayout1"
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent">
-  
-    <RelativeLayout android:id="@+id/partfile_detail_details" android:layout_height="wrap_content" android:layout_width="fill_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-		<TextView
-		    android:id="@+id/partfile_detail_filename"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:layout_alignParentLeft="true"
-		    android:layout_alignParentTop="true"
-		    android:paddingTop="5dip"
-		    android:text="FILENAME" >
+    <RelativeLayout
+        android:id="@+id/partfile_detail_details"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
 
-		</TextView>
+        <TextView
+            android:id="@+id/partfile_detail_filename"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:paddingTop="5dip"
+            android:text="FILENAME"
+            tools:ignore="HardcodedText" >
+        </TextView>
 
-		<TextView android:layout_height="wrap_content" android:id="@+id/partfile_detail_label_category" android:layout_width="wrap_content" android:layout_below="@+id/partfile_detail_filename" android:layout_alignParentLeft="true" android:text="@string/partfile_detail_label_category" android:paddingTop="10dip"></TextView>
-	    <TextView android:text="TextView" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_alignBaseline="@+id/partfile_detail_label_category" android:layout_alignBottom="@+id/partfile_detail_label_category" android:layout_toRightOf="@+id/partfile_detail_label_category" android:id="@+id/partfile_detail_category"></TextView>
-		
+        <TextView
+            android:id="@+id/partfile_detail_label_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/partfile_detail_filename"
+            android:paddingTop="10dip"
+            android:text="@string/partfile_detail_label_category" >
+        </TextView>
 
-	    <TextView
-	   		android:id="@+id/textView2" 
-	    	android:layout_height="wrap_content" 
-	    	android:layout_width="wrap_content" 
-	    	android:layout_below="@+id/partfile_detail_label_category" 
-	    	android:layout_alignParentLeft="true" 
-	    	android:text="@string/partfile_detail_label_status" 
-	    	android:paddingTop="10dip"
-	    	>
-	   	</TextView>
-	   	
-	    <TextView 
-	    	android:text="TextView" 
-	    	android:layout_height="wrap_content" 
-	    	android:layout_width="wrap_content" 
-	    	android:layout_alignBaseline="@+id/textView2" 
-	    	android:layout_alignBottom="@+id/textView2" 
-	    	android:layout_toRightOf="@+id/textView2" 
-	    	android:id="@+id/partfile_detail_status"
-	    	>
-	   	</TextView>
-	
-	
-	    <TextView 
-	    	android:layout_height="wrap_content" 
-	    	android:id="@+id/textView12" 
-	    	android:layout_alignBaseline="@+id/textView2" 
-	    	android:layout_alignBottom="@+id/textView2" 
-	    	android:layout_width="wrap_content"
-	    	android:layout_toLeftOf="@+id/partfile_detail_priority" 
-	    	android:text="@string/partfile_detail_label_priority">
-	   	</TextView>
-	    
-	    <TextView 
-	    	android:text="TextView" 
-	    	android:layout_alignParentRight="true" 
-	    	android:layout_height="wrap_content" 
-	    	android:layout_width="wrap_content" 
-	    	android:layout_alignBaseline="@+id/textView2" 
-	    	android:layout_alignBottom="@+id/textView2" 
-	    	android:id="@+id/partfile_detail_priority">
-	   	</TextView>
-	
-	    <TextView 
-	    	android:layout_height="wrap_content" 
-	    	android:id="@+id/textView4" 
-	    	android:layout_width="wrap_content" 
-	    	android:layout_below="@+id/partfile_detail_priority" 
-	    	android:layout_alignParentLeft="true" 
-	    	android:text="@string/partfile_detail_label_done">
-	   	</TextView>
-	   	
-	    <TextView 
-	    	android:text="TextView" 
-	    	android:layout_height="wrap_content" 
-	    	android:layout_width="wrap_content" 
-	    	android:layout_alignBaseline="@+id/textView4" 
-	    	android:layout_alignBottom="@+id/textView4" 
-	    	android:layout_toRightOf="@+id/textView4" 
-	    	android:id="@+id/partfile_detail_done">
-	   	</TextView>
-	
-	
-	    <TextView 
-	    	android:layout_height="wrap_content" 
-	    	android:id="@+id/textView3" 
-	    	android:layout_width="wrap_content" 
-	    	android:layout_below="@+id/partfile_detail_priority" 
-	    	android:layout_toLeftOf="@+id/partfile_detail_size" 
-	    	android:layout_alignBaseline="@+id/textView4" 
-	   		android:layout_alignBottom="@+id/textView4"
-	    	android:text="@string/partfile_detail_label_size">
-	   	</TextView>
-	   	
-	    <TextView 
-	    	android:text="TextView" 
-	    	android:layout_height="wrap_content" 
-	    	android:layout_width="wrap_content" 
-	    	android:layout_alignBaseline="@+id/textView3" 
-	    	android:layout_alignBottom="@+id/textView3" 
-	    	android:layout_alignParentRight="true" 
-	    	android:id="@+id/partfile_detail_size">
-	   	</TextView>
-	
-	
-	
-	
-	    <TextView android:layout_height="wrap_content" android:id="@+id/textView5" android:layout_width="wrap_content" android:layout_below="@+id/partfile_detail_done" android:layout_alignParentLeft="true" android:text="@string/partfile_detail_label_remaining"></TextView>
-	    <TextView android:text="TextView" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_alignBaseline="@+id/textView5" android:layout_alignBottom="@+id/textView5" android:layout_toRightOf="@+id/textView5" android:id="@+id/partfile_detail_remaining"></TextView>
+        <TextView
+            android:id="@+id/partfile_detail_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/partfile_detail_label_category"
+            android:layout_alignBottom="@+id/partfile_detail_label_category"
+            android:layout_toRightOf="@+id/partfile_detail_label_category"
+            android:text="Uncategorized"
+            tools:ignore="HardcodedText" >
 
-	    <TextView android:layout_height="wrap_content" android:id="@+id/partfile_detail_label_lastseencomplete" android:layout_width="wrap_content" android:layout_below="@+id/partfile_detail_remaining" android:layout_alignParentLeft="true" android:text="@string/partfile_detail_label_lastseencomplete"></TextView>
-	    <TextView android:text="TextView" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_alignBaseline="@+id/partfile_detail_label_lastseencomplete" android:layout_alignBottom="@+id/textView5" android:layout_toRightOf="@+id/partfile_detail_label_lastseencomplete" android:id="@+id/partfile_detail_lastseencomplete"></TextView>
-	    	
-	
-	
-	    <TextView android:layout_height="wrap_content" android:id="@+id/textView6" android:layout_width="wrap_content" android:layout_below="@+id/partfile_detail_label_lastseencomplete" android:layout_alignParentLeft="true" android:text="@string/partfile_detail_label_sources" android:paddingTop="15dip"></TextView>
-	
-	    <TextView 
-	    	android:layout_height="wrap_content" 
-	    	android:id="@+id/textView7" 
-	    	android:layout_width="wrap_content" 
-	    	android:layout_below="@+id/textView6" 
-	    	android:layout_alignParentLeft="true" 
-	    	android:text="@string/partfile_detail_label_sources_available">
-	   	</TextView>
-	    <TextView 
-	    	android:text="TextView" 
-	    	android:layout_height="wrap_content" 
-	    	android:layout_width="wrap_content" 
-	    	android:layout_alignBaseline="@+id/textView7" 
-	    	android:layout_alignBottom="@+id/textView7" 
-	    	android:layout_toRightOf="@+id/textView7" 
-	    	android:id="@+id/partfile_detail_sources_available">
-	   	</TextView>
-	
-	    <TextView 
-	    	android:layout_height="wrap_content" 
-	    	android:id="@+id/textView9" 
-	    	android:layout_width="wrap_content" 
-	    	android:layout_alignBaseline="@+id/textView7" 
-	    	android:layout_alignBottom="@+id/textView7"
-	    	android:layout_toLeftOf="@+id/partfile_detail_sources_notcurrent" 
-	    	android:text="@string/partfile_detail_label_sources_notcurrent">
-	   	</TextView>
-	    <TextView 
-	    	android:text="TextView" 
-	    	android:layout_height="wrap_content" 
-	    	android:layout_width="wrap_content" 
-	    	android:layout_alignBaseline="@+id/textView7" 
-	    	android:layout_alignBottom="@+id/textView7" 
-	    	android:layout_alignParentRight="true"
-	    	android:id="@+id/partfile_detail_sources_notcurrent">
-	   	</TextView>
-	   	
-	   	
-	   	
-	
-	    <TextView 
-	    	android:layout_height="wrap_content" 
-	    	android:id="@+id/textView10" 
-	    	android:layout_width="wrap_content" 
-	    	android:layout_below="@+id/textView7" 
-	    	android:layout_alignParentLeft="true" 
-	    	android:text="@string/partfile_detail_label_sources_active">
-	   	</TextView>
-	    <TextView 
-	    	android:text="TextView" 
-	    	android:layout_height="wrap_content" 
-	    	android:layout_width="wrap_content" 
-	    	android:layout_alignBaseline="@+id/textView10" 
-	    	android:layout_alignBottom="@+id/textView10" 
-	    	android:layout_toRightOf="@+id/textView10" 
-	    	android:id="@+id/partfile_detail_sources_active">
-	   	</TextView>
-	
-	    <TextView 
-	    	android:layout_height="wrap_content" 
-	    	android:id="@+id/textView8" 
-	    	android:layout_width="wrap_content" 
-	    	android:layout_alignBaseline="@+id/textView10" 
-	    	android:layout_alignBottom="@+id/textView10"
-	    	android:layout_toLeftOf="@+id/partfile_detail_sources_a4af" 
-	    	android:text="@string/partfile_detail_label_sources_a4af">
-	   	</TextView>
-	    <TextView 
-	    	android:text="TextView" 
-	    	android:layout_height="wrap_content" 
-	    	android:layout_width="wrap_content" 
-	    	android:layout_alignBaseline="@+id/textView10" 
-	    	android:layout_alignBottom="@+id/textView10" 
-	    	android:layout_alignParentRight="true"
-	   		android:id="@+id/partfile_detail_sources_a4af">
-	   	</TextView>
-	
-	
-		<TextView android:layout_height="wrap_content" android:id="@+id/textView11" android:layout_width="wrap_content" android:layout_below="@+id/partfile_detail_sources_active" android:layout_alignParentLeft="true" android:text="@string/partfile_detail_label_link" android:paddingTop="15dip"></TextView>
-	    <TextView android:text="TextView" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/textView11"   android:id="@+id/partfile_detail_link" android:singleLine="true" android:paddingBottom="15dip"></TextView>
-		
+        </TextView>
 
-	</RelativeLayout>
-	
-	
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/partfile_detail_label_category"
+            android:paddingTop="10dip"
+            android:text="@string/partfile_detail_label_status" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/partfile_detail_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView2"
+            android:layout_alignBottom="@+id/textView2"
+            android:layout_toRightOf="@+id/textView2"
+            android:text="Paused"
+            tools:ignore="HardcodedText" >
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView2"
+            android:layout_alignBottom="@+id/textView2"
+            android:layout_toLeftOf="@+id/partfile_detail_priority"
+            android:text="@string/partfile_detail_label_priority" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/partfile_detail_priority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView2"
+            android:layout_alignBottom="@+id/textView2"
+            android:layout_alignParentRight="true"
+            android:text="High"
+            tools:ignore="HardcodedText" >
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/partfile_detail_priority"
+            android:text="@string/partfile_detail_label_done" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/partfile_detail_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView4"
+            android:layout_alignBottom="@+id/textView4"
+            android:layout_toRightOf="@+id/textView4"
+            android:text="1MB"
+            tools:ignore="HardcodedText" >
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView4"
+            android:layout_alignBottom="@+id/textView4"
+            android:layout_below="@+id/partfile_detail_priority"
+            android:layout_toLeftOf="@+id/partfile_detail_size"
+            android:text="@string/partfile_detail_label_size" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/partfile_detail_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView3"
+            android:layout_alignBottom="@+id/textView3"
+            android:layout_alignParentRight="true"
+            android:text="10MB"
+            tools:ignore="HardcodedText" >
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/partfile_detail_done"
+            android:text="@string/partfile_detail_label_remaining" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/partfile_detail_remaining"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView5"
+            android:layout_alignBottom="@+id/textView5"
+            android:layout_toRightOf="@+id/textView5"
+            android:text="1:00 mins"
+            tools:ignore="HardcodedText" >
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/partfile_detail_label_lastseencomplete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/partfile_detail_remaining"
+            android:text="@string/partfile_detail_label_lastseencomplete" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/partfile_detail_lastseencomplete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/partfile_detail_label_lastseencomplete"
+            android:layout_alignBottom="@+id/textView5"
+            android:layout_toRightOf="@+id/partfile_detail_label_lastseencomplete"
+            android:text="Never"
+            tools:ignore="HardcodedText" >
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/partfile_detail_label_lastseencomplete"
+            android:paddingTop="15dip"
+            android:text="@string/partfile_detail_label_sources" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/textView6"
+            android:text="@string/partfile_detail_label_sources_available" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/partfile_detail_sources_available"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView7"
+            android:layout_alignBottom="@+id/textView7"
+            android:layout_toRightOf="@+id/textView7"
+            android:text="1"
+            tools:ignore="HardcodedText" >
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView7"
+            android:layout_alignBottom="@+id/textView7"
+            android:layout_toLeftOf="@+id/partfile_detail_sources_notcurrent"
+            android:text="@string/partfile_detail_label_sources_notcurrent" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/partfile_detail_sources_notcurrent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView7"
+            android:layout_alignBottom="@+id/textView7"
+            android:layout_alignParentRight="true"
+            android:text="0"
+            tools:ignore="HardcodedText" >
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/textView7"
+            android:text="@string/partfile_detail_label_sources_active" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/partfile_detail_sources_active"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView10"
+            android:layout_alignBottom="@+id/textView10"
+            android:layout_toRightOf="@+id/textView10"
+            android:text="1"
+            tools:ignore="HardcodedText" >
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView10"
+            android:layout_alignBottom="@+id/textView10"
+            android:layout_toLeftOf="@+id/partfile_detail_sources_a4af"
+            android:text="@string/partfile_detail_label_sources_a4af" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/partfile_detail_sources_a4af"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView10"
+            android:layout_alignBottom="@+id/textView10"
+            android:layout_alignParentRight="true"
+            android:text="0"
+            tools:ignore="HardcodedText" >
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/partfile_detail_sources_active"
+            android:paddingTop="15dip"
+            android:text="@string/partfile_detail_label_link" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/partfile_detail_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView11"
+            android:paddingBottom="15dip"
+            android:singleLine="true"
+            android:text="ed2k://...../"
+            tools:ignore="HardcodedText" >
+
+        </TextView>
+    </RelativeLayout>
+
 </ScrollView>

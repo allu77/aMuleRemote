@@ -1,5 +1,6 @@
 package com.iukonline.amule.android.amuleremote.partfile;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import android.os.Bundle;
@@ -117,7 +118,7 @@ public class PartFileDetailsFragment extends SherlockFragment implements ECPartF
                             mPartFile.getLastSeenComp() == null || mPartFile.getLastSeenComp().getTime() == 0 ? 
                             getResources().getString(R.string.partfile_last_seen_never) 
                             : 
-                            new SimpleDateFormat("d MMM yyyy HH:mm:ss").format(mPartFile.getLastSeenComp()));
+                            DateFormat.getDateTimeInstance().format(mPartFile.getLastSeenComp()));
             
             ((TextView) v.findViewById(R.id.partfile_detail_sources_available)).setText(Integer.toString(mPartFile.getSourceCount() - mPartFile.getSourceNotCurrent()));
             ((TextView) v.findViewById(R.id.partfile_detail_sources_active)).setText(Integer.toString(mPartFile.getSourceXfer()));

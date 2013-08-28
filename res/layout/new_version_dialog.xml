@@ -1,18 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent">
-    <TextView android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:layout_gravity="center_horizontal" android:id="@+id/TextView1" android:text="@string/label_new_version_available"></TextView>
-    
-    <TextView android:layout_gravity="center_horizontal" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/new_version_dialog_download_url" android:text="URL" android:layout_marginTop="15dp" android:autoLink="web"></TextView>
-    
-    <TextView android:layout_gravity="center_horizontal" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/textView2" android:text="@string/label_release_notes" android:layout_marginTop="15dp"></TextView>
-    <ScrollView android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/ScrollView1">
-        <LinearLayout android:id="@+id/linearLayout1" android:layout_width="match_parent" android:layout_height="wrap_content">
-            <TextView android:layout_gravity="center_horizontal" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/new_version_dialog_release_notes"></TextView>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/TextView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/label_new_version_available"
+        android:textAppearance="?android:attr/textAppearanceLarge" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/new_version_dialog_download_url"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:autoLink="web"
+        android:text="URL"
+        tools:ignore="HardcodedText" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:text="@string/label_release_notes" >
+    </TextView>
+
+    <ScrollView
+        android:id="@+id/ScrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/new_version_dialog_release_notes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" >
+            </TextView>
         </LinearLayout>
     </ScrollView>
-    
+
 </LinearLayout>

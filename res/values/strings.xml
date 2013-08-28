@@ -2,9 +2,6 @@
 <resources >
     <string name="app_name">aMule Remote</string>
     <string name="dlqueue_empty">No file in download queue</string>
-    <string name="menu_dl_pause">Pause</string>
-    <string name="menu_dl_resume">Resume</string>
-    <string name="menu_dl_delete">Delete</string>
     <string name="label_filename">File Name:</string>
     <string name="menu_opt_settings">Settings</string>
     <string name="partfile_status_waiting">Waiting</string>
@@ -49,9 +46,6 @@
     <string name="menu_detail_opt_a4af_auto">Switch A4AF Auto</string>
     <string name="menu_detail_opt_a4af_away">Move A4AF away</string>
     <string name="menu_opt_added2k">Add ED2K link</string>
-    <string name="added2k_label_ed2k">Paste ED2K link</string>
-    <string name="added2k_button_ok">OK</string>
-    <string name="added2k_button_cancel">Cancel</string>
     <string name="partfile_prio_low">Low</string>
     <string name="partfile_prio_normal">Normal</string>
     <string name="partfile_prio_high">High</string>
@@ -77,8 +71,6 @@
     <string name="settings_label_client_read_timeout">Read timeout (sec)</string>
     <string name="settings_summary_client_connect_timeout">Max seconds to wait for connection establishment</string>
     <string name="settings_summary_client_read_timeout">Max seconds to wait for a reply</string>
-    <string name="partfile_detail_label_comments">Comments</string>
-    <string name="partfile_detail_label_sorucenames">Source names</string>
     <string name="dlqueue_server_not_queried">Not connected to aMule server</string>
     <string name="alert_dialog_ok">OK</string>
     <string name="alert_dialog_cancel">Cancel</string>
@@ -138,9 +130,6 @@
 	<string name="dlqueue_dialog_title_no_server_configured">aMule PC not configured</string>
 	<string name="dlqueue_dialog_message_no_server_configured">Press OK to go to the settings screen</string>
 	<string name="error_null_client">Could not create client. Please check your settings.</string>
-	<string name="manual_bug_report_text">
-Please do not use this feature if you experienced a crash and you already sent the report.\nManual report should be used only to report issues which do not cause application crash.\nIf you need to send a report, add your e-mail address and a description of the problem in the following box.
-	</string>
 	<string name="menu_opt_help">Help</string>
 	<string name="search_label_file_name">File name</string>
 	<string name="search_label_search_type">Search type</string>
@@ -180,4 +169,6 @@ Please do not use this feature if you experienced a crash and you already sent t
 	<string name="guiutils_eta_mins">"%1$d:%2$02d mins"</string>
 	<string name="guiutils_eta_hours">"%1$d:%2$02d hours"</string>
 	<string name="guiutils_eta_days">"%d days"</string>
+	<string name="stats_label_edonkey">"eDonkey: "</string>
+	<string name="stats_label_kad">"KAD: "</string>
 </resources>
