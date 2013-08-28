@@ -169,6 +169,6 @@
 	<string name="guiutils_eta_mins">"%1$d:%2$02d mins"</string>
 	<string name="guiutils_eta_hours">"%1$d:%2$02d hours"</string>
 	<string name="guiutils_eta_days">"%d days"</string>
-	<string name="stats_label_edonkey">"eDonkey: "</string>
-	<string name="stats_label_kad">"KAD: "</string>
+	<string name="stats_label_edonkey" translatable="false">"eDonkey: "</string>
+	<string name="stats_label_kad" translatable="false">"KAD: "</string>
 </resources>

@@ -162,4 +162,10 @@ ACRA (http://acra.googlecode.com/).\n
 	<string name="search_no_search">"Nessuna ricerca ancora eseguita"</string>
 	<string name="category_uncategorized">"Senza categoria"</string>
 	<string name="search_details_label_sources">"Fonti: %1$d (%2$d)"</string>
+	
+	<string name="partfile_last_seen_never">Mai</string>
+	<string name="guiutils_eta_mins">"%1$d:%2$02d minuti"</string>
+	<string name="guiutils_eta_hours">"%1$d:%2$02d ore"</string>
+	<string name="guiutils_eta_days">"%d giorni"</string>
+	
 </resources>

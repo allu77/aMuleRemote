@@ -6,7 +6,7 @@
         <item >2.3.1</item>
 <!--           <item >Fake server (only for debug)</item> --> 
     </string-array>
-    <string-array name="settings_server_version_value">
+    <string-array name="settings_server_version_value" translatable="false">
         <item >V200</item>
         <item >V203</item>
         <item >V204</item>
@@ -17,7 +17,7 @@
         <item >Global</item>
         <item >Kad</item>
     </string-array>
-    <string-array name="search_size_dim_description">
+    <string-array name="search_size_dim_description" translatable="false">
         <item >Bytes</item>
         <item >KiloBytes</item>
         <item >MegaBytes</item>
