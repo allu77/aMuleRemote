@@ -150,7 +150,8 @@
 	<string name="search_title">Searches</string>
 	<string name="dialog_whats_new_welcome">Welcome to aMule Remote %s!</string>
 	<string name="dialog_whats_new_whats_new">What\'s new:</string>
-	<string name="dialog_whats_new_features">Various bugfixes</string>
+	<string name="dialog_whats_new_features_14">Search feature is finally available (only for aMule 2.3.1)!</string>
+	<string name="dialog_whats_new_features_16">Italian localization</string>
 	<string name="menu_opt_reset_app_version_info">Reset app version info</string>
 	<string name="menu_search_details_opt_sort_sources">Sources</string>
 	<string name="menu_search_details_opt_sort_sources_complete">Complete sources</string>

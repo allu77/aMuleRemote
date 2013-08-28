@@ -316,9 +316,13 @@ public class AmuleControllerApplication extends Application {
     
     public boolean showWhatsNew(FragmentManager fm) {
         
-        if (mVersionCode > mSettings.getInt(AC_SETTING_LAST_APP_VER, -1)) {
+        int currVersion = mSettings.getInt(AC_SETTING_LAST_APP_VER, -1);
+        if (mVersionCode > currVersion) {
             if (fm.findFragmentByTag(TAG_DIALOG_WHATS_NEW) == null) {
-                WhatsNewDialogFragment d = new WhatsNewDialogFragment(getResources().getString(R.string.dialog_whats_new_welcome,  mVersionName));
+                StringBuilder sb = new StringBuilder();
+                if (currVersion < 14) sb.append(getResources().getString(R.string.dialog_whats_new_features_14)); 
+                if (currVersion < 17) sb.append("\n" + getResources().getString(R.string.dialog_whats_new_features_16));
+                WhatsNewDialogFragment d = new WhatsNewDialogFragment(getResources().getString(R.string.dialog_whats_new_welcome, mVersionName), sb.toString());
                 d.show(fm, TAG_DIALOG_WHATS_NEW);
                 SharedPreferences.Editor e = mSettings.edit();
                 e.putInt(AmuleControllerApplication.AC_SETTING_LAST_APP_VER, mVersionCode);

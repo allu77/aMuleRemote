@@ -147,7 +147,8 @@ ACRA (http://acra.googlecode.com/).\n
 	<string name="search_title">"Ricerche"</string>
 	<string name="dialog_whats_new_welcome">"Benvenuto in aMule Remote %s!"</string>
 	<string name="dialog_whats_new_whats_new">"Novità:"</string>
-	<string name="dialog_whats_new_features">"Varie correzioni di bug"</string>
+	<string name="dialog_whats_new_features_14">"Funzionalità di ricerca finalmente disponibile (solo per aMule 2.3.1)!"</string>
+	<string name="dialog_whats_new_features_16">"Traduzione in italiano"</string>
 	<string name="menu_opt_reset_app_version_info">"Ripristinare le informazioni sulla versione dell'app"</string>
 	<string name="menu_search_details_opt_sort_sources">"Sorgenti"</string>
 	<string name="menu_search_details_opt_sort_sources_complete">"Fonti complete"</string>
