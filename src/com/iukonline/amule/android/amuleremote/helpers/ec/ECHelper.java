@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.acra.ErrorReporter;
+import org.acra.ACRA;
 
 import android.os.AsyncTask;
 import android.os.DropBoxManager;
@@ -454,7 +454,7 @@ public class ECHelper {
         }
         
         if (mECClient != null) {
-            ErrorReporter.getInstance().putCustomData("ServerVersion", mECClient.getServerVersion());
+            ACRA.getErrorReporter().putCustomData("ServerVersion", mECClient.getServerVersion());
             // TBV: Can be removed? setClientStale(false);
         }
         return mECClient;
@@ -569,6 +569,6 @@ public class ECHelper {
     }
     
     public void sendParsingExceptionIfEnabled(Exception e) {
-        if (mApp.sendExceptions) ErrorReporter.getInstance().handleException(e);
+        if (mApp.sendExceptions) ACRA.getErrorReporter().handleException(e);
     }
 }
