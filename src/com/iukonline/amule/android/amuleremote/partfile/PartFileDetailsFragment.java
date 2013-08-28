@@ -1,7 +1,6 @@
 package com.iukonline.amule.android.amuleremote.partfile;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 import android.os.Bundle;
 import android.util.Log;
