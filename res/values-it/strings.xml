@@ -143,9 +143,9 @@ ACRA (http://acra.googlecode.com/).\n
 	<string name="stats_status_firewalled">"Firewalled"</string>
 	<string name="stats_status_connected">"Connesso"</string>
 	<string name="stats_status_connecting">"Connessione in corso"</string>
-	<string name="dialog_start_search">"aMule non supporta ricerche multiple simultanee da remoto. Avviare questa ricerca si fermerà quella attualmente in esecuzione. Vuoi continuare?"</string>
+	<string name="dialog_start_search">"aMule non supporta ricerche multiple simultanee da remoto. Avviando questa ricerca si fermerà quella attualmente in esecuzione. Vuoi continuare?"</string>
 	<string name="search_title">"Ricerche"</string>
-	<string name="dialog_whats_new_welcome">"Benvenuti in aMule Remote %s!"</string>
+	<string name="dialog_whats_new_welcome">"Benvenuto in aMule Remote %s!"</string>
 	<string name="dialog_whats_new_whats_new">"Novità:"</string>
 	<string name="dialog_whats_new_features">"Varie correzioni di bug"</string>
 	<string name="menu_opt_reset_app_version_info">"Ripristinare le informazioni sulla versione dell'app"</string>
