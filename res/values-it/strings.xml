@@ -5,7 +5,7 @@
     <string name="menu_opt_settings">"Impostazioni"</string>
     <string name="partfile_status_waiting">"In attesa"</string>
     <string name="partfile_status_paused">"In pausa"</string>
-    <string name="partfile_status_downloading">"Download in corso"</string>
+    <string name="partfile_status_downloading">"Download"</string>
     <string name="settings_label_server_host">"Indirizzo PC aMule"</string>
     <string name="settings_label_server_port">"Porta"</string>
     <string name="settings_label_server_password">"Password"</string>
@@ -65,7 +65,7 @@
     <string name="menu_opt_sort_speed">"Velocità"</string>
     <string name="menu_opt_sort_priority">"Priorità"</string>
     <string name="menu_opt_sort_remaining">"Tempo rimanente"</string>
-    <string name="menu_opt_sort_last_seen_complete">"Ultima volta visto completo"</string>
+    <string name="menu_opt_sort_last_seen_complete">"Visto completo"</string>
     <string name="settings_label_client_connect_timeout">"Timeout di connessione (secondi)"</string>
     <string name="settings_label_client_read_timeout">"Timeout di lettura (secondi)"</string>
     <string name="settings_summary_client_connect_timeout">"Numero massimo di secondi di attesa per la realizzazione del collegamento"</string>
@@ -101,7 +101,7 @@
 	<string name="dialog_rename_partfile">"Inserire il nuovo nome del file"</string>
 	<string name="dialog_ed2k_notify">"Link ED2K aggiunto"</string>
 	<string name="menu_opt_refresh_cat">"Aggiorna Categorie"</string>
-	<string name="partfile_detail_label_lastseencomplete">"Ultima volta visto completo:"</string>
+	<string name="partfile_detail_label_lastseencomplete">"Visto completo:"</string>
 	<string name="partfile_detail_label_category">"Categoria: "</string>
 	<string name="menu_opt_send_report">"Segnala un bug"</string>
 	<string name="settings_label_server_version">"Versione di aMule"</string>
