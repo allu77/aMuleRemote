@@ -12,7 +12,7 @@
 	<FrameLayout
 		android:id="@+id/partfile_tabcontent"
 		android:layout_width="match_parent"
-		android:layout_height="1dip"
+		android:layout_height="0dip"
 		android:layout_weight="1">
 	</FrameLayout>
 	

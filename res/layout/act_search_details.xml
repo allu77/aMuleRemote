@@ -7,6 +7,7 @@
     
         <LinearLayout
             android:id="@+id/search_details_frag_result_details"
+            android:orientation="horizontal"
         
         android:layout_width="match_parent"
         android:layout_height="0dip"

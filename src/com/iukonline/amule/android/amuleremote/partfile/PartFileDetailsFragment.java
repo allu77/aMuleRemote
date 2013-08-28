@@ -111,11 +111,11 @@ public class PartFileDetailsFragment extends SherlockFragment implements ECPartF
             ((TextView) v.findViewById(R.id.partfile_detail_done)).setText(GUIUtils.longToBytesFormatted(mPartFile.getSizeDone()));
             ((TextView) v.findViewById(R.id.partfile_detail_size)).setText(GUIUtils.longToBytesFormatted(mPartFile.getSizeFull()));
             
-            ((TextView) v.findViewById(R.id.partfile_detail_remaining)).setText(GUIUtils.getETA(mPartFile.getSizeFull() - mPartFile.getSizeDone(), mPartFile.getSpeed()));
+            ((TextView) v.findViewById(R.id.partfile_detail_remaining)).setText(GUIUtils.getETA(getActivity(), mPartFile.getSizeFull() - mPartFile.getSizeDone(), mPartFile.getSpeed()));
             
             ((TextView) v.findViewById(R.id.partfile_detail_lastseencomplete)).setText(
                             mPartFile.getLastSeenComp() == null || mPartFile.getLastSeenComp().getTime() == 0 ? 
-                            "Never" 
+                            getResources().getString(R.string.partfile_last_seen_never) 
                             : 
                             new SimpleDateFormat("d MMM yyyy HH:mm:ss").format(mPartFile.getLastSeenComp()));
             

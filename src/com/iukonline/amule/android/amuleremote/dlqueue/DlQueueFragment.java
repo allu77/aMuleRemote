@@ -362,7 +362,7 @@ public class DlQueueFragment extends SherlockListFragment implements DlQueueWatc
                         
                         holder.mSources.setText(source.toString());
                         
-                        holder.mETA.setText(GUIUtils.getETA(o.getSizeFull() - o.getSizeDone(), o.getSpeed()));
+                        holder.mETA.setText(GUIUtils.getETA(getContext(), o.getSizeFull() - o.getSizeDone(), o.getSpeed()));
                         
                         switch (o.getPrio()) {
                         case ECPartFile.PR_LOW:

@@ -8,30 +8,36 @@
         android:layout_width="0dip"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
+        android:orientation="vertical">
+        
         <TextView
             android:id="@+id/search_result_filename"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="false"
-            android:text="FileName"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
-            android:id="@+id/search_result_params"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Params" />
-
+            android:id="@+id/search_result_params" 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"/>
+        
         <TextView
             android:id="@+id/search_result_results"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Results" />
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
-
+
+
+
+
+
+
+
+
+
+
     <ProgressBar
         android:id="@+id/search_result_progress_bar"
         android:layout_width="30dp"

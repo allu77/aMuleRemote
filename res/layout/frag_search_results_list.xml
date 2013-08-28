@@ -6,12 +6,12 @@
   android:layout_height="fill_parent"
 >
   
-     <ListView android:id="@android:id/list"
-               android:layout_height="0dip" 
-               android:layout_width="fill_parent" 
-               android:layout_weight="1">
-     </ListView>
-
+     <ListView 
+         android:id="@android:id/list" 
+         android:layout_height="0dip" 
+         android:layout_width="fill_parent" 
+         android:layout_weight="1"/>
+     
      <TextView
          android:id="@android:id/empty"
          android:layout_width="fill_parent"

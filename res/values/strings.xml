@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources >
     <string name="app_name">aMule Remote</string>
-    <string name="dlqueue_empty">No file in dowload queue</string>
-    <string name="status_label">Status:</string>
+    <string name="dlqueue_empty">No file in download queue</string>
     <string name="menu_dl_pause">Pause</string>
     <string name="menu_dl_resume">Resume</string>
     <string name="menu_dl_delete">Delete</string>
     <string name="label_filename">File Name:</string>
-    <string name="label_pause">Pause</string>
-    <string name="label_resume">Resume</string>
     <string name="menu_opt_settings">Settings</string>
     <string name="partfile_status_waiting">Waiting</string>
     <string name="partfile_status_paused">Paused</string>
@@ -27,17 +24,12 @@
     <string name="partfile_status_unknown">Unknown</string>
     <string name="partfile_status_waitingforhash">Waiting for hash</string>
     <string name="menu_opt_refresh">Refresh</string>
-    <string name="settings_title">Settings</string>
     <string name="label_sources">Sources: </string>
-    <string name="partfile_deatil_label_filename">Filename: </string>
     <string name="partfile_detail_button_pause">Pause</string>
     <string name="partfile_detail_button_resume">Resume</string>
     <string name="partfile_detail_button_delete">Delete</string>
     <string name="partfile_detail_label_status">Status: </string>
-    <string name="partfile_detail_title">Download details</string>
     <string name="menu_opt_reset">Reset connection (troubleshooting)</string>
-    <string name="label_total_dl_rate">DL: </string>
-    <string name="label_total_ul_rate">UL: </string>
     <string name="settings_label_client">Client</string>
     <string name="settings_label_client_autorefresh">Autorefresh</string>
     <string name="settings_summary_server_host">The hostname or IP of the PC running aMule daemon</string>
@@ -50,13 +42,12 @@
     <string name="partfile_detail_label_sources_available">Available: </string>
     <string name="partfile_detail_label_sources">Sources</string>
     <string name="partfile_detail_label_remaining">Time remaining: </string>
-    <string name="partfile_detail_label_done">Transfered: </string>
+    <string name="partfile_detail_label_done">Transferred: </string>
     <string name="partfile_detail_label_size">Size: </string>
     <string name="partfile_detail_label_link">ED2K Link: </string>
     <string name="menu_detail_opt_a4af_now">Switch A4AF Now</string>
     <string name="menu_detail_opt_a4af_auto">Switch A4AF Auto</string>
     <string name="menu_detail_opt_a4af_away">Move A4AF away</string>
-    <string name="menu_opt_shutdown">Shutdown aMule</string>
     <string name="menu_opt_added2k">Add ED2K link</string>
     <string name="added2k_label_ed2k">Paste ED2K link</string>
     <string name="added2k_button_ok">OK</string>
@@ -75,7 +66,7 @@
     <string name="menu_opt_sort">Sort by&#8230;</string>
     <string name="menu_opt_sort_filename">Filename</string>
     <string name="menu_opt_sort_status">Status</string>
-    <string name="menu_opt_sort_transfered">Transfered</string>
+    <string name="menu_opt_sort_transfered">Transferred</string>
     <string name="menu_opt_sort_progress">Progress</string>
     <string name="menu_opt_sort_size">Size</string>
     <string name="menu_opt_sort_speed">Speed</string>
@@ -127,8 +118,6 @@
 	<string name="settings_label_server_version">aMule version</string>
 	<string name="settings_summary_server_version">Version of aMule installed on the PC</string>
 	<string name="settings_label_debug">Debug</string>
-	<string name="settings_label_debug_enable_exceptions">Send bug report on compatibility exceptions</string>
-	<string name="settings_summary_debug_enable_exceptions">Please enable this only if requested by the developer</string>
 	<string name="settings_label_debug_enable_options">Enable debug options</string>
 	<string name="settings_summary_debug_enable_options">Enable additional debugging options in menu</string>
 	<string name="settings_label_debug_enable_log">Enable debug logging</string>
@@ -158,14 +147,11 @@ Please do not use this feature if you experienced a crash and you already sent t
 	<string name="search_button_go">Go!</string>
 	<string name="search_no_results_yet">No result to show yet…\nKeep refreshing until results show up!</string>
 	<string name="menu_opt_search">Search</string>
-	<string name="search_label_filetype">File type</string>
 	<string name="search_label_file_type">File type</string>
 	<string name="search_label_extension">Extension</string>
 	<string name="search_label_min_size">Minimum size</string>
 	<string name="search_label_max_size">Maximum size</string>
 	<string name="search_label_availability">Availability</string>
-	<string name="search_button_advanced_params_on">Hide extended parameters</string>
-	<string name="search_button_advanced_params_off">Show extended parameters</string>
 	<string name="dialog_add_search_file">Add file %s to download queue?</string>
 	<string name="stats_status_not_connected">Not Connected</string>
 	<string name="stats_status_firewalled">Firewalled</string>
@@ -175,7 +161,7 @@ Please do not use this feature if you experienced a crash and you already sent t
 	<string name="search_title">Searches</string>
 	<string name="dialog_whats_new_welcome">Welcome to aMule Remote %s!</string>
 	<string name="dialog_whats_new_whats_new">What\'s new:</string>
-	<string name="dialog_whats_new_features">Search feature is finally available (only for aMule 2.3.1 and 2.3.1-rc1)!</string>
+	<string name="dialog_whats_new_features">Various bugfixes</string>
 	<string name="menu_opt_reset_app_version_info">Reset app version info</string>
 	<string name="menu_search_details_opt_sort_sources">Sources</string>
 	<string name="menu_search_details_opt_sort_sources_complete">Complete sources</string>
@@ -190,4 +176,8 @@ Please do not use this feature if you experienced a crash and you already sent t
 	<string name="search_no_search">No search executed yet</string>
 	<string name="category_uncategorized">Uncategorized</string>
 	<string name="search_details_label_sources">Sources: %1$d (%2$d)</string>
+	<string name="partfile_last_seen_never">Never</string>
+	<string name="guiutils_eta_mins">"%1$d:%2$02d mins"</string>
+	<string name="guiutils_eta_hours">"%1$d:%2$02d hours"</string>
+	<string name="guiutils_eta_days">"%d days"</string>
 </resources>

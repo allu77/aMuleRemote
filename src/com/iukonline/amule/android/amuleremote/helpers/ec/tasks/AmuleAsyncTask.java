@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import android.annotation.TargetApi;
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -111,6 +113,15 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
         mECHelper.notifyAmuleClientStatusWatchers(ClientStatusWatcher.AmuleClientStatus.IDLE);
     }
     
+    @TargetApi(Build.VERSION_CODES.FROYO)
+    protected void logToDropBox(String msg) {
+        // mDropBox is not null only for >= FROYO
+        if (mECHelper.mDropBox != null) {
+            mECHelper.mDropBox.addText(AmuleControllerApplication.AC_LOGTAG, msg);
+        }
+        
+    }
+    
     @Override
     protected void onPostExecute(Exception result) {
         
@@ -133,16 +144,16 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
                     Log.e(AmuleControllerApplication.AC_LOGTAG, notifyText);
                     ECPacket req = ((ECClientException)result).getRequestPacket();
                     ECPacket resp = ((ECClientException)result).getResponsePacket();
-                    if (req != null && mECHelper.mDropBox != null) {
+                    if (req != null) {
                         ECRawPacket rr = req.getRawPacket();
                         if (rr != null) {
-                            mECHelper.mDropBox.addText(AmuleControllerApplication.AC_LOGTAG, "Request:\n" + rr.dump());
+                            logToDropBox("Request:\n" + rr.dump());
                         }
                     }
-                    if (resp != null && mECHelper.mDropBox != null) {
+                    if (resp != null) {
                         ECRawPacket rr = resp.getRawPacket();
                         if (rr != null) {
-                            mECHelper.mDropBox.addText(AmuleControllerApplication.AC_LOGTAG, "Response:\n" + rr.dump());
+                            logToDropBox("Response:\n" + rr.dump());
                         }
                     }
                 }
@@ -152,11 +163,11 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
                 if (mECHelper.mApp.enableLog) {
                     Log.e(AmuleControllerApplication.AC_LOGTAG, notifyText);
                     ECRawPacket p = ((ECPacketParsingException)result).getCausePacket();
-                    if (p != null && mECHelper.mDropBox != null) {
-                        mECHelper.mDropBox.addText(AmuleControllerApplication.AC_LOGTAG, "Packet");
+                    if (p != null) {
+                        logToDropBox("Packet");
                         
                         String[] lines = p.dump().split("\\n");
-                        for (int i = 0; i < lines.length; i++) mECHelper.mDropBox.addText(AmuleControllerApplication.AC_LOGTAG, lines[i]);
+                        for (int i = 0; i < lines.length; i++) logToDropBox(lines[i]);
                         
                     }
                 }

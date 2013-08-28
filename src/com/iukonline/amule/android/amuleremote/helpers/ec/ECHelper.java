@@ -123,6 +123,9 @@ public class ECHelper {
                 //Toast.makeText(getApplication(), "Flushing queue to run " + task.toString(), Toast.LENGTH_LONG).show();
                 if (! emptyTaskQueue()) return false;
                 break;
+            default:
+                // DO NOTHING
+                break;
             }           
         }
         //Toast.makeText(getApplication(), "Adding " + task.toString() + "  to queue", Toast.LENGTH_LONG).show();
@@ -295,6 +298,9 @@ public class ECHelper {
                 case IDLE:
                     processTaskQueue();
                     return; // Do not update status, since more task are running...
+                default:
+                    // DO NOTHING
+                    break;
                 }
             }
         }

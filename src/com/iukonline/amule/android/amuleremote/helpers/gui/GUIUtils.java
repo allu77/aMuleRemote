@@ -1,6 +1,12 @@
 package com.iukonline.amule.android.amuleremote.helpers.gui;
 
+import com.iukonline.amule.android.amuleremote.R;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+
 public class GUIUtils {
+    @SuppressLint("DefaultLocale")
     public static String longToBytesFormatted(long in) {
         if (in > 1073741824) {
             return String.format("%.1fGB", (float) in / 1073741824f);
@@ -13,7 +19,7 @@ public class GUIUtils {
         }
     }
     
-    public static String getETA(long remaining, long speed) {
+    public static String getETA(Context c, long remaining, long speed) {
         
      // TODO Convert to string resources...
         
@@ -23,11 +29,11 @@ public class GUIUtils {
             if (eta < 60) {
                 sEta = Long.toString(eta) + " secs";
             } else if (eta < 3600) {
-                sEta = String.format("%d:%02d mins", eta / 60, eta % 60);
+                sEta = c.getResources().getString(R.string.guiutils_eta_mins, eta / 60, eta % 60); 
             } else if (eta < 86400) {
-                sEta = String.format("%d:%02d hours", eta / 3600, (eta % 3600) / 60);
+                sEta = c.getResources().getString(R.string.guiutils_eta_hours,  eta / 3600, (eta % 3600) / 60);
             } else {
-                sEta = Long.toString(eta / 86400) + " days";
+                sEta = c.getResources().getString(R.string.guiutils_eta_days,  eta / 86400);
             }
         } else {
             sEta = "";

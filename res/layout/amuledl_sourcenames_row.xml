@@ -8,21 +8,16 @@
   android:paddingBottom="5dip">
     
     <TextView 
-    	android:text="FileName" 
     	android:id="@+id/amuledl_sourcenames_name"  
     	android:layout_weight="1"   
     	android:layout_width="0dip" 
     	android:layout_height="wrap_content"
-    	android:layout_alignParentLeft="true" 
-  		android:layout_alignParentTop="true" 
     	></TextView>
     <TextView 
-    	android:text="###" 
     	android:id="@+id/amuledl_sourcenames_count" 
     	android:layout_marginLeft="5dip" 
     	android:layout_width="wrap_content" 
     	android:layout_height="wrap_content"
-    	android:layout_alignParentRight="true" 
   		></TextView>
     
 </LinearLayout>
