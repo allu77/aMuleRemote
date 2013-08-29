@@ -106,7 +106,7 @@
         android:id="@+id/adView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        ads:adSize="BANNER"
+        ads:adSize="SMART_BANNER"
         ads:adUnitId="a14f67154359d47"
         ads:loadAdOnCreate="true"
         ads:testDevices="TEST_EMULATOR" />
