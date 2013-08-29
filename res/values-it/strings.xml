@@ -123,7 +123,7 @@ ACRA (http://acra.googlecode.com/).\n
 	<string name="error_packet_parsing">"Errore nell'elaborazione del pacchetto"</string>
 	<string name="error_host">"Impossibile risolvere il nome host o IP  del server"</string>
 	<string name="error_timeout">"La connessione al server è scaduta"</string>
-	<string name="error_io">"La Fine connessione al server è terminata inaspettatamente"</string>
+	<string name="error_io">"La connessione al server è terminata inaspettatamente"</string>
 	<string name="dlqueue_dialog_title_no_server_configured">"PC aMule non configurato"</string>
 	<string name="dlqueue_dialog_message_no_server_configured">"Premere OK per passare alla schermata delle impostazioni"</string>
 	<string name="error_null_client">"Impossibile creare il client. Verifica le impostazioni."</string>
