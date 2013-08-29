@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 
 import android.widget.Toast;
 
+import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.ec.ECSearchFile;
 import com.iukonline.amule.ec.exceptions.ECClientException;
 import com.iukonline.amule.ec.exceptions.ECPacketParsingException;
@@ -29,9 +30,12 @@ public class SearchStartResultAsyncTask extends AmuleAsyncTask {
 
     @Override
     protected void notifyResult() {
-        // TODO: Provide string resource
-        Toast.makeText(mECHelper.getApplication(), "File " + mECSearchFile.getFileName() + " added", Toast.LENGTH_LONG).show();
-        
+
+        Toast.makeText(
+            mECHelper.mApp, 
+            mECHelper.mApp.getResources().getString(R.string.search_details_file_added, mECSearchFile.getFileName()), 
+            Toast.LENGTH_LONG
+        ).show();
     }
 
 }

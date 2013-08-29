@@ -165,8 +165,24 @@ ACRA (http://acra.googlecode.com/).\n
 	<string name="search_details_label_sources">"Fonti: %1$d (%2$d)"</string>
 	
 	<string name="partfile_last_seen_never">Mai</string>
+	<string name="guiutils_eta_secs">"%d secondi"</string>
 	<string name="guiutils_eta_mins">"%1$d:%2$02d minuti"</string>
 	<string name="guiutils_eta_hours">"%1$d:%2$02d ore"</string>
 	<string name="guiutils_eta_days">"%d giorni"</string>
+	<string name="partfile_tab_details">Dettagli</string>
+	<string name="partfile_tab_sources">Fonti</string>
+	<string name="partfile_tab_comments">Commenti</string>
+	<string name="search_task_stopped">Ricerca interrotta</string>
+	<string name="search_task_cannot_stop">"Solo le ricerche in esecuzione possono essere interrotte"</string>
+	<string name="search_task_cannot_start">Questa ricerca non può essere avviata o aggiornata</string>
+	<string name="search_task_cannot_set_status">Le ricerche non possono essere impostate allo stato %s</string>
+	<string name="search_details_file_added">File %s aggiunto</string>
+	<string name="partfile_details_cat_unknown">Sconosciuta</string>
+	<string name="partfile_details_cat_nocat">Senza categoria</string>
+	<string name="search_list_no_result">Nessun file</string>
+	<string name="search_list_result_count">Trovati %d file</string>
+	<string name="partfile_task_rename_noname">Nessun nuovo nome è stato fornito</string>
+	<string name="bug_report_mail_text">Per favore descrivi qui il tuo problema.</string>
+	<string name="cat_all_files">Tutti i file</string>
 	
 </resources>

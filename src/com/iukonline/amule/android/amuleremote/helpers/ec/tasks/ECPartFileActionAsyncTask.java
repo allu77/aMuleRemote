@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.ec.ECCodes;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.exceptions.ECClientException;
@@ -77,7 +78,7 @@ public class ECPartFileActionAsyncTask extends AmuleAsyncTask {
             mECClient.setPartFilePriority(mECPartFile.getHash(), ECPartFile.PR_AUTO);
             break;
         case RENAME:
-            if (mStringParam == null) throw new AmuleAsyncTaskException("New name not specified");
+            if (mStringParam == null) throw new AmuleAsyncTaskException(mECHelper.mApp.getResources().getString(R.string.partfile_task_rename_noname));
             mECClient.renamePartFile(mECPartFile.getHash(), mStringParam);
             break;
         }

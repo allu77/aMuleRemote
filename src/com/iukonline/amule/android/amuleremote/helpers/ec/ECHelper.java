@@ -442,8 +442,8 @@ public class ECHelper {
             } else {
                 c = new ECClient();
             }
-            c.setClientName("Amule Remote Controller");
-            c.setClientVersion("0.4");
+            c.setClientName("Amule Remote for Android");
+            c.setClientVersion(mApp.mVersionName);
             try {
                 c.setPassword(mServerPassword);
             } catch (NoSuchAlgorithmException e) {

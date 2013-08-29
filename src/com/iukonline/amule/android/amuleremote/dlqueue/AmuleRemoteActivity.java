@@ -401,7 +401,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Ale
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
         emailIntent.setType("text/html");
 
-        String data = "<p>Please describe your problem here.</p>";
+        String data = "<p>" + getResources().getString(R.string.bug_report_mail_text)  + "</p>";
 
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, Html.fromHtml(data));
         startActivity(Intent.createChooser(emailIntent, "Email:"));
@@ -517,7 +517,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Ale
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.updateCategories: Updating Categories");
         if (mCategoriesAdapter == null) {
             ArrayList <ECCategory> catList = new ArrayList<ECCategory>(newCategoryList.length + 1);
-            catList.add(new ECCategory("All Files", null, null, (byte) 0, (byte) 0));
+            catList.add(new ECCategory(getResources().getString(R.string.cat_all_files), null, null, (byte) 0, (byte) 0));
             catList.addAll(Arrays.asList(newCategoryList));
             
             mCategoriesAdapter = new CategoriesAdapter(this, R.layout.dlqueue_fragment, catList);

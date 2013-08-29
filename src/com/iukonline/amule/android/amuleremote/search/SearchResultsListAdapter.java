@@ -79,9 +79,9 @@ public class SearchResultsListAdapter extends ArrayAdapter<SearchContainer> {
             holder.mParams.setText(params.toString());
             
             if (o.mResults != null && o.mResults.resultMap != null) {
-                holder.mResults.setText("Found " + Integer.toString(o.mResults.resultMap.size()) + " files");
+                holder.mResults.setText(getContext().getResources().getString(R.string.search_list_result_count, o.mResults.resultMap.size()));
             } else {
-                holder.mResults.setText("No files");
+                holder.mResults.setText(R.string.search_list_no_result);
             }
         }
         return v;

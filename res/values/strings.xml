@@ -167,9 +167,25 @@
 	<string name="category_uncategorized">Uncategorized</string>
 	<string name="search_details_label_sources">Sources: %1$d (%2$d)</string>
 	<string name="partfile_last_seen_never">Never</string>
+	<string name="guiutils_eta_secs">"%d secs"</string>
 	<string name="guiutils_eta_mins">"%1$d:%2$02d mins"</string>
 	<string name="guiutils_eta_hours">"%1$d:%2$02d hours"</string>
 	<string name="guiutils_eta_days">"%d days"</string>
 	<string name="stats_label_edonkey" translatable="false">"eDonkey: "</string>
 	<string name="stats_label_kad" translatable="false">"KAD: "</string>
+	<string name="partfile_tab_details">Details</string>
+	<string name="partfile_tab_sources">Sources</string>
+	<string name="partfile_tab_comments">Comments</string>
+	<string name="search_task_stopped">Search stopped</string>
+	<string name="search_task_cannot_stop">"Only running searches can be stopped"</string>
+	<string name="search_task_cannot_start">This search can\'t be started or refreshed</string>
+	<string name="search_task_cannot_set_status">Searches can\'t be set to status %s</string>
+	<string name="search_details_file_added">File %s added</string>
+	<string name="partfile_details_cat_unknown">Unknown</string>
+	<string name="partfile_details_cat_nocat">Uncategorized</string>
+	<string name="search_list_no_result">No files</string>
+	<string name="search_list_result_count">Found %d files</string>
+	<string name="partfile_task_rename_noname">New name not specified</string>
+	<string name="bug_report_mail_text">Please describe your problem here.</string>
+	<string name="cat_all_files">All files</string>
 </resources>

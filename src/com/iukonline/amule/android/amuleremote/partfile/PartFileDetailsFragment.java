@@ -86,10 +86,10 @@ public class PartFileDetailsFragment extends SherlockFragment implements ECPartF
             
             ((TextView) v.findViewById(R.id.partfile_detail_filename)).setText(mPartFile.getFileName());
             
-            String textCat = "Unknown";
+            String textCat = getResources().getString(R.string.partfile_details_cat_unknown);
             long cat = mPartFile.getCat();
             if (cat == 0) {
-                textCat = "Uncategorized";
+                textCat = getResources().getString(R.string.partfile_details_cat_nocat);;
             } else {
                 ECCategory[] catList = mApp.mECHelper.getCategories();
                 if (catList != null) {

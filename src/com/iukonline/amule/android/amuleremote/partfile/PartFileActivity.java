@@ -75,18 +75,18 @@ public class PartFileActivity extends SherlockFragmentActivity implements AlertD
         
         
         mTabDetails = mBar.newTab();
-        mTabDetails.setText("Details"); //TODO Provide string resource
+        mTabDetails.setText(R.string.partfile_tab_details);
         mTabDetails.setTabListener(new TabListener<PartFileDetailsFragment>(this, "details", PartFileDetailsFragment.class, mHash));
         
         mBar.addTab(mTabDetails);
         
         mTabSourceNames = mBar.newTab();
-        mTabSourceNames.setText("Sources"); //TODO Provide string resource
+        mTabSourceNames.setText(R.string.partfile_tab_sources);
         mTabSourceNames.setTabListener(new TabListener<PartFileSourceNamesFragment>(this, "names", PartFileSourceNamesFragment.class, mHash));
         mBar.addTab(mTabSourceNames);
         
         mTabComments = mBar.newTab();
-        mTabComments.setText("Comments"); //TODO Provide string resource
+        mTabComments.setText(R.string.partfile_tab_comments); 
         mTabComments.setTabListener(new TabListener<PartFileCommentsFragment>(this, "comments", PartFileCommentsFragment.class, mHash));
         mBar.addTab(mTabComments);
 

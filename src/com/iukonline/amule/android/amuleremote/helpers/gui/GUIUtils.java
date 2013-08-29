@@ -21,13 +21,11 @@ public class GUIUtils {
     
     public static String getETA(Context c, long remaining, long speed) {
         
-     // TODO Convert to string resources...
-        
         String sEta;
         if (speed > 0) {
             long eta = remaining / speed;
             if (eta < 60) {
-                sEta = Long.toString(eta) + " secs";
+                sEta = c.getResources().getString(R.string.guiutils_eta_secs, eta);
             } else if (eta < 3600) {
                 sEta = c.getResources().getString(R.string.guiutils_eta_mins, eta / 60, eta % 60); 
             } else if (eta < 86400) {

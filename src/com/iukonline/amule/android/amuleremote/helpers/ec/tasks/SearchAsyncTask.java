@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.search.SearchContainer;
 import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchStatus;
 import com.iukonline.amule.ec.exceptions.ECClientException;
@@ -38,12 +39,10 @@ public class SearchAsyncTask extends AmuleAsyncTask {
             if (mSearch.mSearchStatus == ECSearchStatus.RUNNING) {
                 mECClient.searchStop();
                 
-                // TODO: Provide string resource
-                mResult = "Search stopped";
+                mResult = mECHelper.mApp.getResources().getString(R.string.search_task_stopped);
                 mSearch.mSearchStatus = ECSearchStatus.STOPPED;
             } else {
-                // TODO: Provide string resource
-                throw new AmuleAsyncTaskException("Only running searches can be stopped");
+                throw new AmuleAsyncTaskException(mECHelper.mApp.getResources().getString(R.string.search_task_cannot_stop));
             }
             break;
         case RUNNING:
@@ -68,13 +67,12 @@ public class SearchAsyncTask extends AmuleAsyncTask {
                 mSearch.mResults = mECClient.searchGetReults(mSearch.mResults);
                 break;
             default:
-                // TODO: Provide string resource
-                throw new AmuleAsyncTaskException("This search can't be started or refreshed");
+                throw new AmuleAsyncTaskException(mECHelper.mApp.getResources().getString(R.string.search_task_cannot_start));
             }
             
             break;
         default:
-            throw new AmuleAsyncTaskException("Searches can't be set to status " + mTargetStatus);
+            throw new AmuleAsyncTaskException(mECHelper.mApp.getResources().getString(R.string.search_task_cannot_set_status, mTargetStatus));
         }
 
     }
