@@ -25,9 +25,9 @@
 <com.google.ads.AdView android:id="@+id/adView"
                          android:layout_width="fill_parent"
                          android:layout_height="wrap_content"
-                         ads:adUnitId="a14f67154359d47"
+                         ads:adUnitId="ca-app-pub-1535323231055867/4203941434"
                          ads:adSize="SMART_BANNER"
-                         ads:testDevices="TEST_EMULATOR"
+                         ads:testDevices="TEST_EMULATOR, 4F7B654617C12338871CE872532E7B6A"
                          ads:loadAdOnCreate="true"/>
 
 </LinearLayout>
