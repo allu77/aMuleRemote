@@ -1,5 +1,6 @@
 aMule Remote 0.5.2
 - Italian localization
+- Library updates
 - Bugfixes
 
 aMule Remote 0.5.1

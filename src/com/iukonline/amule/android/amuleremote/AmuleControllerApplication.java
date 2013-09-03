@@ -12,6 +12,8 @@ import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+import org.acra.sender.HttpSender.Method;
+import org.acra.sender.HttpSender.Type;
 
 import android.app.Activity;
 import android.app.Application;
@@ -28,13 +30,23 @@ import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientSta
 import com.iukonline.amule.android.amuleremote.helpers.ec.ECHelper;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.WhatsNewDialogFragment;
 import com.iukonline.amule.android.amuleremote.search.SearchContainer;
-import com.iukonline.amule.ec.ECSearchFile;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
+import com.iukonline.amule.ec.ECSearchFile;
 
 
-@ReportsCrashes(formKey = "***REMOVED***",
-                mode = ReportingInteractionMode.NOTIFICATION,
+@ReportsCrashes(formKey = "",
+                httpMethod = Method.PUT,
+                reportType = Type.JSON,
+                formUri = "http://amuleremote.iriscouch.com/acra-amuleremote/_design/acra-storage/_update/report",
+                formUriBasicAuthLogin = "amuleremote-reporter",
+                formUriBasicAuthPassword = "ZRYEgTWS9wdHnK4DktUrcHh3",
+                //formKey = "***REMOVED***",
+                mode = ReportingInteractionMode.DIALOG,
                 customReportContent = { 
+                    ReportField.APP_VERSION_CODE,
+                    ReportField.APP_VERSION_NAME,
+                    ReportField.PACKAGE_NAME,
+                    ReportField.BUILD,
                     ReportField.REPORT_ID, 
                     ReportField.PHONE_MODEL, 
                     ReportField.BRAND, 
@@ -49,20 +61,16 @@ import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
                     ReportField.DROPBOX, 
                     ReportField.LOGCAT, 
                     ReportField.INITIAL_CONFIGURATION, 
-                    ReportField.CRASH_CONFIGURATION 
+                    ReportField.CRASH_CONFIGURATION,
+                    ReportField.INSTALLATION_ID
                 },
                 logcatArguments = { "-t", "500", "-v", "time", "aMuleRemote:D", "*:S" },
                 additionalDropBoxTags = { "aMuleRemote" },
-                resToastText = R.string.crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
-                resNotifTickerText = R.string.crash_notif_ticker_text,
-                resNotifTitle = R.string.crash_notif_title,
-                resNotifText = R.string.crash_notif_text,
-                //resNotifIcon = android.R.drawable.stat_notify_error, // optional. default is a warning sign
+                resToastText = R.string.crash_toast_text, 
                 resDialogText = R.string.crash_dialog_text,
-                //resDialogIcon = android.R.drawable.ic_dialog_info, //optional. default is a warning sign
-                resDialogTitle = R.string.crash_dialog_title, // optional. default is your application name
-                resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
-                resDialogOkToast = R.string.crash_dialog_ok_toast // optional. displays a Toast message when the user accepts to send a report.
+                resDialogTitle = R.string.crash_dialog_title,
+                resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, 
+                resDialogOkToast = R.string.crash_dialog_ok_toast 
 )
 
 
@@ -192,12 +200,24 @@ public class AmuleControllerApplication extends Application {
     public boolean refreshServerSettings()  {
         
         String host = mSettings.getString(AC_SETTING_HOSTNAME, "");
-        int port = Integer.parseInt(mSettings.getString(AC_SETTING_PORT, "4712"));
+        int port = 4712;
+        
+        try {
+            port = Integer.parseInt(mSettings.getString(AC_SETTING_PORT, "4712"));
+        } catch (NumberFormatException e) {
+            // TODO: Provide custom error
+        }
         String password = mSettings.getString(AC_SETTING_PASSWORD, "");
         String version = mSettings.getString(AC_SETTING_VERSION, "V200");
         
-        int connTimeout = Integer.parseInt(mSettings.getString(AC_SETTING_CONNECT_TIMEOUT, "10")) * 1000;
-        int readTimeout = Integer.parseInt(mSettings.getString(AC_SETTING_READ_TIMEOUT, "30")) * 1000;
+        int connTimeout = 10;
+        int readTimeout = 30;
+        try {
+            connTimeout = Integer.parseInt(mSettings.getString(AC_SETTING_CONNECT_TIMEOUT, "10")) * 1000;
+            readTimeout = Integer.parseInt(mSettings.getString(AC_SETTING_READ_TIMEOUT, "30")) * 1000;
+        } catch (NumberFormatException e) {
+            // TODO: Provide custom error
+        }
         
         if (host.length() == 0 || password.length() == 0) {
             return false;
