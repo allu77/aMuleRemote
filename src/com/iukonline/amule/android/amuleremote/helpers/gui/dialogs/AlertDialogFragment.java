@@ -40,8 +40,6 @@ public class AlertDialogFragment extends SherlockDialogFragment {
     public AlertDialogFragment() {
     }
     
-    // NEW
-    
     public AlertDialogFragment(int title, int message, boolean showCancel) {
         mTitle = title;
         mMessage = message;
@@ -60,31 +58,6 @@ public class AlertDialogFragment extends SherlockDialogFragment {
     }
 
     
-    // OLD
-    /*
-    public AlertDialogFragment(int title, int message, Message okMessage, Message cancelMessage, boolean showCancel) {
-        mTitle = title;
-        mMessage = message;
-        mOkMessage = okMessage;
-        mCancelMessage = cancelMessage;
-        mShowCancel = showCancel;
-    }
-    
-    public AlertDialogFragment(String title, String message, Message okMessage, Message cancelMessage, boolean showCancel) {
-        mTitleStr = title;
-        mMessageStr = message;
-        mOkMessage = okMessage;
-        mCancelMessage = cancelMessage;
-        mShowCancel = showCancel;
-    }
-    
-    public AlertDialogFragment(int message, Message okMessage, Message cancelMessage, boolean showCancel) {
-        mMessage = message;
-        mOkMessage = okMessage;
-        mCancelMessage = cancelMessage;
-        mShowCancel = showCancel;
-    }
-    */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         
