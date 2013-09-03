@@ -17,9 +17,8 @@
     <string name="partfile_status_empty">Empty source list</string>
     <string name="partfile_status_error">Error</string>
     <string name="partfile_status_hashing">Hashing</string>
-    <string name="partfile_status_insuffcient">Insufficient</string>
+    <string name="partfile_status_insuffcient">Insufficient disk space</string>
     <string name="partfile_status_unknown">Unknown</string>
-    <string name="partfile_status_waitingforhash">Waiting for hash</string>
     <string name="menu_opt_refresh">Refresh</string>
     <string name="label_sources">Sources: </string>
     <string name="partfile_detail_button_pause">Pause</string>
@@ -87,18 +86,15 @@
     <string name="partfile_deatil_comments_rating_excellent">Excellent</string>
     <string name="partfile_sourcenames_nosource">No source available</string>
     <string name="partfile_comments_nocomments">No comment available</string>
-    <string name="menu_opt_about">About</string>
+    <string name="menu_opt_about">About&#8230;</string>
     <string name="label_release_notes">Release notes:</string>
     <string name="label_new_version_available">A new version is available!</string>
-    <string name="crash_toast_text">Ooooops! I crashed, but a you can send a report to my developer to help him fix the issue! Please click on the taskbar notification.</string>
-	<string name="crash_notif_ticker_text">Fatal error, please send a report&#8230;</string>
-	<string name="crash_notif_title">aMule Remote has crashed…</string>
-	<string name="crash_notif_text">Please click here to help fix the issue.</string>
+    <string name="crash_toast_text">Ooooops! I crashed, but a you can send a report to my developer to help him fix the issue!</string>
 	<string name="crash_dialog_title">aMule Remote has crashed</string>
 	<string name="crash_dialog_text">An unexpected error occurred forcing the
   application to stop. Please help me fix this by sending me error data,
  all you have to do is click \'OK\'. If this happens frequently, please enable debug logging in the settings menu, so that I will get more information about this issue.</string>
-	<string name="crash_dialog_comment_prompt">Please consider adding some details about what were you doing when this crash happened. If you add your e-mail address to the comment I\'ll be able to get back to you and troubleshoot this issue. Issues without comments are very difficult to troubleshoot.</string>
+	<string name="crash_dialog_comment_prompt">Please consider adding some details about what were you doing when this crash happened.</string>
 	<string name="crash_dialog_ok_toast">Thank you!</string>
 	<string name="dialog_added2k_title">Insert ED2K URI</string>
 	<string name="dialog_rename_partfile">Insert new file name</string>

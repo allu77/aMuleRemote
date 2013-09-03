@@ -77,7 +77,6 @@ public class SearchActivity extends SherlockFragmentActivity implements AlertDia
         
         String serverVersion = mApp.mECHelper.getServerVersion();
         
-        // TBV: Everyting that creats a dialog should be in onPostResume due to a bug in ICS
         // https://code.google.com/p/android/issues/detail?id=23096
         
         if (serverVersion != null && (serverVersion.equals("V204") || serverVersion.equals("V203"))) {

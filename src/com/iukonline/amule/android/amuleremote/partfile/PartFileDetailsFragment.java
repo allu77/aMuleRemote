@@ -154,7 +154,6 @@ public class PartFileDetailsFragment extends SherlockFragment implements ECPartF
             switch (mPartFile.getStatus()) {
             
             case ECPartFile.PS_ALLOCATING:
-                // TODO What's this?
                 tvStatus.setText(R.string.partfile_status_allocating);
                 break;
             case ECPartFile.PS_COMPLETE:
@@ -173,11 +172,11 @@ public class PartFileDetailsFragment extends SherlockFragment implements ECPartF
                 tvStatus.setText(R.string.partfile_status_error);
                 statusColor = R.color.progressBlockedMid;
                 break;
+            case ECPartFile.PS_WAITINGFORHASH:
             case ECPartFile.PS_HASHING:
                 tvStatus.setText(R.string.partfile_status_hashing);
                 break;
             case ECPartFile.PS_INSUFFICIENT:
-                // TODO What's this?
                 tvStatus.setText(R.string.partfile_status_insuffcient);
                 statusColor = R.color.progressBlockedMid;
                 break;
@@ -197,10 +196,6 @@ public class PartFileDetailsFragment extends SherlockFragment implements ECPartF
             case ECPartFile.PS_UNKNOWN:
                 tvStatus.setText(R.string.partfile_status_unknown);
                 statusColor = R.color.progressStoppedMid;
-                break;
-            case ECPartFile.PS_WAITINGFORHASH:
-                // TODO What's this?
-                tvStatus.setText(R.string.partfile_status_waitingforhash);
                 break;
             default:
                 tvStatus.setText("UNKNOWN-" + mPartFile.getStatus());

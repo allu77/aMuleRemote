@@ -179,8 +179,6 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Ale
         super.onPostResume();
         
         if (! mServerConfigured) {
-            
-            
             if (mFragManager.findFragmentByTag(TAG_DIALOG_NO_SERVER) == null) {
                 AlertDialogFragment d = new AlertDialogFragment(R.string.dlqueue_dialog_title_no_server_configured, R.string.dlqueue_dialog_message_no_server_configured, true);
                 if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: no server configured - showing dialog");

@@ -402,7 +402,7 @@ public class ECHelper {
     
     public ECClient getECClient() throws UnknownHostException, IOException, IllegalArgumentException {
         
-        // TBV: This should prevent the null Exception on mServerVersion. However it's not clear why that happened.
+        // This should prevent the null Exception on mServerVersion. However it's not clear why that happened.
         // Need to check if client is null when calling getECClient
         
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "ECHelper.getECClient: Validating server info");

@@ -414,6 +414,7 @@ public class DlQueueFragment extends SherlockListFragment implements DlQueueWatc
                             barResource = R.drawable.file_progress_blocked;
                             break;
                         case ECPartFile.PS_HASHING:
+                        case ECPartFile.PS_WAITINGFORHASH:
                             holder.mStatus.setText(R.string.partfile_status_hashing);
                             barResource = R.drawable.file_progress_waiting;
                             break;
@@ -439,10 +440,7 @@ public class DlQueueFragment extends SherlockListFragment implements DlQueueWatc
                             holder.mStatus.setText(R.string.partfile_status_unknown);
                             barResource = R.drawable.file_progress_blocked;
                             break;
-                        case ECPartFile.PS_WAITINGFORHASH:
-                            holder.mStatus.setText(R.string.partfile_status_waitingforhash);
-                            barResource = R.drawable.file_progress_waiting;
-                            break;
+
                             
                         default:
                             holder.mStatus.setText("UNKNOWN-" + o.getStatus());
