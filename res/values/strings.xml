@@ -184,7 +184,7 @@
 	<string name="partfile_task_rename_noname">New name not specified</string>
 	<string name="bug_report_mail_text">Please describe your problem here.</string>
 	<string name="cat_all_files">All files</string>
-	<string name="dialog_tooltip_checkbox">Do not show this tooltip anymore</string>
+	<string name="dialog_tooltip_checkbox">Do not show this tip anymore</string>
 	<string name="dialog_tooltip_title">Did you know?</string>
 	<string name="dialog_tooltip_no_localization" translatable="false">Sorry, aMule Remote is not available in your language yet. If you\'d like to help translating this app, send an email to amuleremote@iukonline.com!</string>
 	<string name="dialog_tooltip_auto_localization">PLACEHOLDER FOR AUTO LOCALIZATION</string>
