@@ -121,8 +121,8 @@ ACRA (http://acra.googlecode.com/).\n
 	<string name="error_timeout">"La connessione al server è scaduta"</string>
 	<string name="error_io">"La connessione al server è terminata inaspettatamente"</string>
 	<string name="dlqueue_dialog_title_no_server_configured">"PC aMule non configurato"</string>
-	<string name="dlqueue_dialog_message_no_server_configured">"Premere OK per passare alla schermata delle impostazioni"</string>
-	<string name="error_null_client">"Impossibile creare il client. Verifica le impostazioni."</string>
+	<string name="dlqueue_dialog_message_no_server_configured">"Premere OK per passare alla schermata delle impostazioni."</string>
+	<string name="error_null_client">"Impossibile creare il client. Verifica le impostazioni. Seleziona la voce Aiuto dal menu se ti serve aiuto con le impostazioni."</string>
 	<string name="menu_opt_help">"Aiuto"</string>
 	<string name="search_label_file_name">"Nome file"</string>
 	<string name="search_label_search_type">"Tipo di ricerca"</string>

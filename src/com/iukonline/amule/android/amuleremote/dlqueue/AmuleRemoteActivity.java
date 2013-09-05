@@ -41,10 +41,12 @@ import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.GetCategoriesAsy
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.GetDlQueueAsyncTask;
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.GetECStatsAsyncTask;
 import com.iukonline.amule.android.amuleremote.helpers.gui.GUIUtils;
+import com.iukonline.amule.android.amuleremote.helpers.gui.TooltipHelper;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment.AlertDialogListener;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.EditTextDialogFragment;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.NewVersionDialogFragment;
+import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.TooltipDialogFragment;
 import com.iukonline.amule.android.amuleremote.partfile.PartFileActivity;
 import com.iukonline.amule.android.amuleremote.search.SearchActivity;
 import com.iukonline.amule.ec.ECCategory;
@@ -65,6 +67,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Ale
     
     private final static String TAG_DIALOG_NO_SERVER = "dialog_no_server";
     private final static String TAG_DIALOG_ADD_ED2K = "dialog_add_ed2k";
+    private final static String TAG_DIALOG_TOOLTIP = "dialog_tooltip";
     
     private AmuleControllerApplication mApp;
     private String mHandleURI;
@@ -90,12 +93,14 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Ale
     ActionBar mActionBar;
     
     FragmentManager mFragManager;
+    TooltipHelper mTooltipHelper;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         mApp = (AmuleControllerApplication) getApplication();
         mApp.refreshDebugSettings();
+        mTooltipHelper = new TooltipHelper(mApp.mSettings);
         
         mFragManager = getSupportFragmentManager();
         
@@ -174,10 +179,12 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Ale
     @Override
     protected void onPostResume() {
         
-        // Everyting that creats a dialog should be in onPostResume
+        // Everyting that creates a dialog should be in onPostResume
         // https://code.google.com/p/android/issues/detail?id=23096
         super.onPostResume();
+        showPostResumeDialog();
         
+        /*
         if (! mServerConfigured) {
             if (mFragManager.findFragmentByTag(TAG_DIALOG_NO_SERVER) == null) {
                 AlertDialogFragment d = new AlertDialogFragment(R.string.dlqueue_dialog_title_no_server_configured, R.string.dlqueue_dialog_message_no_server_configured, true);
@@ -199,6 +206,41 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Ale
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPostResume: handling ed2k URI");
             showAddED2KDialog(parURI);
         }
+        */
+    }
+    
+    protected void showPostResumeDialog() {
+        if (mApp.showWhatsNew(mFragManager)) return;
+        
+        // SHOW TOOLTIPS
+        
+        if (! mServerConfigured) {
+            if (mFragManager.findFragmentByTag(TAG_DIALOG_NO_SERVER) == null) {
+                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showPostResumeDialog: no server configured - showing dialog");
+                AlertDialogFragment d = new AlertDialogFragment(R.string.dlqueue_dialog_title_no_server_configured, R.string.dlqueue_dialog_message_no_server_configured, true);
+                d.show(mFragManager, TAG_DIALOG_NO_SERVER);
+            }
+            return;
+        }
+
+        if (! mHandleURI.equals(NO_URI_TO_HANDLE)) {
+            String parURI = new String(mHandleURI);
+            mHandleURI = new String(NO_URI_TO_HANDLE);
+            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPostResume: handling ed2k URI");
+            showAddED2KDialog(parURI);
+            return;
+        }
+        
+        if (mFragManager.findFragmentByTag(TAG_DIALOG_TOOLTIP) == null) {
+            TooltipDialogFragment tooltip = mTooltipHelper.getNextTooltipDialog();
+            if (tooltip != null) {
+                tooltip.show(mFragManager, TAG_DIALOG_TOOLTIP);
+            }
+        } else {
+            return;
+        }
+
+        mApp.mUpdateChecker.registerUpdatesWatcher(this);
         
     }
 
@@ -325,6 +367,9 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Ale
             return true;
         case R.id.menu_opt_reset_app_version_info:
             mApp.resetAppVersionInfo();
+            return true; 
+        case R.id.menu_opt_reset_tips:
+            mTooltipHelper.resetShown();
             return true; 
         default:
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onOptionsItemSelected: Unknown item selected. Calling super");
@@ -620,7 +665,12 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Ale
                 if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK) {
                     Intent settingsActivity = new Intent(AmuleRemoteActivity.this, AmuleControllerPreferences.class);
                     startActivity(settingsActivity);
+                } else {
+                    showPostResumeDialog();
                 }
+            } else if (tag.equals(TAG_DIALOG_TOOLTIP)) {
+                mTooltipHelper.handleDialogClosed(dialog, event, values);
+                showPostResumeDialog();
             } else if (tag.equals(TAG_DIALOG_ADD_ED2K)) {
                 if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK && values != null) {
                     String u = values.getString(EditTextDialogFragment.BUNDLE_EDIT_STRING);
@@ -636,6 +686,8 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Ale
                         }
                     }
                 }                
+            } else {
+                showPostResumeDialog();
             }
         }
     }

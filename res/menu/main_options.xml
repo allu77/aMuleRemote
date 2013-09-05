@@ -17,6 +17,7 @@
 		    <item android:id="@+id/menu_opt_send_report" android:title="@string/menu_opt_send_report"></item>
 		    <item android:id="@+id/menu_opt_refresh_cat" android:title="@string/menu_opt_refresh_cat"></item>
 		    <item android:id="@+id/menu_opt_reset_app_version_info" android:title="@string/menu_opt_reset_app_version_info"></item>
+		    <item android:id="@+id/menu_opt_reset_tips" android:title="@string/menu_opt_reset_tips"/>
         </menu>
     </item>
     

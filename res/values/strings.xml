@@ -125,7 +125,7 @@
 	<string name="error_io">Unexpected end of connection to server</string>
 	<string name="dlqueue_dialog_title_no_server_configured">aMule PC not configured</string>
 	<string name="dlqueue_dialog_message_no_server_configured">Press OK to go to the settings screen</string>
-	<string name="error_null_client">Could not create client. Please check your settings.</string>
+	<string name="error_null_client">Could not create client. Please check your settings. Select Help from the menu if you need help with settings</string>
 	<string name="menu_opt_help">Help</string>
 	<string name="search_label_file_name">File name</string>
 	<string name="search_label_search_type">Search type</string>
@@ -184,4 +184,9 @@
 	<string name="partfile_task_rename_noname">New name not specified</string>
 	<string name="bug_report_mail_text">Please describe your problem here.</string>
 	<string name="cat_all_files">All files</string>
+	<string name="dialog_tooltip_checkbox">Do not show this tooltip anymore</string>
+	<string name="dialog_tooltip_title">Did you know?</string>
+	<string name="dialog_tooltip_no_localization" translatable="false">Sorry, aMule Remote is not available in your language yet. If you\'d like to help translating this app, send an email to amuleremote@iukonline.com!</string>
+	<string name="dialog_tooltip_auto_localization">PLACEHOLDER FOR AUTO LOCALIZATION</string>
+	<string name="menu_opt_reset_tips">Reset tips</string>
 </resources>
