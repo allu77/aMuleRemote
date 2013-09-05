@@ -184,5 +184,5 @@ ACRA (http://acra.googlecode.com/).\n
 	<string name="dialog_tooltip_title">Lo sapevi?</string>
 	<string name="dialog_tooltip_auto_localization"></string>
 	<string name="menu_opt_reset_tips">Resetta i suggerimenti</string>
-	<string name="error_invalid_port">Porta TCP specificata (%d) non valida. Ripristino il valore di default (4712).</string>
+	<string name="error_invalid_port">Porta TCP specificata non valida. Ripristino il valore di default (4712).</string>
 </resources>
