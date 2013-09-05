@@ -24,6 +24,7 @@ import android.os.Build;
 import android.os.DropBoxManager;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
+import android.widget.Toast;
 
 import com.iukonline.amule.android.amuleremote.helpers.UpdateChecker;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher.AmuleClientStatus;
@@ -205,7 +206,7 @@ public class AmuleControllerApplication extends Application {
         try {
             port = Integer.parseInt(mSettings.getString(AC_SETTING_PORT, "4712"));
         } catch (NumberFormatException e) {
-            // TODO: Provide custom error
+            Toast.makeText(this,  R.string.error_invalid_port, Toast.LENGTH_LONG).show();
         }
         String password = mSettings.getString(AC_SETTING_PASSWORD, "");
         String version = mSettings.getString(AC_SETTING_VERSION, "V200");

@@ -189,4 +189,5 @@
 	<string name="dialog_tooltip_no_localization" translatable="false">Sorry, aMule Remote is not available in your language yet. If you\'d like to help translating this app, send an email to amuleremote@iukonline.com!</string>
 	<string name="dialog_tooltip_auto_localization">PLACEHOLDER FOR AUTO LOCALIZATION</string>
 	<string name="menu_opt_reset_tips">Reset tips</string>
+	<string name="error_invalid_port">Invalid TCP port specified (%d). Reverting to default (4712).</string>
 </resources>

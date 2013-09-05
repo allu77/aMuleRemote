@@ -180,5 +180,5 @@ ACRA (http://acra.googlecode.com/).\n
 	<string name="partfile_task_rename_noname">Nessun nuovo nome è stato fornito</string>
 	<string name="bug_report_mail_text">Per favore descrivi qui il tuo problema.</string>
 	<string name="cat_all_files">Tutti i file</string>
-	
+	<string name="error_invalid_port">Porta TCP specificata (%d) non valida. Ripristino il valore di default (4712).</string>
 </resources>
