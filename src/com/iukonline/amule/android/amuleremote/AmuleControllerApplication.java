@@ -341,7 +341,7 @@ public class AmuleControllerApplication extends Application {
             if (fm.findFragmentByTag(TAG_DIALOG_WHATS_NEW) == null) {
                 StringBuilder sb = new StringBuilder();
                 if (currVersion < 14) sb.append(getResources().getString(R.string.dialog_whats_new_features_14)); 
-                if (currVersion < 17) sb.append("\n" + getResources().getString(R.string.dialog_whats_new_features_16));
+                if (currVersion < 18) sb.append("\n" + getResources().getString(R.string.dialog_whats_new_features_18));
                 WhatsNewDialogFragment d = new WhatsNewDialogFragment(getResources().getString(R.string.dialog_whats_new_welcome, mVersionName), sb.toString());
                 d.show(fm, TAG_DIALOG_WHATS_NEW);
                 SharedPreferences.Editor e = mSettings.edit();
