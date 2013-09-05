@@ -205,6 +205,10 @@ public class AmuleControllerApplication extends Application {
         
         try {
             port = Integer.parseInt(mSettings.getString(AC_SETTING_PORT, "4712"));
+            if (port < 1 || port > 65535) {
+                Toast.makeText(this,  R.string.error_invalid_port, Toast.LENGTH_LONG).show();
+                port = 4712;
+            }
         } catch (NumberFormatException e) {
             Toast.makeText(this,  R.string.error_invalid_port, Toast.LENGTH_LONG).show();
         }
