@@ -29,8 +29,8 @@ public class TooltipHelper {
             if (l.getLanguage().equals("en") || l.getLanguage().equals("it")) {
                 // No tips to show
                 setTooltipShown(TOOLTIPHELPER_TOOLTIP_LOCALIZATION);
-            } else if (l.getLanguage().equals("pt") && l.getCountry().equals("BR")) {
-                return new TooltipDialogFragment(TOOLTIPHELPER_TOOLTIP_LOCALIZATION, R.string.dialog_tooltip_title, R.string.dialog_tooltip_auto_localization);
+            //} else if (l.getLanguage().equals("pt") && l.getCountry().equals("BR")) {
+            //    return new TooltipDialogFragment(TOOLTIPHELPER_TOOLTIP_LOCALIZATION, R.string.dialog_tooltip_title, R.string.dialog_tooltip_auto_localization);
             } else {
                 return new TooltipDialogFragment(TOOLTIPHELPER_TOOLTIP_LOCALIZATION, R.string.dialog_tooltip_title, R.string.dialog_tooltip_no_localization);
             }
