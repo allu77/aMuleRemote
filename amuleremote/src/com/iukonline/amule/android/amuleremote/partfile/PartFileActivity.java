@@ -1,6 +1,7 @@
 package com.iukonline.amule.android.amuleremote.partfile;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -46,7 +47,7 @@ public class PartFileActivity extends SherlockFragmentActivity implements AlertD
     
     private AmuleControllerApplication mApp;
     
-    byte[] mHash;
+    byte[] mHash = null;
     ECPartFile mPartFile;
     
     ActionBar mBar;
@@ -68,7 +69,14 @@ public class PartFileActivity extends SherlockFragmentActivity implements AlertD
 
         mApp = (AmuleControllerApplication) getApplication();
         this.setContentView(R.layout.partfile_activity);
-        mHash = getIntent().getExtras().getByteArray(BUNDLE_PARAM_HASH);
+        
+        Intent i = getIntent();
+        if (i != null) {
+            Bundle b = i.getExtras();
+            if (b != null) {
+                mHash = b.getByteArray(BUNDLE_PARAM_HASH);
+            }
+        }
         
         mBar = getSupportActionBar();
         mBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);

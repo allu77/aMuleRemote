@@ -212,6 +212,7 @@ public class ECHelper {
     }
     
     public ECPartFile registerForECPartFileUpdates (ECPartFileWatcher watcher, byte[] hash) {
+        if (hash == null) return null;
         String hashString = ECUtils.byteArrayToHexString(hash);
         if (! mECPartFileWatchers.containsKey(hashString)) mECPartFileWatchers.put(hashString, new HashMap <String, ECPartFileWatcher>());
         registerWatcher(watcher, mECPartFileWatchers.get(hashString));
@@ -219,9 +220,11 @@ public class ECHelper {
     }
     
     public void registerForECPartFileActions (ECPartFileActionWatcher watcher, byte[] hash) {
-        String hashString = ECUtils.byteArrayToHexString(hash);
-        if (! mECPartFileActionWatchers.containsKey(hashString)) mECPartFileActionWatchers.put(hashString, new HashMap <String, ECPartFileActionWatcher>());
-        registerWatcher(watcher, mECPartFileActionWatchers.get(hashString));
+        if (hash != null) {
+            String hashString = ECUtils.byteArrayToHexString(hash);
+            if (! mECPartFileActionWatchers.containsKey(hashString)) mECPartFileActionWatchers.put(hashString, new HashMap <String, ECPartFileActionWatcher>());
+            registerWatcher(watcher, mECPartFileActionWatchers.get(hashString));
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -247,16 +250,20 @@ public class ECHelper {
     public void unRegisterFromECSearchList (ECSearchListWatcher watcher) { unRegisterWatcher(watcher, mECSearchListWatchers); }
     
     public void unRegisterFromECPartFileUpdates (ECPartFileWatcher watcher, byte[] hash) {
-        String hashString = ECUtils.byteArrayToHexString(hash);
-        if (mECPartFileWatchers.containsKey(hashString)) {
-            unRegisterWatcher(watcher, mECPartFileWatchers.get(hashString));
+        if (hash != null) {
+            String hashString = ECUtils.byteArrayToHexString(hash);
+            if (mECPartFileWatchers.containsKey(hashString)) {
+                unRegisterWatcher(watcher, mECPartFileWatchers.get(hashString));
+            }
         }
     }
     
     public void unRegisterFromECPartFileActions (ECPartFileActionWatcher watcher, byte[] hash) {
-        String hashString = ECUtils.byteArrayToHexString(hash);
-        if (mECPartFileActionWatchers.containsKey(hashString)) {
-            unRegisterWatcher(watcher, mECPartFileActionWatchers.get(hashString));
+        if (hash != null) {
+            String hashString = ECUtils.byteArrayToHexString(hash);
+            if (mECPartFileActionWatchers.containsKey(hashString)) {
+                unRegisterWatcher(watcher, mECPartFileActionWatchers.get(hashString));
+            }
         }
     }
     
