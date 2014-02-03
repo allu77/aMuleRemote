@@ -75,9 +75,15 @@ public class SearchActivity extends SherlockFragmentActivity implements AlertDia
         notifyStatusChange(mApp.mECHelper.registerForAmuleClientStatusUpdates(this));
         updateECSearchList(mApp.mECHelper.registerForECSsearchList(this));
         
-        String serverVersion = mApp.mECHelper.getServerVersion();
         
-        // https://code.google.com/p/android/issues/detail?id=23096
+        
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        
+        String serverVersion = mApp.mECHelper.getServerVersion();
         
         if (serverVersion != null && (serverVersion.equals("V204") || serverVersion.equals("V203"))) {
             FragmentTransaction ft = mFragManager.beginTransaction();
@@ -90,13 +96,6 @@ public class SearchActivity extends SherlockFragmentActivity implements AlertDia
             ft.commit();
         }
         
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        
-        String serverVersion = mApp.mECHelper.getServerVersion();
         if (serverVersion == null || !(serverVersion.equals("V204") || serverVersion.equals("V203"))) {
             
             if (mFragManager.findFragmentByTag(TAG_DIALOG_SERVER_VERSION) == null) {
