@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+        <LinearLayout
+            android:id="@+id/search_details_frag_result_details"
+            android:orientation="horizontal"
+        
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"/>
+    
+<com.google.ads.AdView android:id="@+id/adView"
+                         android:layout_width="fill_parent"
+                         android:layout_height="wrap_content"
+                         ads:adUnitId="ca-app-pub-1535323231055867/5680674639"
+                         ads:adSize="SMART_BANNER"
+                         ads:testDevices="TEST_EMULATOR, 4F7B654617C12338871CE872532E7B6A"
+                         ads:loadAdOnCreate="true"/>
+
+</LinearLayout>

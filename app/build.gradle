@@ -1,0 +1,27 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "22.0.1"
+
+    defaultConfig {
+        applicationId "com.iukonline.amule.android.amuleremote"
+        minSdkVersion 7
+        targetSdkVersion 16
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+dependencies {
+    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    compile 'com.android.support:support-v4:18.0.0'
+    compile files('libs/acra-4.5.0.jar')
+    compile files('libs/GoogleAdMobAdsSdk-6.4.1.jar')
+    compile files('libs/JavaAmuleEC-0.5.jar')
+}

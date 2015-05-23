@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="settings_server_version_description">
+        <item >2.2.0 to 2.2.6</item>
+        <item >2.3.1rc1</item>
+        <item >2.3.1</item>
+<!--           <item >Fake server (only for debug)</item> --> 
+    </string-array>
+    <string-array name="settings_server_version_value" translatable="false">
+        <item >V200</item>
+        <item >V203</item>
+        <item >V204</item>
+    <!--     <item >Fake</item> --> 
+    </string-array>
+    <string-array name="search_search_type_description">
+        <item >Local</item>
+        <item >Global</item>
+        <item >Kad</item>
+    </string-array>
+    <string-array name="search_size_dim_description" translatable="false">
+        <item >Bytes</item>
+        <item >KiloBytes</item>
+        <item >MegaBytes</item>
+        <item >GigaBytes</item>
+    </string-array>
+    <string-array name="search_file_type">
+        <item>Any</item><item >Archives</item>
+        
+        <item >Audio</item>
+        <item >CD-Images</item>
+        <item >Pictures</item>
+        <item >Programs</item>
+        <item >Texts</item>
+        <item >Videos</item>
+    </string-array>
+
+    
+    
+</resources>

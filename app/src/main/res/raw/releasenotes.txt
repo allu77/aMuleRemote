@@ -1,0 +1,54 @@
+aMule Remote 0.5.2
+- Italian localization
+- Library updates
+- Bugfixes
+
+aMule Remote 0.5.1
+- Search feature also for aMule 2.3.1-rc1
+- Various bugfixes
+
+aMule Remote 0.5
+- Search feature for aMule 2.3.1
+- Some GUI tweaks
+- Various bugfixes
+
+aMule Remote 0.4.2
+- Added basic help
+- Send bug report is now just sending an email to the developer as the previous implementation was causing a lot of spam
+
+aMule Remote 0.4.1
+- Fixed crash on null server version
+- Fixed refresh button disappearing on resume
+- Added some logging for troubleshooting
+- Fixed compatibility issue with Android 2.1
+
+aMule Remote 0.4
+- aMule 2.3.1 is now supported
+- Fixed login bug on aMule 2.2.2
+- Implemented zlib data compression on EC protocol (saves even more bandwidth)
+- Notification is shown before sending report on crash
+- Fixed crashes on orientation change during dialog boxes
+- Fixed problem with list refresh
+- GUI improvements
+- Category filter implemented
+- Added debugging more debugging options for remote support
+- Fixed bug on login to server with wrong client version
+- Fixed issue on first startup (application locket to the settings screen)
+
+aMule Remote 0.3.1
+- Fixed bugs in change priority and A4Af handling
+
+aMule Remote 0.3
+- Added support for UTF-8 data compression on EC protocol (saves bandwidth)
+- Implemented acra libray for automated crash report (needs additional work for customization) 
+
+aMule Remote 0.2
+- Ads
+- Added compatibility for Android 2.1 
+
+aMule Remote 0.1
+- Download queue management (start/stop/delete/set priority/handle A4AF/file rename)
+- Downlaod details (including comments and source names)
+- Automatic queue refresh
+- Periodically check for app updates
+- Add ed2k link (both from app and from ed2k:// URI in other apps)

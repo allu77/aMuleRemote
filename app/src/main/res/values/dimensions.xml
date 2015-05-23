@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="progress_on_bar_size">32dip</dimen>
+    <dimen name="progress_on_bar_width">56dip</dimen>
+    
+</resources>

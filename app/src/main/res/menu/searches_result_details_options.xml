@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/menu_search_details_opt_sort" android:title="@string/menu_opt_sort">
+        <menu>
+            <item android:id="@+id/menu_search_details_opt_sort_filename" android:title="@string/menu_opt_sort_filename"/>
+            <item android:id="@+id/menu_search_details_opt_sort_size" android:title="@string/menu_opt_sort_size"/>
+            <item android:id="@+id/menu_search_details_opt_sort_sources" android:title="@string/menu_search_details_opt_sort_sources"/>
+            <item android:id="@+id/menu_search_details_opt_sort_sources_complete" android:title="@string/menu_search_details_opt_sort_sources_complete"/>
+        </menu>
+    </item>
+    
+
+</menu>
