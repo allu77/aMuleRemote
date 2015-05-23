@@ -1,20 +1,20 @@
 package com.iukonline.amule.android.amuleremote.search;
 
-import java.util.ArrayList;
-
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.actionbarsherlock.app.SherlockListFragment;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECSearchListWatcher;
 
-public class SearchResultsListFragment extends SherlockListFragment implements ECSearchListWatcher {
+import java.util.ArrayList;
+
+public class SearchResultsListFragment extends ListFragment implements ECSearchListWatcher {
     
     
     

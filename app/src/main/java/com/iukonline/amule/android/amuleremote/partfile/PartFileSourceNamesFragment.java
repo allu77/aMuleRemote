@@ -1,9 +1,8 @@
 package com.iukonline.amule.android.amuleremote.partfile;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -15,17 +14,18 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockListFragment;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECPartFileWatcher;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileSourceName;
 
+import java.util.ArrayList;
 
 
 
-public class PartFileSourceNamesFragment extends SherlockListFragment implements ECPartFileWatcher {
+
+public class PartFileSourceNamesFragment extends ListFragment implements ECPartFileWatcher {
 
     
     interface RenameDialogContainer {

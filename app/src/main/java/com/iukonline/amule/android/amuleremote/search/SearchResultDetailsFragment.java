@@ -1,20 +1,17 @@
 package com.iukonline.amule.android.amuleremote.search;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockListFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECSearchListWatcher;
@@ -22,7 +19,10 @@ import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchSt
 import com.iukonline.amule.ec.ECSearchFile;
 import com.iukonline.amule.ec.ECSearchFile.ECSearchFileComparator;
 
-public class SearchResultDetailsFragment extends SherlockListFragment implements ECSearchListWatcher {
+import java.util.ArrayList;
+import java.util.Collection;
+
+public class SearchResultDetailsFragment extends ListFragment implements ECSearchListWatcher {
 
     public interface SearchResultDetailsFragmentContainter {
         public void startSearchResult(ECSearchFile sf) ;

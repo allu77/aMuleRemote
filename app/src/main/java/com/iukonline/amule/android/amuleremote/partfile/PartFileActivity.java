@@ -7,18 +7,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.Tab;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.R;
@@ -36,7 +36,7 @@ import com.iukonline.amule.android.amuleremote.partfile.PartFileSourceNamesFragm
 import com.iukonline.amule.ec.ECPartFile;
 
 
-public class PartFileActivity extends SherlockFragmentActivity implements AlertDialogListener, ClientStatusWatcher, ECPartFileWatcher, ECPartFileActionWatcher, RenameDialogContainer, RefreshingActivity {
+public class PartFileActivity extends ActionBarActivity implements AlertDialogListener, ClientStatusWatcher, ECPartFileWatcher, ECPartFileActionWatcher, RenameDialogContainer, RefreshingActivity {
     public final static String BUNDLE_PARAM_HASH = "hash";
     public static String BUNDLE_SELECTED_TAB = "tab";
     public final static String BUNDLE_NEEDS_REFRESH = "needs_refresh";
@@ -151,7 +151,7 @@ public class PartFileActivity extends SherlockFragmentActivity implements AlertD
         super.onSaveInstanceState(outState);
         
         if (mBar != null) {
-            Tab selectedTab = mBar.getSelectedTab();
+            ActionBar.Tab selectedTab = mBar.getSelectedTab();
             if (selectedTab != null) {
                 if (selectedTab == mTabSourceNames) {
                     outState.putString(BUNDLE_SELECTED_TAB, "names");
@@ -169,7 +169,7 @@ public class PartFileActivity extends SherlockFragmentActivity implements AlertD
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.detail_options, menu);
         
         return super.onCreateOptionsMenu(menu);
@@ -182,9 +182,11 @@ public class PartFileActivity extends SherlockFragmentActivity implements AlertD
         
         if (refreshItem != null) {
             if (mIsProgressShown) {
-                refreshItem.setActionView(R.layout.refresh_progress);
+                MenuItemCompat.setActionView(refreshItem, R.layout.refresh_progress);
+                //refreshItem.setActionView(R.layout.refresh_progress);
             } else {
-                refreshItem.setActionView(null);
+                MenuItemCompat.setActionView(refreshItem, null);
+                //refreshItem.setActionView(null);
             }
 
         }
@@ -292,7 +294,7 @@ public class PartFileActivity extends SherlockFragmentActivity implements AlertD
             
             if (mPartFile.getCommentCount() == 0) {
                 if (mBar.getTabCount() == 3) {
-                    Tab prevSelected = mBar.getSelectedTab();
+                    ActionBar.Tab prevSelected = mBar.getSelectedTab();
                     mBar.removeTab(mTabComments);
                     if (prevSelected == mTabComments) prevSelected = mTabDetails;
                     mBar.selectTab(prevSelected);
@@ -448,7 +450,7 @@ public class PartFileActivity extends SherlockFragmentActivity implements AlertD
 
         /* The following are each of the ActionBar.TabListener callbacks */
 
-        public void onTabSelected(Tab tab, FragmentTransaction ft) {
+        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
             
             FragmentTransaction realFT = getFT(ft);
             
@@ -472,7 +474,7 @@ public class PartFileActivity extends SherlockFragmentActivity implements AlertD
             if (ft == null) realFT.commit();
         }
 
-        public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
             if (mFragment != null) {
                 // Detach the fragment, because another one is being attached
                 FragmentTransaction realFT = getFT(ft);
@@ -482,7 +484,7 @@ public class PartFileActivity extends SherlockFragmentActivity implements AlertD
         }
 
         @Override
-        public void onTabReselected(Tab tab, FragmentTransaction ft) {
+        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
             // Do nothing
         }
     }

@@ -3,15 +3,15 @@ package com.iukonline.amule.android.amuleremote;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 
 // TODO: Convert to new Fragment Preference Activiy
 
-public class AmuleControllerPreferences extends SherlockPreferenceActivity {
+public class AmuleControllerPreferences extends PreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -20,7 +20,7 @@ public class AmuleControllerPreferences extends SherlockPreferenceActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.preferences_options, menu);
         return super.onCreateOptionsMenu(menu);
     }

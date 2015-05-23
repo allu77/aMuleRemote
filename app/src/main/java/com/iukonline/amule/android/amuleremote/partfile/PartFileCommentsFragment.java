@@ -1,9 +1,8 @@
 package com.iukonline.amule.android.amuleremote.partfile;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,16 +11,17 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockListFragment;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECPartFileWatcher;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComment;
 
+import java.util.ArrayList;
 
 
-public class PartFileCommentsFragment extends SherlockListFragment implements ECPartFileWatcher {
+
+public class PartFileCommentsFragment extends ListFragment implements ECPartFileWatcher {
 
     byte[] mHash;
     ECPartFile mPartFile;

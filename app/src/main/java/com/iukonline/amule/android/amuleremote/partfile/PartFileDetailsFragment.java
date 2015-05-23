@@ -1,8 +1,7 @@
 package com.iukonline.amule.android.amuleremote.partfile;
 
-import java.text.DateFormat;
-
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECPartFileWatcher;
@@ -18,7 +16,9 @@ import com.iukonline.amule.android.amuleremote.helpers.gui.GUIUtils;
 import com.iukonline.amule.ec.ECCategory;
 import com.iukonline.amule.ec.ECPartFile;
 
-public class PartFileDetailsFragment extends SherlockFragment implements ECPartFileWatcher {
+import java.text.DateFormat;
+
+public class PartFileDetailsFragment extends Fragment implements ECPartFileWatcher {
     
     byte[] mHash;
     ECPartFile mPartFile;

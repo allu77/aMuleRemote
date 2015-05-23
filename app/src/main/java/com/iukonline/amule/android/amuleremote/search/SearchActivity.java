@@ -1,17 +1,16 @@
 package com.iukonline.amule.android.amuleremote.search;
 
-import java.util.ArrayList;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.R;
@@ -26,7 +25,9 @@ import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchSt
 import com.iukonline.amule.android.amuleremote.search.SearchInputFragment.SearchInputFragmentContainter;
 import com.iukonline.amule.android.amuleremote.search.SearchResultsListFragment.SearchResultsListFragmentContainter;
 
-public class SearchActivity extends SherlockFragmentActivity implements AlertDialogListener, RefreshingActivity, SearchInputFragmentContainter, SearchResultsListFragmentContainter, ClientStatusWatcher, ECSearchListWatcher {
+import java.util.ArrayList;
+
+public class SearchActivity extends ActionBarActivity implements AlertDialogListener, RefreshingActivity, SearchInputFragmentContainter, SearchResultsListFragmentContainter, ClientStatusWatcher, ECSearchListWatcher {
     
     
     private final static String TAG_DIALOG_SERVER_VERSION = "dialog_server_version";
@@ -116,7 +117,7 @@ public class SearchActivity extends SherlockFragmentActivity implements AlertDia
     public boolean onCreateOptionsMenu(Menu menu) {
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onCreateOptionsMenu: Inflating menu");
 
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_options, menu);
 
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onCreateOptionsMenu: Saving MenuItems");
@@ -138,9 +139,11 @@ public class SearchActivity extends SherlockFragmentActivity implements AlertDia
             
             if (lastSearch != null && (lastSearch.mSearchStatus == ECSearchStatus.STARTING || lastSearch.mSearchStatus == ECSearchStatus.RUNNING)) {
                 if (mIsProgressShown) {
-                    refreshItem.setActionView(R.layout.refresh_progress);
+                    MenuItemCompat.setActionView(refreshItem, R.layout.refresh_progress);
+                    //refreshItem.setActionView(R.layout.refresh_progress);
                 } else {
-                    refreshItem.setActionView(null);
+                    MenuItemCompat.setActionView(refreshItem, null);
+                    //refreshItem.setActionView(null);
                 }
                 refreshItem.setVisible(true);
             } else {

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-<item android:id="@+id/menu_search_opt_refresh" android:title="@string/menu_opt_refresh"  android:icon="@drawable/ic_menu_refresh" android:showAsAction="always"></item>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+<item android:id="@+id/menu_search_opt_refresh" android:title="@string/menu_opt_refresh"  android:icon="@drawable/ic_menu_refresh" app:showAsAction="always"></item>
 </menu>

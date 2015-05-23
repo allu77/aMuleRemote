@@ -1,14 +1,13 @@
 package com.iukonline.amule.android.amuleremote.search;
 
-import java.util.ArrayList;
-
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.R;
@@ -24,7 +23,9 @@ import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchSt
 import com.iukonline.amule.android.amuleremote.search.SearchResultDetailsFragment.SearchResultDetailsFragmentContainter;
 import com.iukonline.amule.ec.ECSearchFile;
 
-public class SearchDetailsActivity extends SherlockFragmentActivity implements AlertDialogListener, SearchResultDetailsFragmentContainter, RefreshingActivity, ClientStatusWatcher, ECSearchListWatcher {
+import java.util.ArrayList;
+
+public class SearchDetailsActivity extends ActionBarActivity implements AlertDialogListener, SearchResultDetailsFragmentContainter, RefreshingActivity, ClientStatusWatcher, ECSearchListWatcher {
     
     public final static String BUNDLE_PARAM_POSITION = "position";
     
@@ -82,7 +83,7 @@ public class SearchDetailsActivity extends SherlockFragmentActivity implements A
     public boolean onCreateOptionsMenu(Menu menu) {
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.onCreateOptionsMenu: Inflating menu");
 
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_options, menu);
 
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.onCreateOptionsMenu: Saving MenuItems");
@@ -104,9 +105,11 @@ public class SearchDetailsActivity extends SherlockFragmentActivity implements A
             
             if (mSearch != null && (mSearch.mSearchStatus== ECSearchStatus.STARTING || mSearch.mSearchStatus == ECSearchStatus.RUNNING)) {
                 if (mIsProgressShown) {
-                    refreshItem.setActionView(R.layout.refresh_progress);
+                    MenuItemCompat.setActionView(refreshItem, R.layout.refresh_progress);
+                    //refreshItem.setActionView(R.layout.refresh_progress);
                 } else {
-                    refreshItem.setActionView(null);
+                    MenuItemCompat.setActionView(refreshItem, null);
+                    //refreshItem.setActionView(null);
                 }
                 refreshItem.setVisible(true);
             } else {

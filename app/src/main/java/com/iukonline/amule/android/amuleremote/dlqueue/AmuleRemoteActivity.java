@@ -1,8 +1,5 @@
 package com.iukonline.amule.android.amuleremote.dlqueue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -10,21 +7,21 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.iukonline.amule.android.amuleremote.AboutDialogFragment;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
@@ -54,8 +51,11 @@ import com.iukonline.amule.ec.ECConnState;
 import com.iukonline.amule.ec.ECStats;
 import com.iukonline.amule.ec.ECUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 
-public class AmuleRemoteActivity extends SherlockFragmentActivity implements AlertDialogListener, ClientStatusWatcher, DlQueueFragmentContainer, ECStatsWatcher, CategoriesWatcher, RefreshingActivity, UpdatesWatcher  {
+
+public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialogListener, ClientStatusWatcher, DlQueueFragmentContainer, ECStatsWatcher, CategoriesWatcher, RefreshingActivity, UpdatesWatcher  {
     
     
     public final static String BUNDLE_PARAM_ERRSTR          = "errstr";
@@ -279,7 +279,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Ale
 
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreateOptionsMenu: Inflating menu");
 
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_options, menu);
 
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreateOptionsMenu: Saving MenuItems");
@@ -305,9 +305,11 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Ale
         if (refreshItem != null) {
             refreshItem.setVisible(mServerConfigured);
             if (mIsProgressShown) {
-                refreshItem.setActionView(R.layout.refresh_progress);
+                MenuItemCompat.setActionView(refreshItem, R.layout.refresh_progress);
+                //refreshItem.setActionView(R.layout.refresh_progress);
             } else {
-                refreshItem.setActionView(null);
+                MenuItemCompat.setActionView(refreshItem, null);
+                //refreshItem.setActionView(null);
             }
         }
 
@@ -567,7 +569,7 @@ public class AmuleRemoteActivity extends SherlockFragmentActivity implements Ale
             mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
             mActionBar.setListNavigationCallbacks(
                             mCategoriesAdapter,
-                            new OnNavigationListener() {
+                            new ActionBar.OnNavigationListener() {
                                 @Override
                                 public boolean onNavigationItemSelected(int position, long itemId) {
                                     DlQueueFragment f = (DlQueueFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_dlqueue);

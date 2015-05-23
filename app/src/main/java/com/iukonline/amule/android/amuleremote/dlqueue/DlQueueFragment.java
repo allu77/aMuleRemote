@@ -1,15 +1,15 @@
 package com.iukonline.amule.android.amuleremote.dlqueue;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -17,10 +17,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockListFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.DlQueueWatcher;
@@ -29,7 +25,11 @@ import com.iukonline.amule.ec.ECCategory;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 
-public class DlQueueFragment extends SherlockListFragment implements DlQueueWatcher {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
     
     public interface DlQueueFragmentContainer {
         public void partFileSelected(byte[] hash);

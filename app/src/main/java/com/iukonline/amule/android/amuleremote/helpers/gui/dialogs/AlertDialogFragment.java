@@ -6,11 +6,11 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v4.app.DialogFragment;
 
-import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.iukonline.amule.android.amuleremote.R;
 
-public class AlertDialogFragment extends SherlockDialogFragment {
+public class AlertDialogFragment extends DialogFragment {
     
     public final static int ALERTDIALOG_EVENT_OK = 1;
     public final static int ALERTDIALOG_EVENT_CANCEL = 2;
