@@ -94,11 +94,11 @@ public class SearchResultsListFragment extends ListFragment implements ECSearchL
     }
 
     @Override
-    public void updateECSearchList(ArrayList<SearchContainer> searches) {
+    public UpdateResult updateECSearchList(ArrayList<SearchContainer> searches) {
         
         if (searches == null) {
             if (mAdapter != null) mAdapter.clear();
-            return;
+            return UpdateResult.DO_NOTHING;
         }
         if (mAdapter == null) {
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultsListFragment.updateECSearchList: Creating new adapter");
@@ -147,5 +147,6 @@ public class SearchResultsListFragment extends ListFragment implements ECSearchL
                 mAdapter.clear();
             }
         }
+        return UpdateResult.DO_NOTHING;
     }
 }

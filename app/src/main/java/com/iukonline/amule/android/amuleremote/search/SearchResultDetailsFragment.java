@@ -151,11 +151,13 @@ public class SearchResultDetailsFragment extends ListFragment implements ECSearc
     }
 
     @Override
-    public void updateECSearchList(ArrayList<SearchContainer> searches) {
+    public UpdateResult updateECSearchList(ArrayList<SearchContainer> searches) {
+
+        UpdateResult retVal = UpdateResult.DO_NOTHING;
 
         if (searches == null || mPosition >= searches.size()) {
             getActivity().finish();
-            return;
+            return retVal;
         }
         
         if (mAdapter == null) {
@@ -185,7 +187,8 @@ public class SearchResultDetailsFragment extends ListFragment implements ECSearc
         mSearch = searches.get(mPosition);
         if (mSearch.mSearchStatus != ECSearchStatus.STARTING && mSearch.mSearchStatus != ECSearchStatus.RUNNING) {
             ((TextView) getListView().getEmptyView()).setText(R.string.search_no_results);
-            mApp.mECHelper.unRegisterFromECSearchList(this);
+            //mApp.mECHelper.unRegisterFromECSearchList(this);
+            retVal = UpdateResult.UNREGISTER;
         }
 
         Collection<ECSearchFile> newList = null;
@@ -222,6 +225,7 @@ public class SearchResultDetailsFragment extends ListFragment implements ECSearc
             mAdapter.sort(mComparator);
             mAdapter.notifyDataSetChanged();
         }
+        return retVal;
     }
 
 }

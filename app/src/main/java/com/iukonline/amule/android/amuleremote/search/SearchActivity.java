@@ -247,7 +247,7 @@ public class SearchActivity extends ActionBarActivity implements AlertDialogList
 
 
     @Override
-    public void updateECSearchList(ArrayList<SearchContainer> searches) {
+    public UpdateResult updateECSearchList(ArrayList<SearchContainer> searches) {
         if (searches == null) {
             finish();
         } else {
@@ -258,6 +258,7 @@ public class SearchActivity extends ActionBarActivity implements AlertDialogList
                 supportInvalidateOptionsMenu();
             }
         }
+        return UpdateResult.DO_NOTHING;
     }
 
     @Override

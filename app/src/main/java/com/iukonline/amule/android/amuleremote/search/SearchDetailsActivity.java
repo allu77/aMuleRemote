@@ -180,12 +180,13 @@ public class SearchDetailsActivity extends ActionBarActivity implements AlertDia
     }
 
     @Override
-    public void updateECSearchList(ArrayList<SearchContainer> searches) {
+    public UpdateResult updateECSearchList(ArrayList<SearchContainer> searches) {
         if (searches == null) {
             finish();
         } else {
             supportInvalidateOptionsMenu();
         }
+        return UpdateResult.DO_NOTHING;
     }
 
     @Override

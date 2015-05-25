@@ -1,18 +1,5 @@
 package com.iukonline.amule.android.amuleremote.helpers.ec;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-import org.acra.ACRA;
-
 import android.os.AsyncTask;
 import android.os.DropBoxManager;
 import android.util.Log;
@@ -39,6 +26,19 @@ import com.iukonline.amule.ec.ECUtils;
 import com.iukonline.amule.ec.fake.ECClientFake;
 import com.iukonline.amule.ec.v203.ECClientV203;
 import com.iukonline.amule.ec.v204.ECClientV204;
+
+import org.acra.ACRA;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 
@@ -340,9 +340,15 @@ public class ECHelper {
 
 
     public void notifyECSearchListWatcher (ArrayList<SearchContainer> s) {
+        // Avoid concurrent modification
+        ArrayList <ECSearchListWatcher> toBeDeleted = new ArrayList<ECSearchListWatcher>();
         for (ECSearchListWatcher w : mECSearchListWatchers.values()) {
-            w.updateECSearchList(s);
+            if (w.updateECSearchList(s) == ECSearchListWatcher.UpdateResult.UNREGISTER) toBeDeleted.add(w);
         }
+        for (ECSearchListWatcher w : toBeDeleted) {
+            unRegisterFromECSearchList(w);
+        }
+
     }
     
     public void notifyECSearchListWatcher() {
