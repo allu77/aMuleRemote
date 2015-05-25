@@ -8,6 +8,8 @@ android {
         applicationId "com.iukonline.amule.android.amuleremote"
         minSdkVersion 7
         targetSdkVersion 21
+        versionCode 19
+        versionName "0.6-SNAPSHOT"
     }
 
     buildTypes {
