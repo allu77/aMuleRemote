@@ -48,9 +48,7 @@ public class SearchActivity extends ActionBarActivity implements AlertDialogList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         mApp = (AmuleControllerApplication) getApplication();
-        getSupportActionBar().setTitle(R.string.search_title);
-        mFragManager = getSupportFragmentManager();
-        
+
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onCreate: Calling super");
         super.onCreate(savedInstanceState);
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onCreate: Back from super");
@@ -58,15 +56,9 @@ public class SearchActivity extends ActionBarActivity implements AlertDialogList
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onCreate: Calling setContentView");
         setContentView(R.layout.act_search);
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onCreate: Back from setContentView");
-        
-    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mApp.registerRefreshActivity(null);
-        mApp.mECHelper.unRegisterFromAmuleClientStatusUpdates(this);
-        mApp.mECHelper.unRegisterFromECSearchList(this);
+        getSupportActionBar().setTitle(R.string.search_title);
+        mFragManager = getSupportFragmentManager();
     }
 
     @Override
@@ -186,11 +178,13 @@ public class SearchActivity extends ActionBarActivity implements AlertDialogList
         
     }
     
+    @SuppressWarnings("ConstantConditions") // IntelliJ was failing code inspection on mApp nullable
     private void startSearchTask(SearchContainer s) {
         if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.startSearchTask: Adding search");
+
         mApp.mECHelper.addSearchToList(s);
         mApp.mECHelper.notifyECSearchListWatcher();
-        
+
         SearchAsyncTask t = (SearchAsyncTask) mApp.mECHelper.getNewTask(SearchAsyncTask.class);
         t.setSearchContainer(s);
         t.setTargetStatus(ECSearchStatus.RUNNING);
