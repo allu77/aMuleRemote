@@ -16,7 +16,7 @@ public class AlertDialogFragment extends DialogFragment {
     public final static int ALERTDIALOG_EVENT_CANCEL = 2;
     
     public interface AlertDialogListener {
-        public void alertDialogEvent(AlertDialogFragment dialog, int event, Bundle values);
+        void alertDialogEvent(AlertDialogFragment dialog, int event, Bundle values);
     }
     
     protected final static String BUNDLE_TITLE = "title";
@@ -121,7 +121,8 @@ public class AlertDialogFragment extends DialogFragment {
         } else {
             setCancelable(false);
         }
-        
+        builder.setInverseBackgroundForced(true);
+
         return builder;
     }
     
