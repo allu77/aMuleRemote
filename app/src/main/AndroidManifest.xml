@@ -1,16 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.iukonline.amule.android.amuleremote"
-      android:versionCode="18"
-      android:versionName="0.5.2"
-      android:installLocation="auto">
-    <uses-sdk android:targetSdkVersion="16" android:minSdkVersion="7"/>
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.iukonline.amule.android.amuleremote"
+    android:installLocation="auto">
+    <uses-sdk tools:overrideLibrary="
+        com.google.android.gms.wearable,
+        com.google.android.gms.wallet,
+        com.google.android.gms.safetynet,
+        com.google.android.gms.actions,
+        com.google.android.gms.gcm,
+        com.google.android.gms.identity,
+        com.google.android.gms.nearby,
+        com.google.android.gms.panorama,
+        com.google.android.gms.plus,
+        com.google.android.gms.games,
+        com.google.android.gms.maps,
+        com.google.android.gms.location,
+        com.google.android.gms.fitness,
+        com.google.android.gms.drive,
+        com.google.android.gms.cast,
+        com.google.android.gms.appstate,
+        com.google.android.gms.appindexing,
+        com.google.android.gms.ads,
+        com.google.android.gms.all,
+        com.google.android.gms,
+        com.google.android.gms.analytics" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.READ_LOGS"/>
 
     <application android:label="@string/app_name" android:name=".AmuleControllerApplication" android:icon="@drawable/amule_icon" android:theme="@style/Theme.AmuleRemote" android:allowBackup="true">
-        
+
+        <!--This meta-data tag is required to use Google Play Services.-->
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+
+
         <activity android:name=".dlqueue.AmuleRemoteActivity" android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,8 +52,11 @@
         <activity android:name=".partfile.PartFileActivity"  />
         <activity android:name=".search.SearchActivity" android:windowSoftInputMode="stateHidden" />
         <activity android:name=".search.SearchDetailsActivity"  />
-        
-        <activity android:name="com.google.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
+
+        <activity android:name="com.google.android.gms.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:theme="@android:style/Theme.Translucent" />
+
         <activity android:name="org.acra.CrashReportDialog" android:theme="@android:style/Theme.Dialog" android:launchMode="singleInstance" android:excludeFromRecents="true" android:finishOnTaskLaunch="true" />
             
     </application>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:layout="@layout/frag_search_input" />
-<!--         android:name="com.iukonline.amule.android.amuleremote.search.SearchResultsListFragment"
+
+<!--         android:name="com.iukonline.amule.android.amuleremote.search.SearchResultsListFragment"
  -->
     <FrameLayout
         android:id="@+id/frag_search_results"
@@ -21,13 +22,13 @@
         tools:layout="@layout/frag_search_results_list" 
         android:layout_height="0dip"
         android:layout_weight="1"/>
-    
-<com.google.ads.AdView android:id="@+id/adView"
-                         android:layout_width="fill_parent"
-                         android:layout_height="wrap_content"
-                         ads:adUnitId="ca-app-pub-1535323231055867/4203941434"
-                         ads:adSize="SMART_BANNER"
-                         ads:testDevices="TEST_EMULATOR, 4F7B654617C12338871CE872532E7B6A"
-                         ads:loadAdOnCreate="true"/>
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="ca-app-pub-1535323231055867/4203941434">
+    </com.google.android.gms.ads.AdView>
 
 </LinearLayout>

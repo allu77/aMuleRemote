@@ -25,10 +25,8 @@ android {
 }
 
 dependencies {
-    //compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-    //compile 'com.android.support:support-v4:18.0.0'
     compile 'com.android.support:appcompat-v7:21.0.0'
-    compile files('libs/acra-4.5.0.jar')
-    compile files('libs/GoogleAdMobAdsSdk-6.4.1.jar')
+    compile 'ch.acra:acra:4.5.0'
+    compile 'com.google.android.gms:play-services:7.0.0'
     compile files('libs/JavaAmuleEC-0.5.jar')
 }

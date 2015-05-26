@@ -22,6 +22,8 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.iukonline.amule.android.amuleremote.AboutDialogFragment;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
@@ -124,6 +126,13 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
         mViewConnBar = findViewById(R.id.main_conn_bar);
         
         mActionBar = getSupportActionBar();
+
+        AdView adView = (AdView)this.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("TEST_DEVICE_ID")
+                .build();
+        adView.loadAd(adRequest);
         
         Intent i = getIntent();
         String a = i.getAction();

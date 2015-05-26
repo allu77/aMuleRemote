@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -102,13 +102,12 @@
         tools:layout="@layout/dlqueue_fragment" >
     </fragment>
 
-    <com.google.ads.AdView
+    <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-1535323231055867/1250475037"
-        ads:loadAdOnCreate="true"
-        ads:testDevices="TEST_EMULATOR, 4F7B654617C12338871CE872532E7B6A" />
+        ads:adUnitId="ca-app-pub-1535323231055867/1250475037">
+    </com.google.android.gms.ads.AdView>
 
 </LinearLayout>
