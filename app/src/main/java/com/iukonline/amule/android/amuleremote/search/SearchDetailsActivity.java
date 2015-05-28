@@ -79,10 +79,12 @@ public class SearchDetailsActivity extends ActionBarActivity implements AlertDia
         mApp.registerRefreshActivity(null);
         mApp.mECHelper.unRegisterFromAmuleClientStatusUpdates(this);
         mApp.mECHelper.unRegisterFromECSearchList(this);
+        mApp.mOnTopActivity = null;
     }
 
     @Override
     protected void onResume() {
+        mApp.mOnTopActivity = this;
         super.onResume();
         mApp.registerRefreshActivity(this);
         notifyStatusChange(mApp.mECHelper.registerForAmuleClientStatusUpdates(this));

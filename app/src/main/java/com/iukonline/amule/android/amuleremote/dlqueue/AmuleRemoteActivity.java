@@ -147,6 +147,8 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
     @Override
     protected void onResume() {
 
+        mApp.mOnTopActivity = this;
+
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: Reading settings");
         mApp.refreshDebugSettings();
         mServerConfigured = mApp.refreshServerSettings();
@@ -269,6 +271,8 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPause: calling super");
         super.onPause();
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPause: end");
+
+        mApp.mOnTopActivity = null;
 
     }
 

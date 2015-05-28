@@ -1,20 +1,5 @@
 package com.iukonline.amule.android.amuleremote;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import org.acra.ACRA;
-import org.acra.ReportField;
-import org.acra.ReportingInteractionMode;
-import org.acra.annotation.ReportsCrashes;
-import org.acra.sender.HttpSender.Method;
-import org.acra.sender.HttpSender.Type;
-
 import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -33,6 +18,24 @@ import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.WhatsNewDialo
 import com.iukonline.amule.android.amuleremote.search.SearchContainer;
 import com.iukonline.amule.ec.ECPartFile.ECPartFileComparator;
 import com.iukonline.amule.ec.ECSearchFile;
+
+import org.acra.ACRA;
+import org.acra.ReportField;
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
+import org.acra.sender.HttpSender.Method;
+import org.acra.sender.HttpSender.Type;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 
 @ReportsCrashes(formKey = "",
@@ -126,8 +129,8 @@ public class AmuleControllerApplication extends Application {
     
     public ECSearchFile mStartDownload;
     public SearchContainer mStartSearch;
-    
-    
+
+    public Activity mOnTopActivity = null;
     
     RefreshingActivity mRefreshingActivity;
     private Timer mAutoRefreshTimer;
@@ -144,7 +147,7 @@ public class AmuleControllerApplication extends Application {
     public UpdateChecker mUpdateChecker;
     
     public interface RefreshingActivity {
-        public void refreshContent();
+        void refreshContent();
     }
 
     
@@ -189,7 +192,13 @@ public class AmuleControllerApplication extends Application {
     }
 
     
-    
+    public void notifyErrorOnGUI(CharSequence errorText) {
+        if (mOnTopActivity != null) {
+            Crouton.makeText(mECHelper.getApplication().mOnTopActivity, errorText, Style.ALERT).show();
+        } else {
+            Toast.makeText(this, "aMuleRemote: " + errorText, Toast.LENGTH_LONG).show();
+        }
+    }
 
     
 
@@ -199,7 +208,7 @@ public class AmuleControllerApplication extends Application {
     }
 
     public boolean refreshServerSettings()  {
-        
+
         String host = mSettings.getString(AC_SETTING_HOSTNAME, "");
         int port = 4712;
         

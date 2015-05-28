@@ -138,6 +138,7 @@ public class PartFileActivity extends ActionBarActivity implements AlertDialogLi
 
     @Override
     protected void onResume() {
+        mApp.mOnTopActivity = this;
         super.onResume();
         notifyStatusChange(mApp.mECHelper.registerForAmuleClientStatusUpdates(this));
         updateECPartFile(mApp.mECHelper.registerForECPartFileUpdates(this, mHash));
@@ -152,6 +153,7 @@ public class PartFileActivity extends ActionBarActivity implements AlertDialogLi
         mApp.mECHelper.unRegisterFromECPartFileUpdates(this, mHash);
         mApp.mECHelper.unRegisterFromECPartFileActions(this, mHash);
         mApp.registerRefreshActivity(null);
+        mApp.mOnTopActivity = null;
     }
     
     

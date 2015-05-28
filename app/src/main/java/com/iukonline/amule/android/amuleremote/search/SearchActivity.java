@@ -73,13 +73,27 @@ public class SearchActivity extends ActionBarActivity implements AlertDialogList
 
     @Override
     protected void onResume() {
+        mApp.mOnTopActivity = this;
         super.onResume();
         mApp.registerRefreshActivity(this);
         notifyStatusChange(mApp.mECHelper.registerForAmuleClientStatusUpdates(this));
         updateECSearchList(mApp.mECHelper.registerForECSsearchList(this));
-        
-        
-        
+    }
+
+    @Override
+    protected void onPause() {
+
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onPause: un-registering from async activities");
+
+        mApp.mECHelper.unRegisterFromAmuleClientStatusUpdates(this);
+
+        mApp.registerRefreshActivity(null);
+
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onPause: calling super");
+        super.onPause();
+        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchActivity.onPause: end");
+
+        mApp.mOnTopActivity = null;
     }
 
     @Override

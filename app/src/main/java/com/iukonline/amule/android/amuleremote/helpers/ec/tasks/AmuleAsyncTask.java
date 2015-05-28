@@ -1,26 +1,25 @@
 package com.iukonline.amule.android.amuleremote.helpers.ec.tasks;
 
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
-
 import android.annotation.TargetApi;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.R;
-import com.iukonline.amule.android.amuleremote.helpers.ec.ECHelper;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
+import com.iukonline.amule.android.amuleremote.helpers.ec.ECHelper;
 import com.iukonline.amule.ec.ECClient;
 import com.iukonline.amule.ec.ECPacket;
 import com.iukonline.amule.ec.ECRawPacket;
 import com.iukonline.amule.ec.exceptions.ECClientException;
 import com.iukonline.amule.ec.exceptions.ECPacketParsingException;
 import com.iukonline.amule.ec.exceptions.ECServerException;
+
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
 
@@ -56,7 +55,7 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
     
     
     // NOTE: Every thrown exception must also be handled in onPostExecute
-    abstract protected void backgroundTask() throws UnknownHostException, SocketTimeoutException, IOException, AmuleAsyncTaskException, ECClientException, ECPacketParsingException, ECServerException;
+    abstract protected void backgroundTask() throws IOException, AmuleAsyncTaskException, ECClientException, ECPacketParsingException, ECServerException;
     
     protected Exception doInBackground(Void... params) {
         
@@ -185,10 +184,10 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
                 if (mECHelper.mApp.enableLog) Log.e(AmuleControllerApplication.AC_LOGTAG, "Got an unexpected exception " + result.getClass().getName() + " for background task " + getClass().getName());
             }
 
-            Toast.makeText(mECHelper.getApplication(), notifyText, Toast.LENGTH_LONG).show();
+            //Toast.makeText(mECHelper.getApplication(), notifyText, Toast.LENGTH_LONG).show();
+            //if (mECHelper.getApplication().mOnTopActivity != null) Crouton.makeText(mECHelper.getApplication().mOnTopActivity, notifyText, Style.ALERT).show();
+            mECHelper.getApplication().notifyErrorOnGUI(notifyText);
             mECHelper.notifyAmuleClientStatusWatchers(ClientStatusWatcher.AmuleClientStatus.ERROR);
-
-
         }
     }
     
