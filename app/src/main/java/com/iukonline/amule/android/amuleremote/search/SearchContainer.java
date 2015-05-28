@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2015. Gianluca Vegetti, All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
 package com.iukonline.amule.android.amuleremote.search;
 
 import com.iukonline.amule.ec.ECSearchResults;
