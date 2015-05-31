@@ -288,7 +288,16 @@ public class AmuleControllerApplication extends Application {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             mVersionCode = pInfo.versionCode;
             mVersionName = pInfo.versionName;
-            mUpdateChecker = new UpdateChecker(mVersionCode);
+            if (! Flavor.UPDATE_CHECKER_CHECK_BUILD) {
+                mUpdateChecker = new UpdateChecker(mVersionCode);
+            } else {
+                int lastIndex = mVersionName.lastIndexOf("-");
+                if (lastIndex >= 0) {
+                    mUpdateChecker = new UpdateChecker(mVersionCode, Long.parseLong(mVersionName.substring(lastIndex + 1)));
+                } else {
+                    mUpdateChecker = new UpdateChecker(mVersionCode);
+                }
+            }
         } catch (NameNotFoundException e) {
         }
         

@@ -15,7 +15,7 @@ android {
         minSdkVersion 8
         targetSdkVersion 21
         versionCode 19
-        versionName "0.6-SNAPSHOT"
+        versionName "0.6"
     }
 
     buildTypes {
@@ -28,6 +28,22 @@ android {
 
         }
     }
+
+    productFlavors {
+        snapshot {
+            applicationId "com.iukonline.amule.android.amuleremote.snapshot"
+            versionName "0.6-SNAPSHOT-" + getDate()
+        }
+
+        target {
+        }
+    }
+}
+
+def getDate() {
+    def date = new Date()
+    def formattedDate = date.format('yyyyMMddHHmmss')
+    return formattedDate
 }
 
 dependencies {
