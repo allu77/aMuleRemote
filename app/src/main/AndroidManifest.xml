@@ -54,7 +54,7 @@
 			</intent-filter>
         </activity>
         
-        <activity android:name=".AmuleControllerPreferences" />
+        <activity android:name=".AmuleControllerPreferences" android:theme="@style/Theme.AmuleRemote.Settings"/>
         <activity android:name=".partfile.PartFileActivity"  />
         <activity android:name=".search.SearchActivity" android:windowSoftInputMode="stateHidden" />
         <activity android:name=".search.SearchDetailsActivity"  />

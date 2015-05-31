@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.DialogFragment;
@@ -127,7 +128,7 @@ public class AlertDialogFragment extends DialogFragment {
         } else {
             setCancelable(false);
         }
-        builder.setInverseBackgroundForced(true);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) builder.setInverseBackgroundForced(true);
 
         return builder;
     }
