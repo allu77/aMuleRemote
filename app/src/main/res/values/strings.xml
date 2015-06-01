@@ -196,4 +196,9 @@
 	<string name="dialog_tooltip_auto_localization">PLACEHOLDER FOR AUTO LOCALIZATION</string>
 	<string name="menu_opt_reset_tips">Reset tips</string>
 	<string name="error_invalid_port">Invalid TCP port specified. Reverting to default (4712).</string>
+
+	<!-- 0.6 -->
+
+	<string name="settings_summary_client_convert_pipe">Convert %7C to pipe in received ed2k URIs</string>
+	<string name="settings_label_client_convert_pipe">Convert pipe</string>
 </resources>

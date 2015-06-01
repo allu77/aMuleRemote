@@ -243,6 +243,12 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
         if (! mHandleURI.equals(NO_URI_TO_HANDLE)) {
             String parURI = new String(mHandleURI);
             mHandleURI = new String(NO_URI_TO_HANDLE);
+            if (mApp.mSettings.getBoolean(AmuleControllerApplication.AC_SETTING_CONVERT_PIPE, true)) {
+                if (parURI.toLowerCase().startsWith("ed2k://%7c")) {
+                    Log.d(AmuleControllerApplication.AC_LOGTAG, "DA CONVERTIRE");
+                    parURI = parURI.replaceAll("%7C", "|").replaceAll("%7c", "|");
+                }
+            }
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPostResume: handling ed2k URI");
             showAddED2KDialog(parURI);
             return;

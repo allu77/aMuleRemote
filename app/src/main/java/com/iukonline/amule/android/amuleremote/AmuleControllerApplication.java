@@ -104,6 +104,8 @@ public class AmuleControllerApplication extends Application {
     public static final String AC_SETTING_SEARCH_TYPE   = "amule_client_search_type";
     public static final String AC_SETTING_LAST_APP_VER  = "amule_client_last_app_ver";
     public static final String AC_SETTING_TIPS_SHOWN    = "amule_client_tips_shown";
+
+    public final static String AC_SETTING_CONVERT_PIPE  = "amule_client_convert_pipe";
     
     public static final String AC_SETTING_ENABLE_LOG    = "debug_enable_log";
     public static final String AC_SETTING_ENABLE_EXCEPTIONS = "debug_enable_exceptions";

@@ -1,5 +1,6 @@
 aMule Remote 0.6
 - Fixed crashes during search refresh with Lollipop
+- Fixed issue with ed2k URIs from Chrome
 - External libraries refresh
 
 aMule Remote 0.5.2
