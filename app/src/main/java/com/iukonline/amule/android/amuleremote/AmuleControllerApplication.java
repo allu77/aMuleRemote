@@ -202,7 +202,7 @@ public class AmuleControllerApplication extends Application {
     
     public void notifyErrorOnGUI(CharSequence errorText) {
         if (mOnTopActivity != null) {
-            Crouton.makeText(mECHelper.getApplication().mOnTopActivity, errorText, Style.ALERT).show();
+            Crouton.makeText(mOnTopActivity, errorText, Style.ALERT).show();
         } else {
             Toast.makeText(this, "aMuleRemote: " + errorText, Toast.LENGTH_LONG).show();
         }
@@ -282,7 +282,7 @@ public class AmuleControllerApplication extends Application {
     @Override
     public void onCreate() {
         
-        ACRA.init(this);
+        if (Flavor.ACRA_ENABLED) ACRA.init(this);
         
         super.onCreate();
         

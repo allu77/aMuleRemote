@@ -51,5 +51,6 @@ dependencies {
     compile 'ch.acra:acra:4.5.0'
     compile 'com.google.android.gms:play-services:7.0.0'
     compile 'de.keyboardsurfer.android.widget:crouton:1.8.5@aar'
+    compile 'com.github.machinarius:preferencefragment:0.1.1'
     compile files('libs/JavaAmuleEC-0.5.jar')
 }

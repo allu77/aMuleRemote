@@ -1,0 +1,26 @@
+<!--
+  ~ Copyright (c) 2015. Gianluca Vegetti, All Rights Reserved
+  ~ Unauthorized copying of this file, via any medium is strictly prohibited
+  ~ Proprietary and confidential
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.iukonline.amule.android.amuleremote.settings.ServerSettingsFragment">
+
+
+    <item
+        android:id="@+id/menu_server_settings_add"
+        android:icon="@drawable/ic_menu_mark"
+        android:title="@string/menu_server_settings_add"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_server_settings_remove"
+        android:icon="@drawable/ic_menu_delete"
+        android:title="@string/menu_server_settings_remove"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
+</menu>

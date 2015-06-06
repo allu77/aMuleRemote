@@ -1,0 +1,11 @@
+<!--
+  ~ Copyright (c) 2015. Gianluca Vegetti, All Rights Reserved
+  ~ Unauthorized copying of this file, via any medium is strictly prohibited
+  ~ Proprietary and confidential
+  -->
+
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/fragment"
+    android:name="com.iukonline.amule.android.amuleremote.settings.SettingsFragment"
+    tools:layout="@layout/frag_settings" android:layout_width="match_parent"
+    android:layout_height="match_parent" />

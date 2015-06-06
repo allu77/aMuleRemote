@@ -201,4 +201,13 @@
 
 	<string name="settings_summary_client_convert_pipe">Convert %7C to pipe in received ed2k URIs</string>
 	<string name="settings_label_client_convert_pipe">Convert pipe</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+	<string name="settings_label_server_add">Add</string>
+    <string name="title_activity_server_settings">Server Settings</string>
+	<string name="settings_label_server_name">Server name</string>
+	<string name="settings_summary_server_name">Enter a descriptive name for your aMule PC</string>
+	<string name="menu_server_settings_add">Add server</string>
+	<string name="menu_server_settings_remove">Remove server</string>
 </resources>

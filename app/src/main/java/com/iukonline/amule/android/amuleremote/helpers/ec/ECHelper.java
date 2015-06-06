@@ -11,6 +11,7 @@ import android.os.DropBoxManager;
 import android.util.Log;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.Flavor;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.CategoriesWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher.AmuleClientStatus;
@@ -39,7 +40,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -411,7 +411,7 @@ public class ECHelper {
         return mDlQueueLasMod < 0 || (System.currentTimeMillis() - mDlQueueLasMod > DATA_MAX_AGE_MILLIS) ? false : true;
     }
 
-    public Socket getAmuleSocket() throws UnknownHostException, IOException {
+    public Socket getAmuleSocket() throws IOException {
         if (mAmuleSocket == null && mServerHost != null) {
             //Log.d("ECHELPER", "Creating new socket");
             mAmuleSocket = new Socket();
@@ -419,7 +419,7 @@ public class ECHelper {
         return mAmuleSocket;
     }
     
-    public ECClient getECClient() throws UnknownHostException, IOException, IllegalArgumentException {
+    public ECClient getECClient() throws IOException, IllegalArgumentException {
         
         // This should prevent the null Exception on mServerVersion. However it's not clear why that happened.
         // Need to check if client is null when calling getECClient
@@ -473,7 +473,7 @@ public class ECHelper {
         }
         
         if (mECClient != null) {
-            ACRA.getErrorReporter().putCustomData("ServerVersion", mECClient.getServerVersion());
+            if (Flavor.ACRA_ENABLED) ACRA.getErrorReporter().putCustomData("ServerVersion", mECClient.getServerVersion());
             // TBV: Can be removed? setClientStale(false);
         }
         return mECClient;
@@ -588,6 +588,6 @@ public class ECHelper {
     }
     
     public void sendParsingExceptionIfEnabled(Exception e) {
-        if (mApp.sendExceptions) ACRA.getErrorReporter().handleException(e);
+        if (mApp.sendExceptions && Flavor.ACRA_ENABLED) ACRA.getErrorReporter().handleException(e);
     }
 }

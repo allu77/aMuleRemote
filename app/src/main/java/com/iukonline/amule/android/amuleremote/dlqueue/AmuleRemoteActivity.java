@@ -54,6 +54,7 @@ import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.NewVersionDia
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.TooltipDialogFragment;
 import com.iukonline.amule.android.amuleremote.partfile.PartFileActivity;
 import com.iukonline.amule.android.amuleremote.search.SearchActivity;
+import com.iukonline.amule.android.amuleremote.settings.SettingsActivity;
 import com.iukonline.amule.ec.ECCategory;
 import com.iukonline.amule.ec.ECConnState;
 import com.iukonline.amule.ec.ECStats;
@@ -364,7 +365,8 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
             return true;
         case R.id.menu_opt_settings:
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_settings selected");
-            Intent settingsActivity = new Intent(this, AmuleControllerPreferences.class);
+            //Intent settingsActivity = new Intent(this, AmuleControllerPreferences.class);
+            Intent settingsActivity = new Intent(this, SettingsActivity.class);
             startActivity(settingsActivity);
             return true; 
         case R.id.menu_opt_reset:
