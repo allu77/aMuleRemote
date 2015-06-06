@@ -30,6 +30,12 @@ android {
     }
 
     productFlavors {
+
+        dev {
+            applicationId "com.iukonline.amule.android.amuleremote.dev"
+            versionName "0.6-DEV-" + getDate()
+        }
+
         snapshot {
             applicationId "com.iukonline.amule.android.amuleremote.snapshot"
             versionName "0.6-SNAPSHOT-" + getDate()
