@@ -42,6 +42,7 @@ android {
         }
 
         target {
+            applicationId "com.iukonline.amule.android.amuleremote"
         }
     }
 }
@@ -53,9 +54,9 @@ def getDate() {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:21.0.0'
+    compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'ch.acra:acra:4.5.0'
-    compile 'com.google.android.gms:play-services:7.0.0'
+    compile 'com.google.android.gms:play-services:7.3.0'
     compile 'de.keyboardsurfer.android.widget:crouton:1.8.5@aar'
     compile 'com.github.machinarius:preferencefragment:0.1.1'
     compile files('libs/JavaAmuleEC-0.5.jar')
