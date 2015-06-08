@@ -54,7 +54,7 @@ public class ServerSettingsFragment extends PreferenceFragment implements Shared
         if (args != null) mServerIndex = args.getInt(ServerSettingsActivity.BUNDLE_PARAM_SERVER_INDEX, -1);
         if (savedInstanceState != null) mInitialized = savedInstanceState.getBoolean(BUNDLE_INITIALIZED, false);
 
-        mSettingsHelper = new SettingsHelper();
+        mSettingsHelper = new SettingsHelper(mApp.mSettings);
         initializeGUI();
 
         if (mApp.enableLog) Log.d(TAG, "ServerSettingsFragment.onCreate: END");

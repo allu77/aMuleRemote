@@ -33,7 +33,6 @@ import com.google.android.gms.ads.AdView;
 import com.iukonline.amule.android.amuleremote.AboutDialogFragment;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
-import com.iukonline.amule.android.amuleremote.AmuleControllerPreferences;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.dlqueue.DlQueueFragment.DlQueueFragmentContainer;
 import com.iukonline.amule.android.amuleremote.helpers.UpdateChecker.UpdatesWatcher;
@@ -365,7 +364,6 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
             return true;
         case R.id.menu_opt_settings:
             if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_settings selected");
-            //Intent settingsActivity = new Intent(this, AmuleControllerPreferences.class);
             Intent settingsActivity = new Intent(this, SettingsActivity.class);
             startActivity(settingsActivity);
             return true; 
@@ -692,7 +690,7 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
         if (tag != null) {
             if (tag.equals(TAG_DIALOG_NO_SERVER)) {
                 if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK) {
-                    Intent settingsActivity = new Intent(AmuleRemoteActivity.this, AmuleControllerPreferences.class);
+                    Intent settingsActivity = new Intent(AmuleRemoteActivity.this, SettingsActivity.class);
                     startActivity(settingsActivity);
                 } else {
                     showPostResumeDialog();

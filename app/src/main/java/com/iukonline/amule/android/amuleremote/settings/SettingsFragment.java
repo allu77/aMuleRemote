@@ -14,6 +14,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 
 import com.github.machinarius.preferencefragment.PreferenceFragment;
+import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.SettingsHelper;
 
@@ -22,24 +23,27 @@ public class SettingsFragment extends PreferenceFragment {
     private SettingsHelper mSettingsHelper;
     private PreferenceCategory mServerCategory;
     private Activity mActivity;
+    private AmuleControllerApplication mApp;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mActivity = activity;
+        mApp = (AmuleControllerApplication) activity.getApplication();
+        mSettingsHelper = new SettingsHelper(mApp.mSettings);
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
-        mSettingsHelper = new SettingsHelper();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mSettingsHelper.refresh();
+        mSettingsHelper.refreshServerList();
         refreshServerCategory();
     }
 

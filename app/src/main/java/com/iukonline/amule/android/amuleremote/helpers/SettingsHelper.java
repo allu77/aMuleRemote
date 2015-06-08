@@ -6,6 +6,12 @@
 
 package com.iukonline.amule.android.amuleremote.helpers;
 
+import android.content.SharedPreferences;
+import android.util.Log;
+
+import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.BuildConfig;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,7 +20,19 @@ import java.util.ArrayList;
 
 public class SettingsHelper {
 
-    public static String TEST_SERVER = "{\n" +
+    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static boolean DEBUG = BuildConfig.DEBUG;
+
+    public final static String SETTING_SERVER_LIST = "amule_server_list";
+    public final static String SETTING_SERVER_CURRENT = "amule_server_current";
+
+    public static final String SETTING_LEGACY_SERVER_HOSTNAME   = "amule_server_host";
+    public static final String SETTING_LEGACY_SERVER_PORT       = "amule_server_port";
+    public static final String SETTING_LECAGY_SERVER_PASSWORD   = "amule_server_password";
+    public static final String SETTING_LEGACY_SERVER_VERSION    = "amule_server_version";
+
+
+    /*public static String TEST_SERVER = "{\n" +
             "\tservers: [\n" +
             "\t\t{\n" +
             "\t\t\tname: \"Esterno\",\n" +
@@ -24,14 +42,18 @@ public class SettingsHelper {
             "\t\t\tpassword: \"***REMOVED***\"\n" +
             "\t\t}\n" +
             "\t]\n" +
-            "}";
+            "}";*/
 
     private JSONArray jsonServers;
     private ArrayList<ServerSettings> mServerList;
+    private int mCurrentServer = 0;
+    private SharedPreferences mSettings;
 
-    public SettingsHelper() {
-        refresh();
+    public SettingsHelper(SharedPreferences settings) {
+        mSettings = settings;
+        refreshServerList();
     }
+
     public int getServerCount() {
         return mServerList.size();
     }
@@ -40,10 +62,15 @@ public class SettingsHelper {
         return (i < mServerList.size()) ? mServerList.get(i) :  null;
     }
 
+    public ServerSettings getCurrentServerSettings() {
+        if (mServerList.size() == 0) return null;
+        return getServerSettings(mCurrentServer < mServerList.size() ? mCurrentServer : 0);
+    }
+
     public boolean addServerSettings(ServerSettings serverSettings) {
-                if (serverSettings != null) {
-                    mServerList.add(serverSettings);
-                    return true;
+        if (serverSettings != null) {
+            mServerList.add(serverSettings);
+            return true;
         } else {
             return false;
         }
@@ -72,9 +99,9 @@ public class SettingsHelper {
         }
     }
 
-    public boolean refresh() {
+    public boolean refreshServerList() {
         try {
-            JSONObject jsonObj = new JSONObject(TEST_SERVER);
+            JSONObject jsonObj = new JSONObject(mSettings.getString(SETTING_SERVER_LIST, "{servers:[]}"));
             jsonServers = jsonObj.getJSONArray("servers");
         } catch (JSONException e) {
             jsonServers = new JSONArray();
@@ -99,7 +126,7 @@ public class SettingsHelper {
         return true;
     }
 
-    public boolean commit() {
+    public boolean commitServerList() {
         StringBuilder sb = new StringBuilder("{servers:[");
 
         for (ServerSettings s : mServerList) {
@@ -109,11 +136,45 @@ public class SettingsHelper {
         if(mServerList.size() > 0) sb.deleteCharAt(sb.length() - 1);
         sb.append("]}");
 
-        TEST_SERVER = sb.toString();
+        mSettings.edit()
+                .putString(SETTING_SERVER_LIST, sb.toString())
+                .commit();
+
+        //TEST_SERVER = sb.toString();
 
         return true;
     }
 
+    public void convertLegacyServerSettings() {
+        if (!mSettings.contains(SETTING_LEGACY_SERVER_HOSTNAME)) return;
+
+        if (DEBUG) Log.d(TAG, "SettingsHelper.convertLegacyServerSettings(): Converting legacy server settings to new");
+        try {
+            addServerSettings(new ServerSettings(
+                    "Default",
+                    mSettings.getString(SETTING_LEGACY_SERVER_HOSTNAME, "FAKEHOST"),
+                    Integer.parseInt(mSettings.getString(SETTING_LEGACY_SERVER_PORT, "4712")),
+                    mSettings.getString(SETTING_LECAGY_SERVER_PASSWORD, "FAKEPASSWORD"),
+                    mSettings.getString(SETTING_LEGACY_SERVER_VERSION, "V204")
+            ));
+        } catch (NumberFormatException e) {
+            addServerSettings(new ServerSettings(
+                    "Default",
+                    mSettings.getString(SETTING_LEGACY_SERVER_HOSTNAME, "FAKEHOST"),
+                    4712,
+                    mSettings.getString(SETTING_LECAGY_SERVER_PASSWORD, "FAKEPASSWORD"),
+                    mSettings.getString(SETTING_LEGACY_SERVER_VERSION, "V204")
+            ));
+        }
+        commitServerList();
+        if (DEBUG) Log.d(TAG, "SettingsHelper.convertLegacyServerSettings(): Removing legacy settings");
+        mSettings.edit()
+                .remove(SETTING_LEGACY_SERVER_HOSTNAME)
+                .remove(SETTING_LEGACY_SERVER_PORT)
+                .remove(SETTING_LECAGY_SERVER_PASSWORD)
+                .remove(SETTING_LEGACY_SERVER_VERSION)
+                .commit();
+    }
 
     public static class ServerSettings {
         public String name;

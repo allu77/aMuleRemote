@@ -58,11 +58,14 @@ public class ServerSettingsActivity extends ActionBarActivity implements SharedP
             mInitialized = savedInstanceState.getBoolean(BUNDLE_INITIALIZED, false);
         } else {
             Intent i = getIntent();
-            if (i == null) finish(); // This should never happen...
+            if (i == null) {
+                finish(); // This should never happen...
+                return;
+            }
             mServerIndex = i.getIntExtra(BUNDLE_PARAM_SERVER_INDEX, -1);
         }
 
-        mSettingsHelper = new SettingsHelper();
+        mSettingsHelper = new SettingsHelper(mApp.mSettings);
         if (mServerIndex >= 0) {
             mServerSettings = mSettingsHelper.getServerSettings(mServerIndex);
         } else {
@@ -145,7 +148,7 @@ public class ServerSettingsActivity extends ActionBarActivity implements SharedP
 
     private boolean removeServer() {
         if (mSettingsHelper.removeServerSettings(mServerIndex)) {
-            return mSettingsHelper.commit();
+            return mSettingsHelper.commitServerList();
         }
         return false;
     }
@@ -158,7 +161,7 @@ public class ServerSettingsActivity extends ActionBarActivity implements SharedP
                 mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_PASSWORD, ""),
                 mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_VERSION, "")
         ))) {
-            return mSettingsHelper.commit();
+            return mSettingsHelper.commitServerList();
         }
 
         return false;
@@ -169,14 +172,20 @@ public class ServerSettingsActivity extends ActionBarActivity implements SharedP
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         if (mServerIndex >= 0) {
             if (DEBUG) Log.d(TAG, "ServerSettingsActivity.onSharedPreferenceChanged: Changing server settings");
+            int port;
+            try {
+                port = Integer.parseInt(mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_PORT, ""));
+            } catch (NumberFormatException e) {
+                port = 4712;
+            }
             if (mSettingsHelper.editServerSettings(
                     mServerIndex,
                     mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_NAME, ""),
                     mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_HOST, ""),
-                    Integer.parseInt(mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_PORT, "")),
+                    port,
                     mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_PASSWORD, ""),
                     mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_VERSION, "")
-            ) != null) mSettingsHelper.commit();
+            ) != null) mSettingsHelper.commitServerList();
         }
     }
 }
