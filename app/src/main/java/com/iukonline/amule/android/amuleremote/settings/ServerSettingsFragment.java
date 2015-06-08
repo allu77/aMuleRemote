@@ -10,17 +10,21 @@ package com.iukonline.amule.android.amuleremote.settings;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceGroup;
 import android.util.Log;
 
 import com.github.machinarius.preferencefragment.PreferenceFragment;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.SettingsHelper;
 
 public class ServerSettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static boolean DEBUG = BuildConfig.DEBUG;
+    
     private final static String BUNDLE_INITIALIZED = "is_initialized";
     private final static String BUNDLE_PARAM_SERVER_INDEX = "server_index";
 
@@ -46,7 +50,7 @@ public class ServerSettingsFragment extends PreferenceFragment implements Shared
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (mApp.enableLog) Log.d(TAG, "ServerSettingsFragment.onCreate: BEGIN");
+        if (DEBUG) Log.d(TAG, "ServerSettingsFragment.onCreate: BEGIN");
 
         super.onCreate(savedInstanceState);
 
@@ -57,7 +61,7 @@ public class ServerSettingsFragment extends PreferenceFragment implements Shared
         mSettingsHelper = new SettingsHelper(mApp.mSettings);
         initializeGUI();
 
-        if (mApp.enableLog) Log.d(TAG, "ServerSettingsFragment.onCreate: END");
+        if (DEBUG) Log.d(TAG, "ServerSettingsFragment.onCreate: END");
     }
 
     private void initializeGUI() {
@@ -74,32 +78,32 @@ public class ServerSettingsFragment extends PreferenceFragment implements Shared
 
     @Override
     public void onResume() {
-        if (mApp.enableLog) Log.d(TAG, "ServerSettingsFragment.onResume: BEGIN");
+        if (DEBUG) Log.d(TAG, "ServerSettingsFragment.onResume: BEGIN");
 
         super.onResume();
         mPrefGroup.getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
-        if (mApp.enableLog) Log.d(TAG, "ServerSettingsFragment.onResume: END");
+        if (DEBUG) Log.d(TAG, "ServerSettingsFragment.onResume: END");
     }
 
     @Override
     public void onPause() {
-        if (mApp.enableLog) Log.d(TAG, "ServerSettingsFragment.onPause: BEGIN");
+        if (DEBUG) Log.d(TAG, "ServerSettingsFragment.onPause: BEGIN");
 
         super.onPause();
         mPrefGroup.getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
 
-        if (mApp.enableLog) Log.d(TAG, "ServerSettingsFragment.onPause: END");
+        if (DEBUG) Log.d(TAG, "ServerSettingsFragment.onPause: END");
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        if (mApp.enableLog) Log.d(TAG, "ServerSettingsFragment.onSaveInstanceState: BEGIN");
+        if (DEBUG) Log.d(TAG, "ServerSettingsFragment.onSaveInstanceState: BEGIN");
 
         outState.putBoolean(BUNDLE_INITIALIZED, mInitialized);
         super.onSaveInstanceState(outState);
 
-        if (mApp.enableLog) Log.d(TAG, "ServerSettingsFragment.onSaveInstanceState: END");
+        if (DEBUG) Log.d(TAG, "ServerSettingsFragment.onSaveInstanceState: END");
     }
 
     @Override
@@ -110,6 +114,7 @@ public class ServerSettingsFragment extends PreferenceFragment implements Shared
 
 
     private void setPreferenceSummary(String key, String value) {
+        if (DEBUG) Log.d(TAG, "SererSettingsFragment.setPreferenceSummary(): Setting summary for " + key + " and value " + value);
         String summary = value;
 
         if (key.equals(ServerSettingsActivity.SETTINGS_SERVER_NAME)) {
@@ -133,7 +138,10 @@ public class ServerSettingsFragment extends PreferenceFragment implements Shared
                 }
             }
         }
-
-        mPrefGroup.findPreference(key).setSummary(summary);
+        Preference p = mPrefGroup.findPreference(key);
+        if (p != null) {
+            // null in cas of change of a preference not displayed here
+            p.setSummary(summary);
+        }
     }
 }
