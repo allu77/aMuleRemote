@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
@@ -35,6 +36,7 @@ import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.dlqueue.DlQueueFragment.DlQueueFragmentContainer;
+import com.iukonline.amule.android.amuleremote.helpers.SettingsHelper;
 import com.iukonline.amule.android.amuleremote.helpers.UpdateChecker.UpdatesWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.CategoriesWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
@@ -97,6 +99,8 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
     TextView mTextEDonkeyStatus;
     TextView mTextKADStatus;
     View mViewConnBar;
+
+    Spinner mSelectServer;
     
     ActionBar mActionBar;
     
@@ -130,6 +134,8 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
         mTextEDonkeyStatus = (TextView) findViewById(R.id.main_edonkey_status);
         mTextKADStatus = (TextView) findViewById(R.id.main_kad_status);
         mViewConnBar = findViewById(R.id.main_conn_bar);
+
+        mSelectServer = (Spinner) findViewById(R.id.main_select_server);
         
         mActionBar = getSupportActionBar();
 
@@ -158,6 +164,15 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: Reading settings");
         mApp.refreshDebugSettings();
         mServerConfigured = mApp.refreshServerSettings();
+
+        if (mServerConfigured) {
+            SettingsHelper h = new SettingsHelper(mApp.mSettings);
+            if (h.getServerCount() > 1) {
+                mSelectServer.setVisibility(View.VISIBLE);
+            } else {
+                mSelectServer.setVisibility(View.GONE);
+            }
+        }
 
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: Calling super");
         super.onResume();
