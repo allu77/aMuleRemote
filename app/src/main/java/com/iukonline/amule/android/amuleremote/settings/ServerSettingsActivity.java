@@ -95,7 +95,7 @@ public class ServerSettingsActivity extends ActionBarActivity implements SharedP
     @Override
     protected void onPause() {
         mApp.mOnTopActivity = null;
-        mApp.mSettings.registerOnSharedPreferenceChangeListener(this);
+        mApp.mSettings.unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
     }
 
@@ -170,22 +170,30 @@ public class ServerSettingsActivity extends ActionBarActivity implements SharedP
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        if (DEBUG) Log.d(TAG, "ServerSettingsActivity.onSharedPreferenceChanged: Setting " + s + " has changed. This is server index " + mServerIndex);
         if (mServerIndex >= 0) {
-            if (DEBUG) Log.d(TAG, "ServerSettingsActivity.onSharedPreferenceChanged: Changing server settings");
-            int port;
-            try {
-                port = Integer.parseInt(mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_PORT, ""));
-            } catch (NumberFormatException e) {
-                port = 4712;
+            if (SETTINGS_SERVER_HOST.equals(s) ||
+                SETTINGS_SERVER_NAME.equals(s) ||
+                SETTINGS_SERVER_PASSWORD.equals(s) ||
+                SETTINGS_SERVER_PORT.equals(s) ||
+                SETTINGS_SERVER_VERSION.equals(s)) {
+
+                int port;
+                try {
+                    port = Integer.parseInt(mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_PORT, ""));
+                } catch (NumberFormatException e) {
+                    port = 4712;
+                }
+                if (mSettingsHelper.editServerSettings(
+                        mServerIndex,
+                        mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_NAME, ""),
+                        mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_HOST, ""),
+                        port,
+                        mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_PASSWORD, ""),
+                        mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_VERSION, "")
+                ) != null) mSettingsHelper.commitServerList();
+
             }
-            if (mSettingsHelper.editServerSettings(
-                    mServerIndex,
-                    mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_NAME, ""),
-                    mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_HOST, ""),
-                    port,
-                    mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_PASSWORD, ""),
-                    mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_VERSION, "")
-            ) != null) mSettingsHelper.commitServerList();
         }
     }
 }
