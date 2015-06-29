@@ -6,6 +6,7 @@
 
 package com.iukonline.amule.android.amuleremote.dlqueue;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
@@ -38,7 +39,7 @@ import java.util.Iterator;
 public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
     
     public interface DlQueueFragmentContainer {
-        public void partFileSelected(byte[] hash);
+        void partFileSelected(byte[] hash);
     }
     
     private final static String BUNDLE_SORT_BY = "sort";
@@ -47,6 +48,7 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
 
 
     AmuleControllerApplication mApp;
+    DlQueueFragmentContainer mActivity;
 
     
     HashMap<String, ECPartFile> mDlQueue;
@@ -55,13 +57,17 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
     long mCatId;
     int mRestoreSelected = -1;
     ECPartFileComparator mDlQueueComparator;
-    
-    
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mApp = (AmuleControllerApplication) activity.getApplication();
+        mActivity = (DlQueueFragmentContainer) activity;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        mApp = (AmuleControllerApplication) getActivity().getApplication();
         
         if (savedInstanceState == null) {
             mSortBy = (byte) mApp.mSettings.getLong(AmuleControllerApplication.AC_SETTING_SORT, AmuleControllerApplication.AC_SETTING_SORT_FILENAME);
@@ -70,8 +76,7 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
             mRestoreSelected = savedInstanceState.getInt(BUNDLE_SELECTED_ITEM, -1);
             mCatId = savedInstanceState.getLong(BUNDLE_CATEGORY_FILTER, ECCategory.NEW_CATEGORY_ID);
         }
-        
-        
+
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Sort settings onCreate is " + mSortBy);
         mDlQueueComparator = new ECPartFileComparator(AmuleControllerApplication.getDlComparatorTypeFromSortSetting(mSortBy));
         setHasOptionsMenu(true);
@@ -97,6 +102,10 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
     @Override
     public void onResume() {
         super.onResume();
+        registerAllListeners();
+    }
+
+    public void registerAllListeners() {
         updateDlQueue(mApp.mECHelper.registerForDlQueueUpdates(this));
     }
     
@@ -253,7 +262,7 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "User selected item in position " + position + ", id " + id);
-        ((DlQueueFragmentContainer) getActivity()).partFileSelected(mDlAdapter.getItem(position).getHash());
+        mActivity.partFileSelected(mDlAdapter.getItem(position).getHash());
     }
     
     @Override

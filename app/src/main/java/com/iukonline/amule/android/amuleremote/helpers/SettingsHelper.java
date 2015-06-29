@@ -49,16 +49,29 @@ public class SettingsHelper {
     private int mCurrentServer = 0;
     private SharedPreferences mSettings;
 
+    public boolean mNeedNavigationRefresh = true;
+
     public SettingsHelper(SharedPreferences settings) {
         mSettings = settings;
         refreshServerList();
+        mCurrentServer = mSettings.getInt(SETTING_SERVER_CURRENT, 0);
+        if (DEBUG) Log.d(TAG, "SettingsHelper.SettingsHelper: Server list size = " + mServerList.size() + ", Current server = " + mCurrentServer);
     }
 
     public int getServerCount() {
         return mServerList.size();
     }
 
+    public int getCurrentServer() { return mCurrentServer < mServerList.size() ? mCurrentServer : 0 ; }
+    public void setCurrentServer(int server) {
+        mCurrentServer = server;
+        mSettings.edit()
+                .putInt(SETTING_SERVER_CURRENT, server)
+                .commit();
+    }
+
     public ServerSettings getServerSettings(int i) {
+        if (DEBUG) Log.d(TAG, "SettingsHelper.getServerSettings: getting server " + i + "/" + mServerList.size());
         return (i < mServerList.size()) ? mServerList.get(i) :  null;
     }
 
@@ -69,7 +82,9 @@ public class SettingsHelper {
 
     public boolean addServerSettings(ServerSettings serverSettings) {
         if (serverSettings != null) {
+            if (DEBUG) Log.d(TAG, "SettingsHelper.addServerSettings: Previous list size was " + mServerList.size());
             mServerList.add(serverSettings);
+            if (DEBUG) Log.d(TAG, "SettingsHelper.addServerSettings: Now list size is " + mServerList.size());
             return true;
         } else {
             return false;
@@ -128,6 +143,8 @@ public class SettingsHelper {
 
     public boolean commitServerList() {
         StringBuilder sb = new StringBuilder("{servers:[");
+
+        if (DEBUG) Log.d(TAG, "SettingsHelper.commitServerList: Committing list of size " + mServerList.size());
 
         for (ServerSettings s : mServerList) {
             sb.append("{name:\""+s.name+"\",host:\""+s.host+"\",port:"+s.port+",password:\""+s.password+"\",version:\""+s.version+"\"},");

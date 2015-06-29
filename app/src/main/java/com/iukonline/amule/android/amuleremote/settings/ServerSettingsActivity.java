@@ -35,7 +35,6 @@ public class ServerSettingsActivity extends ActionBarActivity implements SharedP
 
     private int mServerIndex = -1;
     private AmuleControllerApplication mApp;
-    private SettingsHelper mSettingsHelper;
     private SettingsHelper.ServerSettings mServerSettings;
 
     private boolean mInitialized = false;
@@ -65,9 +64,9 @@ public class ServerSettingsActivity extends ActionBarActivity implements SharedP
             mServerIndex = i.getIntExtra(BUNDLE_PARAM_SERVER_INDEX, -1);
         }
 
-        mSettingsHelper = new SettingsHelper(mApp.mSettings);
+        mApp.mSettingsHelper = new SettingsHelper(mApp.mSettings);
         if (mServerIndex >= 0) {
-            mServerSettings = mSettingsHelper.getServerSettings(mServerIndex);
+            mServerSettings = mApp.mSettingsHelper.getServerSettings(mServerIndex);
         } else {
             mServerSettings = new SettingsHelper.ServerSettings("", "", 4712, "", "");
         }
@@ -147,21 +146,23 @@ public class ServerSettingsActivity extends ActionBarActivity implements SharedP
     }
 
     private boolean removeServer() {
-        if (mSettingsHelper.removeServerSettings(mServerIndex)) {
-            return mSettingsHelper.commitServerList();
+        if (mApp.mSettingsHelper.removeServerSettings(mServerIndex)) {
+            mApp.mSettingsHelper.mNeedNavigationRefresh = true;
+            return mApp.mSettingsHelper.commitServerList();
         }
         return false;
     }
 
     private boolean addServer() {
-        if (mSettingsHelper.addServerSettings(new SettingsHelper.ServerSettings(
+        if (mApp.mSettingsHelper.addServerSettings(new SettingsHelper.ServerSettings(
                 mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_NAME, ""),
                 mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_HOST, ""),
                 Integer.parseInt(mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_PORT, "")),
                 mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_PASSWORD, ""),
                 mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_VERSION, "")
         ))) {
-            return mSettingsHelper.commitServerList();
+            mApp.mSettingsHelper.mNeedNavigationRefresh = true;
+            return mApp.mSettingsHelper.commitServerList();
         }
 
         return false;
@@ -184,15 +185,16 @@ public class ServerSettingsActivity extends ActionBarActivity implements SharedP
                 } catch (NumberFormatException e) {
                     port = 4712;
                 }
-                if (mSettingsHelper.editServerSettings(
+                if (mApp.mSettingsHelper.editServerSettings(
                         mServerIndex,
                         mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_NAME, ""),
                         mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_HOST, ""),
                         port,
                         mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_PASSWORD, ""),
                         mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_VERSION, "")
-                ) != null) mSettingsHelper.commitServerList();
+                ) != null) mApp.mSettingsHelper.commitServerList();
 
+                mApp.mSettingsHelper.mNeedNavigationRefresh = true;
             }
         }
     }

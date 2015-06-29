@@ -11,6 +11,7 @@ import android.os.DropBoxManager;
 import android.util.Log;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.Flavor;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.CategoriesWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
@@ -49,6 +50,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 public class ECHelper {
+
+    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static boolean DEBUG = BuildConfig.DEBUG;
     
     private final static long DATA_MAX_AGE_MILLIS = 120000L;
     private final static long IDLE_CLIENT_MAX_AGE_MILLIS = 60000L;
@@ -286,7 +290,7 @@ public class ECHelper {
     public void notifyAmuleClientStatusWatchers (AmuleClientStatus status) {
         //Toast.makeText(getApplication(), "Client status changed to " + status.toString(), Toast.LENGTH_LONG).show();
         
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "ECHelper.notifyAmuleClientStatusWatchers: client status is " + status);
+        if (DEBUG) Log.d(TAG, "ECHelper.notifyAmuleClientStatusWatchers: client status is " + status);
         mECClientStatus = status;
         if (status == AmuleClientStatus.ERROR) {
             // Moved in resetClient
@@ -298,7 +302,7 @@ public class ECHelper {
         
         if (status != AmuleClientStatus.WORKING) {
             mECClientLastIdle = System.currentTimeMillis();
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "ECHelper.notifyAmuleClientStatusWatchers: mECClientLastIdle set to " + Long.toString(mECClientLastIdle));
+            if (DEBUG) Log.d(TAG, "ECHelper.notifyAmuleClientStatusWatchers: mECClientLastIdle set to " + Long.toString(mECClientLastIdle));
             mTaskQueue.poll();
             AmuleAsyncTask nextTask = this.getNextTask();
             
@@ -424,13 +428,13 @@ public class ECHelper {
         // This should prevent the null Exception on mServerVersion. However it's not clear why that happened.
         // Need to check if client is null when calling getECClient
         
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "ECHelper.getECClient: Validating server info");
+        if (DEBUG) Log.d(TAG, "ECHelper.getECClient: Validating server info");
         if (! this.validateServerInfo()) return null;
 
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "ECHelper.getECClient: Client last idle at " + Long.toString(mECClientLastIdle));
+        if (DEBUG) Log.d(TAG, "ECHelper.getECClient: Client last idle at " + Long.toString(mECClientLastIdle));
         
         if (mECClient != null && System.currentTimeMillis() - mECClientLastIdle > IDLE_CLIENT_MAX_AGE_MILLIS) {
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "ECHelper.getECClient: Current client is too old. Resetting.");
+            if (DEBUG) Log.d(TAG, "ECHelper.getECClient: Current client is too old. Resetting.");
             resetClient();
         }
         
@@ -438,19 +442,19 @@ public class ECHelper {
         if (! mServerVersion.equals("Fake")) {
             s = getAmuleSocket();
             if (s.isClosed() || s.isInputShutdown() || s.isOutputShutdown()) {
-                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "ECHelper.getECClient: Current socket is not valid. Resetting.");
+                if (DEBUG) Log.d(TAG, "ECHelper.getECClient: Current socket is not valid. Resetting.");
                 resetSocket();
                 s = getAmuleSocket();
             }
             if (!s.isConnected()) {
-                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "ECHelper.getECClient: Current socket is not connected. Connecting.");
+                if (DEBUG) Log.d(TAG, "ECHelper.getECClient: Current socket is not connected. Connecting to " + mServerHost);
                 s.connect(new InetSocketAddress(InetAddress.getByName(mServerHost), mServerPort), mClientConnectTimeout);
                 s.setSoTimeout(mClientReadTimeout);
             }
         }
         
         if (mECClient == null) {
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "ECHelper.getECClient: Creating a " + mServerVersion + " client");
+            if (DEBUG) Log.d(TAG, "ECHelper.getECClient: Creating a " + mServerVersion + " client");
             ECClient c;
             if (mServerVersion.equals("V204")) {
                 c = new ECClientV204();

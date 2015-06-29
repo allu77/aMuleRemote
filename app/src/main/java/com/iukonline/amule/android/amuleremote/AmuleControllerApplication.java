@@ -143,6 +143,7 @@ public class AmuleControllerApplication extends Application {
 
 
     public SharedPreferences mSettings;
+    public SettingsHelper mSettingsHelper;
     public ECHelper mECHelper = new ECHelper(this);
     //ECHelper mECHelper = new ECHelperFakeClient(this);
 
@@ -325,6 +326,7 @@ public class AmuleControllerApplication extends Application {
         }
 
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        mSettingsHelper = new SettingsHelper(mSettings);
         normalizeSettings();
         refreshServerSettings();
         refreshRefreshSettings();
@@ -343,8 +345,7 @@ public class AmuleControllerApplication extends Application {
 
         // Version 19 changed from single server to multiple server settings
         if (lastAppVer > 0 && lastAppVer < 19) {
-            SettingsHelper h = new SettingsHelper(mSettings);
-            h.convertLegacyServerSettings();
+            mSettingsHelper.convertLegacyServerSettings();
         }
     }
 

@@ -12,21 +12,19 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
@@ -34,6 +32,7 @@ import com.google.android.gms.ads.AdView;
 import com.iukonline.amule.android.amuleremote.AboutDialogFragment;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
+import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.dlqueue.DlQueueFragment.DlQueueFragmentContainer;
 import com.iukonline.amule.android.amuleremote.helpers.SettingsHelper;
@@ -61,11 +60,13 @@ import com.iukonline.amule.ec.ECConnState;
 import com.iukonline.amule.ec.ECStats;
 import com.iukonline.amule.ec.ECUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 
 public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialogListener, ClientStatusWatcher, DlQueueFragmentContainer, ECStatsWatcher, CategoriesWatcher, RefreshingActivity, UpdatesWatcher  {
+    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static boolean DEBUG = BuildConfig.DEBUG;
     
     
     public final static String BUNDLE_PARAM_ERRSTR          = "errstr";
@@ -81,7 +82,8 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
     
     private AmuleControllerApplication mApp;
     private String mHandleURI;
-    private CategoriesAdapter mCategoriesAdapter;
+    private NavigationAdapter mNavigationAdapter;
+
     private long mCatId = ECCategory.NEW_CATEGORY_ID;
     
     String mED2KUrl;
@@ -94,18 +96,19 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
     
     MenuItem debugOptionsItem;
     
-    TextView mTextDlRate;
-    TextView mTextUlRate;
-    TextView mTextEDonkeyStatus;
-    TextView mTextKADStatus;
-    View mViewConnBar;
+    @InjectView(R.id.main_dl_rate)TextView mTextDlRate;
+    @InjectView(R.id.main_ul_rate) TextView mTextUlRate;
+    @InjectView(R.id.main_edonkey_status) TextView mTextEDonkeyStatus;
+    @InjectView(R.id.main_kad_status) TextView mTextKADStatus;
+    @InjectView(R.id.main_conn_bar) View mViewConnBar;
 
-    Spinner mSelectServer;
-    
     ActionBar mActionBar;
+    ActionBar.OnNavigationListener mNavigationListener;
     
     FragmentManager mFragManager;
     TooltipHelper mTooltipHelper;
+
+    private DlQueueFragment mDlQueueFragment;
 
 
     @Override
@@ -116,28 +119,21 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
         
         mFragManager = getSupportFragmentManager();
         
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreate: Calling super");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreate: Calling super");
         super.onCreate(savedInstanceState);
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreate: Back from super");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreate: Back from super");
         
         if (savedInstanceState != null) {
             mCatId = savedInstanceState.getLong(BUNDLE_CATEGORY_FILTER, ECCategory.NEW_CATEGORY_ID);
         }
         
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreate: Calling setContentView");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreate: Calling setContentView");
         setContentView(R.layout.main);
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreate: back from setContentView");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreate: back from setContentView");
+        ButterKnife.inject(this);
 
-        
-        mTextDlRate = (TextView) findViewById(R.id.main_dl_rate);
-        mTextUlRate = (TextView) findViewById(R.id.main_ul_rate);
-        mTextEDonkeyStatus = (TextView) findViewById(R.id.main_edonkey_status);
-        mTextKADStatus = (TextView) findViewById(R.id.main_kad_status);
-        mViewConnBar = findViewById(R.id.main_conn_bar);
-
-        mSelectServer = (Spinner) findViewById(R.id.main_select_server);
-        
         mActionBar = getSupportActionBar();
+        createNavigation();
 
         AdView adView = (AdView)this.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
@@ -151,59 +147,152 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
         
         mHandleURI = (a != null && a.equals(Intent.ACTION_VIEW)) ? i.getData().toString() : NO_URI_TO_HANDLE; 
 
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreate: end");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreate: end");
 
     }
-    
+
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+        if (fragment.getId() == R.id.fragment_dlqueue) mDlQueueFragment = (DlQueueFragment) fragment;
+    }
+
+    private void createNavigation() {
+
+        mNavigationAdapter = new NavigationAdapter(mApp, R.layout.part_nav_text);
+        mNavigationAdapter.setNotifyOnChange(false);
+
+        mNavigationListener = new ActionBar.OnNavigationListener() {
+
+            private boolean isFirstSelection = true;
+
+            @Override
+            public boolean onNavigationItemSelected(int position, long itemId) {
+                if (DEBUG) Log.d(TAG, "AmuleRemoteActivity->onNavigationItemSelected: BEH???");
+                if (isFirstSelection) {
+                    // Avoid doing anything on navigation initialization
+                    isFirstSelection = false;
+                    return true;
+                }
+
+                NavigationItem n = mNavigationAdapter.getItem(position);
+                if (n.isCategory()) {
+                    if (DEBUG) Log.d(TAG, "AmuleRemoteActivity->onNavigationItemSelected: category " + n.getCategory().getId() + " clicked");
+                    mCatId = n.getCategory().getId();
+                    if (mDlQueueFragment != null)
+                        mDlQueueFragment.filterDlQueueByCategory(mCatId);
+                } else {
+                    int serverIndex = mNavigationAdapter.getServerIndex(position);
+                    if (DEBUG) Log.d(TAG, "AmuleRemoteActivity->onNavigationItemSelected: setting server " + serverIndex);
+                    mNavigationAdapter.cleanCategories();
+                    mNavigationAdapter.setSelectedServer(serverIndex);
+                    mApp.mSettingsHelper.setCurrentServer(serverIndex);
+                    mApp.mECHelper.resetClient();
+                    mApp.refreshServerSettings();
+                    registerAllListeners();
+                    filterDlQueueByCategory(ECCategory.NEW_CATEGORY_ID);
+                    refreshDlQueue();
+                }
+                return true;
+            }
+        };
+
+
+
+    }
+
+    private void showNavigation() {
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        mActionBar.setTitle("");
+    }
+
+    private void hideNavigation() {
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        mActionBar.setTitle(R.string.app_name);
+    }
 
     @Override
     protected void onResume() {
 
         mApp.mOnTopActivity = this;
 
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: Reading settings");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onResume: Reading settings");
         mApp.refreshDebugSettings();
         mServerConfigured = mApp.refreshServerSettings();
 
-        if (mServerConfigured) {
-            SettingsHelper h = new SettingsHelper(mApp.mSettings);
-            if (h.getServerCount() > 1) {
-                mSelectServer.setVisibility(View.VISIBLE);
+        if (mServerConfigured && mApp.mSettingsHelper.mNeedNavigationRefresh) {
+            int serverCount = mApp.mSettingsHelper.getServerCount();
+            int selectedServer = mApp.mSettingsHelper.getCurrentServer();
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onResume: Navigation needs a refresh. Setting server " + selectedServer + ", server count " + serverCount);
+            mNavigationAdapter.clear();
+            mNavigationAdapter.setServerCount(serverCount);
+            if (serverCount > 1) {
+                for (int i = 0; i < serverCount; i++) {
+                    mNavigationAdapter.add(new NavigationItem(mApp.mSettingsHelper.getServerSettings(i)));
+                }
+                showNavigation();
+                mNavigationAdapter.setSelectedServer(selectedServer);
+                mActionBar.setSelectedNavigationItem(selectedServer);
+                mActionBar.setListNavigationCallbacks(mNavigationAdapter, mNavigationListener);
             } else {
-                mSelectServer.setVisibility(View.GONE);
+                hideNavigation();
             }
+            mApp.mSettingsHelper.mNeedNavigationRefresh = false;
         }
 
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: Calling super");
+
+
+
+
+
+
+
+
+
+
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onResume: Calling super");
         super.onResume();
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: Back from super");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onResume: Back from super");
         
 
-        // TBV: Everyting that creats a dialog should be in onPostResume due to a bug in ICS
+        // TBV: Everything that creates a dialog should be in onPostResume due to a bug in ICS
         // https://code.google.com/p/android/issues/detail?id=23096
         
         // TBV: This should clear the disappearing refresh bug. Not elegant as onCreateMenu gets called twice...
         supportInvalidateOptionsMenu();
+        registerAllListeners();
+        mApp.registerRefreshActivity(this);
 
+        if (! mApp.mECHelper.isDlQueueValid()) {
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onResume: launching refreshDlQueue");
+            refreshDlQueue();
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onResume: back from refreshDlQueue");
+        }
+
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onResume: end");
         
-        
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: registering for async activities");
+    }
+
+    private void registerAllListeners() {
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onResume: registering for async activities");
         notifyStatusChange(mApp.mECHelper.registerForAmuleClientStatusUpdates(this));
         updateECStats(mApp.mECHelper.registerForECStatsUpdates(this));
         updateCategories(mApp.mECHelper.registerForCategoriesUpdates(this));
-        
-        mApp.registerRefreshActivity(this);
+    }
 
-        
-        
-        if (! mApp.mECHelper.isDlQueueValid()) {
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: launching refreshDlQueue");
-            refreshDlQueue();
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: back from refreshDlQueue");
+    private void createNavigationAdapter(int serverCount, int selectedServer) {
+        mNavigationAdapter = new NavigationAdapter(mApp, R.layout.part_nav_text);
+        mNavigationAdapter.setNotifyOnChange(false);
+    }
+
+    private void filterDlQueueByCategory(long catId) {
+        mCatId = catId;
+        if (mNavigationAdapter != null) {
+            int catPos = mNavigationAdapter.findCategoryById(catId);
+            mActionBar.setSelectedNavigationItem(catPos);
         }
-
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: end");
-        
+        mDlQueueFragment.filterDlQueueByCategory(catId);
     }
     
     
@@ -216,29 +305,6 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
         super.onPostResume();
         showPostResumeDialog();
         
-        /*
-        if (! mServerConfigured) {
-            if (mFragManager.findFragmentByTag(TAG_DIALOG_NO_SERVER) == null) {
-                AlertDialogFragment d = new AlertDialogFragment(R.string.dlqueue_dialog_title_no_server_configured, R.string.dlqueue_dialog_message_no_server_configured, true);
-                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: no server configured - showing dialog");
-                d.show(mFragManager, TAG_DIALOG_NO_SERVER);
-                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: no server configured - end");
-            } else {
-                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onResume: no server configured - dialog already shown");
-            }
-            return;
-        }
-        
-        mApp.showWhatsNew(mFragManager);
-        mApp.mUpdateChecker.registerUpdatesWatcher(this);        
-
-        if (! mHandleURI.equals(NO_URI_TO_HANDLE)) {
-            String parURI = new String(mHandleURI);
-            mHandleURI = new String(NO_URI_TO_HANDLE);
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPostResume: handling ed2k URI");
-            showAddED2KDialog(parURI);
-        }
-        */
     }
     
     protected void showPostResumeDialog() {
@@ -248,7 +314,7 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
         
         if (! mServerConfigured) {
             if (mFragManager.findFragmentByTag(TAG_DIALOG_NO_SERVER) == null) {
-                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showPostResumeDialog: no server configured - showing dialog");
+                if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.showPostResumeDialog: no server configured - showing dialog");
                 AlertDialogFragment d = new AlertDialogFragment(R.string.dlqueue_dialog_title_no_server_configured, R.string.dlqueue_dialog_message_no_server_configured, true);
                 d.show(mFragManager, TAG_DIALOG_NO_SERVER);
             }
@@ -260,11 +326,10 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
             mHandleURI = new String(NO_URI_TO_HANDLE);
             if (mApp.mSettings.getBoolean(AmuleControllerApplication.AC_SETTING_CONVERT_PIPE, true)) {
                 if (parURI.toLowerCase().startsWith("ed2k://%7c")) {
-                    Log.d(AmuleControllerApplication.AC_LOGTAG, "DA CONVERTIRE");
                     parURI = parURI.replaceAll("%7C", "|").replaceAll("%7c", "|");
                 }
             }
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPostResume: handling ed2k URI");
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onPostResume: handling ed2k URI");
             showAddED2KDialog(parURI);
             return;
         }
@@ -286,7 +351,7 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
     @Override
     protected void onPause() {
 
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPause: un-registering from async activities");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onPause: un-registering from async activities");
 
         mApp.mECHelper.unRegisterFromAmuleClientStatusUpdates(this);
         mApp.mECHelper.unRegisterFromECStatsUpdates(this);
@@ -295,9 +360,9 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
         mApp.registerRefreshActivity(null);
         mApp.mUpdateChecker.registerUpdatesWatcher(null);
 
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPause: calling super");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onPause: calling super");
         super.onPause();
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPause: end");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onPause: end");
 
         mApp.mOnTopActivity = null;
 
@@ -305,11 +370,11 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onSaveInstanceState: adding data to bundle");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onSaveInstanceState: adding data to bundle");
         outState.putLong(BUNDLE_CATEGORY_FILTER, mCatId);
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onSaveInstanceState: calling super");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onSaveInstanceState: calling super");
         super.onSaveInstanceState(outState);
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onSaveInstanceState: end");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onSaveInstanceState: end");
 
     }
     
@@ -317,39 +382,35 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreateOptionsMenu: Inflating menu");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreateOptionsMenu: Inflating menu");
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_options, menu);
 
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreateOptionsMenu: Saving MenuItems");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreateOptionsMenu: Saving MenuItems");
         
         refreshItem = menu.findItem(R.id.menu_opt_refresh);
-        //if (refreshItem == null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreateOptionsMenu: refreshItem is null");
         addEd2kItem = menu.findItem(R.id.menu_opt_added2k);
-        //if (addEd2kItem == null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreateOptionsMenu: addEd2kItem is null");
-        
+
         debugOptionsItem = menu.findItem(R.id.menu_opt_debug);
         
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreateOptionsMenu: Calling super");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreateOptionsMenu: Calling super");
         boolean superRet = super.onCreateOptionsMenu(menu);
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onCreateOptionsMenu: super returned " + superRet + " - end");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreateOptionsMenu: super returned " + superRet + " - end");
         return superRet;
     }
     
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         
-        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPrepareOptionsMenu: Setting items visibility");
+        if (mApp != null && DEBUG) Log.d(TAG, "AmuleRemoteActivity.onPrepareOptionsMenu: Setting items visibility");
         
         if (refreshItem != null) {
             refreshItem.setVisible(mServerConfigured);
             if (mIsProgressShown) {
                 MenuItemCompat.setActionView(refreshItem, R.layout.refresh_progress);
-                //refreshItem.setActionView(R.layout.refresh_progress);
             } else {
                 MenuItemCompat.setActionView(refreshItem, null);
-                //refreshItem.setActionView(null);
             }
         }
 
@@ -359,9 +420,9 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
             if (debugOptionsItem != null) debugOptionsItem.setVisible(mApp.enableDebugOptions);
         }
 
-        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPrepareOptionsMenu: calling super");
+        if (mApp != null && DEBUG) Log.d(TAG, "AmuleRemoteActivity.onPrepareOptionsMenu: calling super");
         boolean superRet = super.onPrepareOptionsMenu(menu);
-        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onPrepareOptionsMenu: super returned " + superRet + " - end");
+        if (mApp != null && DEBUG) Log.d(TAG, "AmuleRemoteActivity.onPrepareOptionsMenu: super returned " + superRet + " - end");
         return superRet;
     }
 
@@ -370,32 +431,32 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.menu_opt_refresh:
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_refresh selected");
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_refresh selected");
             refreshDlQueue(TaskScheduleMode.QUEUE);
             return true;
         case R.id.menu_opt_refresh_cat:
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_refresh_cat selected");
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_refresh_cat selected");
             refreshCategories(TaskScheduleMode.QUEUE);
             return true;
         case R.id.menu_opt_settings:
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_settings selected");
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_settings selected");
             Intent settingsActivity = new Intent(this, SettingsActivity.class);
             startActivity(settingsActivity);
             return true; 
         case R.id.menu_opt_reset:
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_reset selected");
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_reset selected");
             mApp.mECHelper.resetClient();
             return true;
         case R.id.menu_opt_added2k:
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_added2k selected");
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_added2k selected");
             showAddED2KDialog(null);
             return true;
         case R.id.menu_opt_about:
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_about selected");
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_about selected");
             showAboutDialog();
             return true;
         case R.id.menu_opt_send_report:
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_send_report selected");
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_send_report selected");
             //ErrorReporter.getInstance().handleException(new Exception("MANUAL BUG REPORT"));
             showManualBugReportDialog();
             return true;
@@ -414,7 +475,7 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
             mTooltipHelper.resetShown();
             return true; 
         default:
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.onOptionsItemSelected: Unknown item selected. Calling super");
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onOptionsItemSelected: Unknown item selected. Calling super");
             return super.onOptionsItemSelected(item);
         }
     }
@@ -427,16 +488,16 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
     public void refreshDlQueue(TaskScheduleMode mode)  {
 
         if (mApp.mECHelper.getCategories() == null) {
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.refreshDlQueue: Category list null, scheduling refresh");
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.refreshDlQueue: Category list null, scheduling refresh");
             if (!refreshCategories(mode)) return;
             mode = TaskScheduleMode.QUEUE;
         }
         
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.refreshDlQueue: Scheduling Get Stats Task");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.refreshDlQueue: Scheduling Get Stats Task");
         if (mApp.mECHelper.executeTask(mApp.mECHelper.getNewTask(GetECStatsAsyncTask.class), mode)) {
             GetDlQueueAsyncTask t = (GetDlQueueAsyncTask) mApp.mECHelper.getNewTask(GetDlQueueAsyncTask.class);
             t.setDlQueue(mApp.mECHelper.getDlQueue());
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.refreshDlQueue: Scheduling GetDlQueue Task");
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.refreshDlQueue: Scheduling GetDlQueue Task");
             mApp.mECHelper.executeTask(t, TaskScheduleMode.QUEUE);
         }
     }
@@ -446,7 +507,7 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
     }
     
     public boolean refreshCategories(TaskScheduleMode mode) {
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.refreshCategories: Scheduling GetGategories Task");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.refreshCategories: Scheduling GetGategories Task");
         return mApp.mECHelper.executeTask(mApp.mECHelper.getNewTask(GetCategoriesAsyncTask.class), mode);
     }
     
@@ -455,7 +516,7 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
         if (mFragManager.findFragmentByTag(TAG_DIALOG_ADD_ED2K) == null) {
             EditTextDialogFragment d = new EditTextDialogFragment(R.string.dialog_added2k_title, url);
     
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showAddED2KDialog: showing dialog");
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.showAddED2KDialog: showing dialog");
             d.show(mFragManager, TAG_DIALOG_ADD_ED2K);
         }
     }
@@ -470,7 +531,7 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
         }
         
         AboutDialogFragment d = new AboutDialogFragment(versionName, mApp.getReleaseNotes());
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.showAboutDialog: showing dialog");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.showAboutDialog: showing dialog");
         d.show(getSupportFragmentManager(), "about_dialog");
     }
     
@@ -498,7 +559,7 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
     // DlQueueFragmentContainer
     
     public void partFileSelected(byte[] hash) {
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.partFileSelected: Partfile " + ECUtils.byteArrayToHexString(hash) + " selected, starting PartFileActivity");
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.partFileSelected: Partfile " + ECUtils.byteArrayToHexString(hash) + " selected, starting PartFileActivity");
 
         Intent i = new Intent(this, PartFileActivity.class);
         i.putExtra(PartFileActivity.BUNDLE_PARAM_HASH, hash);
@@ -534,7 +595,7 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
     @Override
     public void updateECStats(ECStats newStats) {
         if (newStats != null) {
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.updateECStats: Updating Stats");
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.updateECStats: Updating Stats");
             
             mTextDlRate.setText(GUIUtils.longToBytesFormatted(newStats.getDlSpeed()) + "/s \u2193");
             mTextUlRate.setText(GUIUtils.longToBytesFormatted(newStats.getUlSpeed()) + "/s \u2191");
@@ -562,9 +623,9 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
             }
             
             mViewConnBar.setVisibility(View.VISIBLE);
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.updateECStats: Stats updated");
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.updateECStats: Stats updated");
         } else {
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.updateECStats: Hiding connection bar");
+            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.updateECStats: Hiding connection bar");
             mViewConnBar.setVisibility(View.GONE);
         }
     }
@@ -590,118 +651,143 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
 
     @Override
     public void updateCategories(ECCategory[] newCategoryList) {
-        
         if (newCategoryList == null) {
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.updateCategories: Hiding category list");
-            mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+            if (mNavigationAdapter.getServerCount() > 1) {
+                mNavigationAdapter.cleanCategories();
+                filterDlQueueByCategory(ECCategory.NEW_CATEGORY_ID);
+            } else {
+                hideNavigation();
+            }
             return;
         }
-        
-        // TODO: Optimize adapter (update List and do not re-create each time)
-        
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.updateCategories: Updating Categories");
-        if (mCategoriesAdapter == null) {
-            ArrayList <ECCategory> catList = new ArrayList<ECCategory>(newCategoryList.length + 1);
-            catList.add(new ECCategory(getResources().getString(R.string.cat_all_files), null, null, (byte) 0, (byte) 0));
-            catList.addAll(Arrays.asList(newCategoryList));
-            
-            mCategoriesAdapter = new CategoriesAdapter(this, R.layout.dlqueue_fragment, catList);
-            mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-            mActionBar.setListNavigationCallbacks(
-                            mCategoriesAdapter,
-                            new ActionBar.OnNavigationListener() {
-                                @Override
-                                public boolean onNavigationItemSelected(int position, long itemId) {
-                                    DlQueueFragment f = (DlQueueFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_dlqueue);
-                                    mCatId = itemId;
-                                    if (f != null) {
-                                        f.filterDlQueueByCategory(itemId);
-                                    }
-                                    return true;
-                                }
-                            }
-            );
-        } else {
-            mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-            int selectedIndex = getSupportActionBar().getSelectedNavigationIndex();
-            mCatId = ECCategory.NEW_CATEGORY_ID;
-            if (selectedIndex >= 0 && selectedIndex < mCategoriesAdapter.getCount()) {
-                mCatId = mCategoriesAdapter.getItemId(selectedIndex);
-            }
-            while (mCategoriesAdapter.getCount() > 1) {
-                mCategoriesAdapter.remove(mCategoriesAdapter.getItem(mCategoriesAdapter.getCount() - 1));
-            }
-            for (int i = 0; i < newCategoryList.length; i++) mCategoriesAdapter.add(newCategoryList[i]);
-        }
-        
-        for (int i = 0; i < mCategoriesAdapter.getCount(); i++) {
-            if (mCategoriesAdapter.getItemId(i) == mCatId) {
-                mActionBar.setSelectedNavigationItem(i);
-                break;
-            }
-        }
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.updateCategories: Categories udpated");
-        
+
+        showNavigation();
+        mNavigationAdapter.cleanCategories();
+        mNavigationAdapter.addCategories(newCategoryList);
+        mNavigationAdapter.addCategory(new ECCategory(getResources().getString(R.string.cat_all_files), null, null, (byte) 0, (byte) 0));
+        mActionBar.setListNavigationCallbacks(mNavigationAdapter, mNavigationListener);
+        filterDlQueueByCategory(mCatId);
     }
-    
-    
-    private class CategoriesAdapter extends ArrayAdapter<ECCategory> {
-        
-        public CategoriesAdapter(Context context, int textViewResourceId, ArrayList<ECCategory> objects) {
-            super(context, textViewResourceId, objects);
+
+    private class NavigationItem {
+        SettingsHelper.ServerSettings mServer;
+        ECCategory mCategory;
+
+        NavigationItem(SettingsHelper.ServerSettings server) { mServer = server; }
+        NavigationItem(ECCategory cat ) { mCategory = cat; }
+
+        public SettingsHelper.ServerSettings getServer() { return mServer; }
+        public ECCategory getCategory() { return mCategory; }
+
+        public boolean isCategory() { return mCategory != null; }
+        public String getNavigationText() {
+            if (mCategory != null) {
+                return mCategory.getId() == 0L ? getString(R.string.category_uncategorized) : mCategory.getTitle();
+            }
+
+            if (mServer != null) return mServer.name;
+
+            return "";
         }
-        
+    }
+
+    private class NavigationAdapter extends ArrayAdapter<NavigationItem> {
+
+        private int mServerCount = 0;
+        private int mSelectedServer = -1;
+
+        public NavigationAdapter (Context context, int resource) {
+            super(context, resource);
+        }
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            
-            //TODO: handle convertView
-            
-            TextView v = new TextView(getContext());
-            ECCategory c = getItem(position);
-            if (c.getId() == 0L) {
-                v.setText(R.string.category_uncategorized);
-            } else {
-                v.setText(c.getTitle());
+            if (convertView == null) {
+                convertView = View.inflate(mApp, R.layout.part_nav_text, null);
             }
-            return v;
+            ((TextView) convertView).setText(getItem(position).getNavigationText());
+            return convertView;
         }
 
         @Override
         public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            //TODO: handle convertView
-            
-            //TODO: this is quick and dirty. 
-            TextView v = (TextView) getView(position, convertView, parent);
-            
-            float d = getContext().getResources().getDisplayMetrics().density;
-            v.setMinHeight((int) (30 * d));
-            v.setGravity(Gravity.CENTER_VERTICAL);
-            LinearLayout l = new LinearLayout(getContext());
-            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            
-            p.setMargins((int) (20 * d), (int) (5 * d), (int) (10 * d), (int) (5 * d));
-            l.addView(v,  p);
-            
-            return l;
+            NavViewHolder holder;
+            if (convertView == null) {
+                convertView = View.inflate(mApp, R.layout.part_nav_dropdown, null);
+                holder = new NavViewHolder(convertView);
+                convertView.setTag(holder);
+            } else {
+                holder = (NavViewHolder) convertView.getTag();
+            }
+            holder.mNavText.setText(getItem(position).getNavigationText());
+            return convertView;
         }
 
         @Override
-        public long getItemId(int position) {
-            return getItem(position).getId();
+        public boolean areAllItemsEnabled() {
+            return mServerCount == 0;
         }
 
         @Override
-        public boolean hasStableIds() {
-            return true;
+        public boolean isEnabled(int position) {
+            return mServerCount == 0 || position != mSelectedServer;
         }
 
+        public void setServerCount (int server) { mServerCount = server; }
+        public int getServerCount () { return mServerCount; }
+        public void setSelectedServer(int server) { mSelectedServer = server; }
+        public int getSelectedServer() { return mSelectedServer; }
+
+
+        public void addCategory(ECCategory cat) {
+            addCategories(new ECCategory[] {cat});
+        }
+
+        public void addCategories(ECCategory[] catList) {
+            if (catList == null) return;
+
+            int startIndex = mServerCount > 1 ? mSelectedServer + 1 : 0;
+            for (int i = catList.length - 1; i >= 0; i--) {
+                insert(new NavigationItem(catList[i]), startIndex);
+            }
+        }
+
+        public void cleanCategories() {
+            if (mServerCount > 1) {
+                int toBeRemoved = getCount() - mServerCount;
+                for (int i = 0; i < toBeRemoved; i++) {
+                    remove(getItem(mSelectedServer + 1));
+                }
+            } else {
+                clear();
+            }
+        }
+
+        public int getServerIndex(int position) {
+            return mServerCount == 0 ? 0 : (position <= mSelectedServer ? position : position - getCount() + mServerCount);
+        }
+
+        public int findCategoryById(long catId) {
+            for (int i = mSelectedServer + 1; i < getCount() && getItem(i).isCategory(); i++) {
+                if (getItem(i).getCategory().getId() == catId) return i;
+            }
+            return -1;
+        }
+
+    }
+
+    static class NavViewHolder {
+        @InjectView(R.id.part_nav_text) TextView mNavText;
+        public NavViewHolder(View view) {
+            ButterKnife.inject(this, view);
+        }
     }
 
 
     @Override
     public void alertDialogEvent(AlertDialogFragment dialog, int event, Bundle values) {
         String tag = dialog.getTag();
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.alertDialogEvent: dialog tag " + tag + ", event " + event);
+        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.alertDialogEvent: dialog tag " + tag + ", event " + event);
         if (tag != null) {
             if (tag.equals(TAG_DIALOG_NO_SERVER)) {
                 if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK) {
@@ -717,13 +803,13 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
                 if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK && values != null) {
                     String u = values.getString(EditTextDialogFragment.BUNDLE_EDIT_STRING);
                     if (u != null) {
-                        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.alertDialogEvent: ed2k URI provided, scheduling add task");
+                        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.alertDialogEvent: ed2k URI provided, scheduling add task");
                         
                         AddEd2kAsyncTask ed2kTask = (AddEd2kAsyncTask) mApp.mECHelper.getNewTask(AddEd2kAsyncTask.class);
                         ed2kTask.setEd2kUrl(u);
                         
                         if (mApp.mECHelper.executeTask(ed2kTask, TaskScheduleMode.QUEUE)) {
-                            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "AmuleRemoteActivity.alertDialogEvent: ed2k URI provided, scheduling refreshDlQueue task");
+                            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.alertDialogEvent: ed2k URI provided, scheduling refreshDlQueue task");
                             refreshDlQueue(TaskScheduleMode.QUEUE);
                         }
                     }
