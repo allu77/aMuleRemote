@@ -14,7 +14,7 @@ android {
         applicationId "com.iukonline.amule.android.amuleremote"
         minSdkVersion 8
         targetSdkVersion 21
-        versionCode 19
+        versionCode 20
         versionName "0.6"
     }
 

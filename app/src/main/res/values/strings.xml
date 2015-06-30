@@ -210,4 +210,5 @@
 	<string name="settings_summary_server_name">Enter a descriptive name for your aMule PC</string>
 	<string name="menu_server_settings_add">Add server</string>
 	<string name="menu_server_settings_remove">Remove server</string>
+	<string name="dialog_whats_new_features_20">Multiple aMule server support</string>
 </resources>
