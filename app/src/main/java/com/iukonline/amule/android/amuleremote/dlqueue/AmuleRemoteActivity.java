@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
@@ -138,7 +141,6 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
         AdView adView = (AdView)this.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("TEST_DEVICE_ID")
                 .build();
         adView.loadAd(adRequest);
         
@@ -169,7 +171,6 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
 
             @Override
             public boolean onNavigationItemSelected(int position, long itemId) {
-                if (DEBUG) Log.d(TAG, "AmuleRemoteActivity->onNavigationItemSelected: BEH???");
                 if (isFirstSelection) {
                     // Avoid doing anything on navigation initialization
                     isFirstSelection = false;
@@ -702,24 +703,67 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = View.inflate(mApp, R.layout.part_nav_text, null);
-            }
-            ((TextView) convertView).setText(getItem(position).getNavigationText());
-            return convertView;
-        }
-
-        @Override
-        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            if (DEBUG) Log.d(TAG, "NavigationAdapter.getView: creating view for position " + position + ", mSelectedServer " + mSelectedServer + ", mServerCount " + mServerCount);
             NavViewHolder holder;
             if (convertView == null) {
-                convertView = View.inflate(mApp, R.layout.part_nav_dropdown, null);
+                convertView = View.inflate(mApp, R.layout.part_nav_text, null);
                 holder = new NavViewHolder(convertView);
                 convertView.setTag(holder);
             } else {
                 holder = (NavViewHolder) convertView.getTag();
             }
-            holder.mNavText.setText(getItem(position).getNavigationText());
+            NavigationItem item = getItem(position);
+            if (item.isCategory()) {
+                holder.mCategoryText.setText(item.getNavigationText());
+                if (mServerCount > 1) {
+                    holder.mServerText.setText(getItem(mSelectedServer).getNavigationText());
+                    holder.mServerText.setVisibility(View.VISIBLE);
+                } else {
+                    holder.mServerText.setVisibility(View.GONE);
+                }
+            } else {
+                holder.mServerText.setText(item.getNavigationText());
+                holder.mCategoryText.setText(getText(R.string.cat_all_files));
+            }
+            return convertView;
+        }
+
+        @Override
+        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            NavViewDropDownHolder holder;
+            NavigationItem item = getItem(position);
+            if (convertView == null) {
+                convertView = View.inflate(mApp, R.layout.part_nav_dropdown, null);
+                holder = new NavViewDropDownHolder(convertView);
+                convertView.setTag(holder);
+            } else {
+                holder = (NavViewDropDownHolder) convertView.getTag();
+            }
+            holder.mNavText.setText(item.getNavigationText());
+            if (item.isCategory()) {
+                holder.mNavText.setTextSize(getResources().getDimension(R.dimen.abc_text_size_small_material));
+                holder.mNavCatBox.setVisibility(View.VISIBLE);
+
+                if (holder.mNavCatBox.getDrawable() != null) {
+                    ECCategory cat = item.getCategory();
+                    if (cat.getId() == ECCategory.NEW_CATEGORY_ID || cat.getId() == 0L) {
+                        ((GradientDrawable) holder.mNavCatBox.getDrawable()).setColor(Color.argb(0, 0, 0, 0));
+                    } else {
+                        long color = cat.getColor();
+                        long r = color / 65536L;
+                        long g = (color % 65536L) / 256L;
+                        long b = color % 256L;
+                        ((GradientDrawable) holder.mNavCatBox.getDrawable()).setColor(Color.argb(255, (int) r, (int) g, (int) b));
+                    }
+
+                }
+
+                /*GradientDrawable backgroundGradient = (GradientDrawable) holder.mNavCatBox.getBackground();
+                if (backgroundGradient != null) backgroundGradient.setColor(Color.rgb((int) r, (int) g, (int) b));*/
+            } else {
+                holder.mNavCatBox.setVisibility(View.GONE);
+                holder.mNavText.setTextSize(getResources().getDimension(R.dimen.abc_text_size_subhead_material));
+            }
             return convertView;
         }
 
@@ -777,8 +821,17 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
     }
 
     static class NavViewHolder {
-        @InjectView(R.id.part_nav_text) TextView mNavText;
+        @InjectView(R.id.part_nav_server_text) TextView mServerText;
+        @InjectView(R.id.part_nav_category_text) TextView mCategoryText;
         public NavViewHolder(View view) {
+            ButterKnife.inject(this, view);
+        }
+    }
+
+    static class NavViewDropDownHolder {
+        @InjectView(R.id.part_nav_dropdown_text) TextView mNavText;
+        @InjectView(R.id.part_nav_dropdown_cat_box) ImageView mNavCatBox;
+        public NavViewDropDownHolder(View view) {
             ButterKnife.inject(this, view);
         }
     }

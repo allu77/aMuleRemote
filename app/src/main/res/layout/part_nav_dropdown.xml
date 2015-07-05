@@ -6,12 +6,37 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="10dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp"
+    tools:background="#000"
 >
 
-    <include layout="@layout/part_nav_text" />
+    <ImageView
+        android:id="@+id/part_nav_dropdown_cat_box"
+        android:layout_width="6dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/cat_color_box"
+        android:layout_marginRight="5dp" />
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/part_nav_dropdown_text"
+        android:textColor="@color/abc_secondary_text_material_dark"
+        android:textSize="@dimen/abc_text_size_large_material"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:gravity="center_vertical"
+        android:minWidth="70dp"
+        tools:text="TEXT"
+        >
+    </TextView>
 
 </LinearLayout>

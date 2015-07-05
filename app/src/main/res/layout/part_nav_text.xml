@@ -5,14 +5,41 @@
   ~ Proprietary and confidential
   -->
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:id="@+id/part_nav_text"
-    android:textColor="@color/abc_secondary_text_material_dark"
-    android:textSize="@dimen/abc_text_size_large_material"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:minWidth="70dp"
+    tools:background="#000"
+    android:orientation="vertical"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    >
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/part_nav_server_text"
+    android:textColor="@color/abc_primary_text_disable_only_material_dark"
+    android:textSize="@dimen/abc_text_size_small_material"
     android:ellipsize="end"
     android:singleLine="true"
     android:gravity="center_vertical"
-    android:minWidth="70dp"
+    tools:text="Server"
     >
 </TextView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/part_nav_category_text"
+        android:textColor="@color/abc_secondary_text_material_dark"
+        android:textSize="@dimen/abc_text_size_medium_material"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:gravity="center_vertical"
+        android:minWidth="70dp"
+        tools:text="Category"
+        >
+    </TextView>
+</LinearLayout>
