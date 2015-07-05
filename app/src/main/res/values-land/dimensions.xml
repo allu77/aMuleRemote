@@ -6,6 +6,6 @@
   -->
 
 <resources>
-    <dimen name="progress_on_bar_size">26dip</dimen>
+<!--    <dimen name="progress_on_bar_size">24dip</dimen>-->
     
 </resources>
