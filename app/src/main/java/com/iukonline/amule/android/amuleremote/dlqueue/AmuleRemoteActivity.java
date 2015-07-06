@@ -137,6 +137,7 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
 
         mActionBar = getSupportActionBar();
         createNavigation();
+        mApp.mSettingsHelper.mNeedNavigationRefresh = true;
 
         AdView adView = (AdView)this.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
@@ -199,8 +200,6 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
             }
         };
 
-
-
     }
 
     private void showNavigation() {
@@ -241,15 +240,6 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
             }
             mApp.mSettingsHelper.mNeedNavigationRefresh = false;
         }
-
-
-
-
-
-
-
-
-
 
 
         if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onResume: Calling super");
