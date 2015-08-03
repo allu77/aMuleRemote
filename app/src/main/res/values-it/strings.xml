@@ -15,7 +15,7 @@
     <string name="settings_label_server_host">"Indirizzo PC aMule"</string>
     <string name="settings_label_server_port">"Porta"</string>
     <string name="settings_label_server_password">"Password"</string>
-    <string name="settings_label_server">"Impostazioni server"</string>
+    <string name="settings_label_server">PC aMule</string>
     <string name="partfile_status_allocating">"In allocazione"</string>
     <string name="partfile_status_complete">"Completato"</string>
     <string name="partfile_status_completing">"In completamento"</string>
@@ -36,7 +36,7 @@
     <string name="settings_summary_server_host">"L'hostname o l'IP del PC su cui è in esecuzione il demone aMule"</string>
     <string name="settings_summary_server_port">"Porta TCP per la connessione remota (EC)"</string>
     <string name="settings_summary_server_password">"Password EC"</string>
-    <string name="settings_summary_client_autorefresh">"Attivare l'aggiornamento automatico"</string>
+    <string name="settings_summary_client_autorefresh">Aggiorna automaticamente i dati</string>
     <string name="partfile_detail_label_sources_active">"Attive: "</string>
     <string name="partfile_detail_label_sources_notcurrent">"Non disponibili: "</string>
     <string name="partfile_detail_label_sources_a4af">"In coda per un altro file (A4AF): "</string>
@@ -71,17 +71,17 @@
     <string name="menu_opt_sort_priority">"Priorità"</string>
     <string name="menu_opt_sort_remaining">"Tempo rimanente"</string>
     <string name="menu_opt_sort_last_seen_complete">"Visto completo"</string>
-    <string name="settings_label_client_connect_timeout">"Timeout di connessione (secondi)"</string>
-    <string name="settings_label_client_read_timeout">"Timeout di lettura (secondi)"</string>
-    <string name="settings_summary_client_connect_timeout">"Numero massimo di secondi di attesa per la realizzazione del collegamento"</string>
-    <string name="settings_summary_client_read_timeout">"Numero massimo di secondi di attesa di una risposta"</string>
+    <string name="settings_label_client_connect_timeout">"Timeout di connessione"</string>
+    <string name="settings_label_client_read_timeout">"Timeout di lettura"</string>
+    <string name="settings_summary_client_connect_timeout">Fino a %d secondi</string>
+    <string name="settings_summary_client_read_timeout">Fino a %d secondi</string>
     <string name="dlqueue_server_not_queried">"Non connesso al server aMule"</string>
     <string name="alert_dialog_ok">"OK"</string>
     <string name="alert_dialog_cancel">"Annulla"</string>
     <string name="partfile_dialog_delete_confirm">"Sei sicuro di voler eliminare questo file?"</string>
     <string name="sourcenames_context_rename">"Rinomina"</string>
     <string name="menu_detail_opt_rename">"Rinomina"</string>
-    <string name="settings_summary_client_autorefresh_interval">"Imposta l'intervallo di aggiornamento automatico"</string>
+    <string name="settings_summary_client_autorefresh_interval">Ogni %d secondi</string>
     <string name="settings_label_client_autorefresh_interval">"Intervallo di aggiornamento automatico"</string>
     <string name="partfile_deatil_comments_rating_notrated">"Non valutato"</string>
     <string name="partfile_deatil_comments_rating_invalid">"Non valido"</string>
@@ -191,4 +191,14 @@ ACRA (http://acra.googlecode.com/).\n
 	<string name="dialog_tooltip_auto_localization"></string>
 	<string name="menu_opt_reset_tips">Resetta i suggerimenti</string>
 	<string name="error_invalid_port">Porta TCP specificata non valida. Ripristino il valore di default (4712).</string>
+    <string name="action_settings">Impostazioni</string>
+    <string name="menu_server_settings_add">Aggiungi server</string>
+    <string name="menu_server_settings_remove">Rimuovi server</string>
+    <string name="settings_label_button_add">Aggiungi PC aMule</string>
+    <string name="settings_label_server_add">Aggiungi</string>
+    <string name="settings_label_server_name">Nome PC aMule</string>
+    <string name="settings_summary_server_name">Inserisci uno nome per il tuo PC aMule</string>
+    <string name="title_activity_server_settings">Impostazioni PC aMule</string>
+    <string name="title_activity_settings">Impostazioni</string>
+    <string name="dialog_whats_new_features_20">Gestione di più PC aMule</string>
 </resources>
