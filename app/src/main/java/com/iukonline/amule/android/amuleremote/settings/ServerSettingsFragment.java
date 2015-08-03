@@ -18,21 +18,23 @@ import com.github.machinarius.preferencefragment.PreferenceFragment;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
-import com.iukonline.amule.android.amuleremote.helpers.SettingsHelper;
 
 public class ServerSettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
-    
-    private final static String BUNDLE_INITIALIZED = "is_initialized";
+
     private final static String BUNDLE_PARAM_SERVER_INDEX = "server_index";
+
+    public interface ServerSettingsFragmentContainer {
+        boolean addServer();
+    }
 
     private AmuleControllerApplication mApp;
     private int mServerIndex = -1;
     private PreferenceGroup mPrefGroup;
-    private SettingsHelper mSettingsHelper;
-    private boolean mInitialized = false;
+
+    private ServerSettingsFragmentContainer mContainer;
 
     public static ServerSettingsFragment newInstance(int serverIndex) {
         ServerSettingsFragment f = new ServerSettingsFragment();
@@ -46,6 +48,7 @@ public class ServerSettingsFragment extends PreferenceFragment implements Shared
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mApp = (AmuleControllerApplication) activity.getApplication();
+        mContainer = (ServerSettingsFragmentContainer) activity;
     }
 
     @Override
@@ -56,9 +59,7 @@ public class ServerSettingsFragment extends PreferenceFragment implements Shared
 
         Bundle args = getArguments();
         if (args != null) mServerIndex = args.getInt(ServerSettingsActivity.BUNDLE_PARAM_SERVER_INDEX, -1);
-        if (savedInstanceState != null) mInitialized = savedInstanceState.getBoolean(BUNDLE_INITIALIZED, false);
 
-        mSettingsHelper = new SettingsHelper(mApp.mSettings);
         initializeGUI();
 
         if (DEBUG) Log.d(TAG, "ServerSettingsFragment.onCreate: END");
@@ -68,6 +69,18 @@ public class ServerSettingsFragment extends PreferenceFragment implements Shared
         addPreferencesFromResource(R.xml.server_settings);
 
         mPrefGroup = getPreferenceScreen();
+        if (mServerIndex >= 0) {
+            mPrefGroup.removePreference(mPrefGroup.findPreference("server_create"));
+        } else {
+            mPrefGroup.findPreference("server_create").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    if (DEBUG) Log.d(TAG, "ServerSettingsFragment->onPreferenceClick: ADD SERVER");
+                    return mContainer.addServer();
+                }
+            });
+        }
+
         SharedPreferences pref = mApp.mSettings;
         setPreferenceSummary(ServerSettingsActivity.SETTINGS_SERVER_NAME, pref.getString(ServerSettingsActivity.SETTINGS_SERVER_NAME, ""));
         setPreferenceSummary(ServerSettingsActivity.SETTINGS_SERVER_HOST, pref.getString(ServerSettingsActivity.SETTINGS_SERVER_HOST, ""));
@@ -94,16 +107,6 @@ public class ServerSettingsFragment extends PreferenceFragment implements Shared
         mPrefGroup.getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
 
         if (DEBUG) Log.d(TAG, "ServerSettingsFragment.onPause: END");
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        if (DEBUG) Log.d(TAG, "ServerSettingsFragment.onSaveInstanceState: BEGIN");
-
-        outState.putBoolean(BUNDLE_INITIALIZED, mInitialized);
-        super.onSaveInstanceState(outState);
-
-        if (DEBUG) Log.d(TAG, "ServerSettingsFragment.onSaveInstanceState: END");
     }
 
     @Override

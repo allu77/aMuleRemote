@@ -11,16 +11,34 @@
     <PreferenceCategory android:title="@string/settings_label_server" android:key="amule_server">
    	</PreferenceCategory>
     <PreferenceCategory android:key="amule_client" android:title="@string/settings_label_client">
-        <CheckBoxPreference android:key="amule_client_autorefresh" android:title="@string/settings_label_client_autorefresh" android:summary="@string/settings_summary_client_autorefresh" android:disableDependentsState="false" android:defaultValue="true"></CheckBoxPreference>
-        <EditTextPreference android:key="amule_client_autorefresh_interval" android:dependency="amule_client_autorefresh" android:defaultValue="10" android:shouldDisableView="true" android:summary="@string/settings_summary_client_autorefresh_interval" android:title="@string/settings_label_client_autorefresh_interval"></EditTextPreference>
-        <EditTextPreference android:key="amule_client_connect_timeout" android:title="@string/settings_label_client_connect_timeout" android:defaultValue="10" android:summary="@string/settings_summary_client_connect_timeout" android:numeric="integer"/>
-        <EditTextPreference android:key="amule_client_read_timeout" android:title="@string/settings_label_client_read_timeout" android:defaultValue="30" android:summary="@string/settings_summary_client_read_timeout" android:numeric="integer"/>
-        <CheckBoxPreference android:key="amule_client_convert_pipe" android:title="@string/settings_label_client_convert_pipe" android:summary="@string/settings_summary_client_convert_pipe" android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="amule_client_autorefresh"
+            android:title="@string/settings_label_client_autorefresh"
+            android:summary="@string/settings_summary_client_autorefresh"
+            android:disableDependentsState="false"
+            android:defaultValue="true"/>
+        <EditTextPreference
+            android:key="amule_client_autorefresh_interval"
+            android:dependency="amule_client_autorefresh"
+            android:defaultValue="10"
+            android:shouldDisableView="true"
+            android:summary="@string/settings_summary_client_autorefresh_interval" android:title="@string/settings_label_client_autorefresh_interval"/>
+        <EditTextPreference
+            android:key="amule_client_connect_timeout"
+            android:title="@string/settings_label_client_connect_timeout"
+            android:defaultValue="10"
+            android:summary="@string/settings_summary_client_connect_timeout"
+            android:numeric="integer"/>
+        <EditTextPreference
+            android:key="amule_client_read_timeout"
+            android:title="@string/settings_label_client_read_timeout"
+            android:defaultValue="30"
+            android:summary="@string/settings_summary_client_read_timeout"
+            android:numeric="integer"/>
     </PreferenceCategory>
-    <PreferenceCategory android:key="debug" android:title="@string/settings_label_debug">
-  <!--       <CheckBoxPreference android:key="debug_enable_exceptions" android:title="@string/settings_label_debug_enable_exceptions" android:summary="@string/settings_summary_debug_enable_exceptions" android:enabled="false" android:selectable="false"/> -->
+<!--    <PreferenceCategory android:key="debug" android:title="@string/settings_label_debug">
         <CheckBoxPreference android:key="debug_enable_log"        android:title="@string/settings_label_debug_enable_log"        android:summary="@string/settings_summary_debug_enable_log" />
         <CheckBoxPreference android:key="debug_enable_options"    android:title="@string/settings_label_debug_enable_options"    android:summary="@string/settings_summary_debug_enable_options"/>
-    </PreferenceCategory>
+    </PreferenceCategory>-->
     
 </PreferenceScreen>

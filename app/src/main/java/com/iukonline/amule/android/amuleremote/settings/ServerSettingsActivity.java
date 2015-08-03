@@ -20,7 +20,7 @@ import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.SettingsHelper;
 
-public class ServerSettingsActivity extends ActionBarActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class ServerSettingsActivity extends ActionBarActivity implements SharedPreferences.OnSharedPreferenceChangeListener, ServerSettingsFragment.ServerSettingsFragmentContainer {
     private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
 
@@ -116,7 +116,6 @@ public class ServerSettingsActivity extends ActionBarActivity implements SharedP
     public boolean onCreateOptionsMenu(Menu menu) {
         if (DEBUG) Log.d(TAG, "ServerSettingsActivity.onCreateOptionsMenu: BEGIN");
         getMenuInflater().inflate(R.menu.menu_server_settings, menu);
-        menu.findItem(R.id.menu_server_settings_add).setVisible(mServerIndex == -1);
         menu.findItem(R.id.menu_server_settings_remove).setVisible(mServerIndex != -1);
         if (DEBUG) Log.d(TAG, "ServerSettingsActivity.onCreateOptionsMenu: END");
         return super.onCreateOptionsMenu(menu);
@@ -134,13 +133,6 @@ public class ServerSettingsActivity extends ActionBarActivity implements SharedP
                 } else {
                     return false;
                 }
-            case R.id.menu_server_settings_add:
-                if (addServer()) {
-                    finish();
-                    return true;
-                } else {
-                    return false;
-                }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -153,7 +145,7 @@ public class ServerSettingsActivity extends ActionBarActivity implements SharedP
         return false;
     }
 
-    private boolean addServer() {
+    public boolean addServer() {
         if (mApp.mSettingsHelper.addServerSettings(new SettingsHelper.ServerSettings(
                 mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_NAME, ""),
                 mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_HOST, ""),
@@ -162,7 +154,10 @@ public class ServerSettingsActivity extends ActionBarActivity implements SharedP
                 mApp.mSettings.getString(ServerSettingsActivity.SETTINGS_SERVER_VERSION, "")
         ))) {
             mApp.mSettingsHelper.mNeedNavigationRefresh = true;
-            return mApp.mSettingsHelper.commitServerList();
+            if (mApp.mSettingsHelper.commitServerList()) {
+                finish();
+                return true;
+            }
         }
 
         return false;

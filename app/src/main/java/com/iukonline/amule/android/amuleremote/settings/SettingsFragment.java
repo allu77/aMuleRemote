@@ -9,27 +9,42 @@ package com.iukonline.amule.android.amuleremote.settings;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceCategory;
+import android.preference.PreferenceGroup;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.util.Log;
 
 import com.github.machinarius.preferencefragment.PreferenceFragment;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.SettingsHelper;
 
-public class SettingsFragment extends PreferenceFragment {
+public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static boolean DEBUG = BuildConfig.DEBUG;
+
+
 
     private SettingsHelper mSettingsHelper;
     private PreferenceCategory mServerCategory;
     private Activity mActivity;
     private AmuleControllerApplication mApp;
 
+    private PreferenceGroup mPrefGroup;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mActivity = activity;
         mApp = (AmuleControllerApplication) activity.getApplication();
+
+
         mSettingsHelper = new SettingsHelper(mApp.mSettings);
 
     }
@@ -38,6 +53,12 @@ public class SettingsFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
+        PreferenceManager.setDefaultValues(mApp, R.xml.settings, false);
+        mPrefGroup = getPreferenceScreen();
+
+        setPreferenceSummary(AmuleControllerApplication.AC_SETTING_AUTOREFRESH_INTERVAL, mApp.mSettings.getString(AmuleControllerApplication.AC_SETTING_AUTOREFRESH_INTERVAL, ""));
+        setPreferenceSummary(AmuleControllerApplication.AC_SETTING_CONNECT_TIMEOUT, mApp.mSettings.getString(AmuleControllerApplication.AC_SETTING_CONNECT_TIMEOUT, ""));
+        setPreferenceSummary(AmuleControllerApplication.AC_SETTING_READ_TIMEOUT, mApp.mSettings.getString(AmuleControllerApplication.AC_SETTING_READ_TIMEOUT, ""));
     }
 
     @Override
@@ -45,10 +66,17 @@ public class SettingsFragment extends PreferenceFragment {
         super.onResume();
         mSettingsHelper.refreshServerList();
         refreshServerCategory();
+        mPrefGroup.getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mPrefGroup.getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 
     private void refreshServerCategory() {
-        PreferenceScreen screen = this.getPreferenceScreen();
+        PreferenceScreen screen = getPreferenceScreen();
         mServerCategory = (PreferenceCategory) screen.findPreference("amule_server");
         mServerCategory.removeAll();
 
@@ -70,5 +98,32 @@ public class SettingsFragment extends PreferenceFragment {
         Intent serverSettingsIntent = new Intent(getActivity(), ServerSettingsActivity.class);
         addServer.setIntent(serverSettingsIntent);
         mServerCategory.addPreference(addServer);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (! AmuleControllerApplication.AC_SETTING_AUTOREFRESH.equals(key)) {
+            setPreferenceSummary(key, sharedPreferences.getString(key, ""));
+        }
+    }
+
+    private void setPreferenceSummary(String key, String value) {
+        if (DEBUG) Log.d(TAG, "SettingsFragment.setPreferenceSummary(): Setting summary for " + key + " and value " + value);
+        String summary = value;
+
+        if (key.equals(AmuleControllerApplication.AC_SETTING_AUTOREFRESH_INTERVAL)) {
+            summary = getString(R.string.settings_summary_client_autorefresh_interval, Integer.parseInt(value));
+
+        } else if (key.equals(AmuleControllerApplication.AC_SETTING_CONNECT_TIMEOUT)) {
+            summary = getString(R.string.settings_summary_client_connect_timeout, Integer.parseInt(value));
+
+        } else if (key.equals(AmuleControllerApplication.AC_SETTING_READ_TIMEOUT)) {
+            summary = getString(R.string.settings_summary_client_read_timeout, Integer.parseInt(value));
+        }
+        Preference p = mPrefGroup.findPreference(key);
+        if (p != null) {
+            // null in cas of change of a preference not displayed here
+            p.setSummary(summary);
+        }
     }
 }

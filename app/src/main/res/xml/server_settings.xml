@@ -8,9 +8,40 @@
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <EditTextPreference android:key="placeholder_server_name" android:title="@string/settings_label_server_name" android:summary="@string/settings_summary_server_name"/>
-    <EditTextPreference android:key="placeholder_server_host" android:title="@string/settings_label_server_host" android:summary="@string/settings_summary_server_host"/>
-    <EditTextPreference android:key="placeholder_server_port" android:title="@string/settings_label_server_port" android:defaultValue="4712" android:summary="@string/settings_summary_server_port" android:numeric="integer"/>
-    <EditTextPreference android:key="placeholder_server_password" android:title="@string/settings_label_server_password" android:password="true" android:summary="@string/settings_summary_server_password"/>
-    <ListPreference android:key="placeholder_server_version" android:title="@string/settings_label_server_version" android:summary="@string/settings_summary_server_version" android:entryValues="@array/settings_server_version_value" android:entries="@array/settings_server_version_description"/>
+    <EditTextPreference
+        android:key="placeholder_server_name"
+        android:title="@string/settings_label_server_name"
+        android:summary="@string/settings_summary_server_name"
+        android:singleLine="true"
+        />
+    <EditTextPreference
+        android:key="placeholder_server_host"
+        android:title="@string/settings_label_server_host"
+        android:summary="@string/settings_summary_server_host"
+        android:inputType="textUri"
+        />
+    <EditTextPreference
+        android:key="placeholder_server_port"
+        android:title="@string/settings_label_server_port" android:defaultValue="4712"
+        android:summary="@string/settings_summary_server_port" android:numeric="integer"
+        android:singleLine="true"
+        />
+    <EditTextPreference
+        android:key="placeholder_server_password"
+        android:title="@string/settings_label_server_password" android:password="true"
+        android:summary="@string/settings_summary_server_password"
+        android:singleLine="true"
+        />
+    <ListPreference
+        android:key="placeholder_server_version"
+        android:title="@string/settings_label_server_version"
+        android:summary="@string/settings_summary_server_version"
+        android:entryValues="@array/settings_server_version_value"
+        android:entries="@array/settings_server_version_description"
+        />
+    <Preference
+        android:key="server_create"
+        android:title="@string/settings_label_button_add"
+        android:widgetLayout="@layout/part_settings_server_create"
+        />
 </PreferenceScreen>
