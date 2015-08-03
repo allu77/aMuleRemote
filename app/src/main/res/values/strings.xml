@@ -16,7 +16,7 @@
     <string name="settings_label_server_host">aMule PC address</string>
     <string name="settings_label_server_port">Port</string>
     <string name="settings_label_server_password">Password</string>
-    <string name="settings_label_server">Server settings</string>
+    <string name="settings_label_server">aMule PC(s)</string>
     <string name="partfile_status_allocating">Allocating</string>
     <string name="partfile_status_complete">Complete</string>
     <string name="partfile_status_completing">Completing</string>
@@ -201,13 +201,13 @@
     <string name="title_activity_settings">Settings</string>
     <string name="action_settings">Settings</string>
 	<string name="settings_label_server_add">Add</string>
-    <string name="title_activity_server_settings">Server Settings</string>
-	<string name="settings_label_server_name">Server name</string>
+    <string name="title_activity_server_settings">aMule PC Settings</string>
+	<string name="settings_label_server_name">aMule PC name</string>
 	<string name="settings_summary_server_name">Enter a descriptive name for your aMule PC</string>
 	<string name="menu_server_settings_add">Add server</string>
 	<string name="menu_server_settings_remove">Remove server</string>
-	<string name="dialog_whats_new_features_20">Multiple aMule server support</string>
-	<string name="settings_label_button_add">Add Server</string>
+	<string name="dialog_whats_new_features_20">Multiple aMule PC support</string>
+	<string name="settings_label_button_add">Add aMule PC</string>
 
 	<string name="settings_summary_client_autorefresh_interval">Every %d seconds</string>
 </resources>
