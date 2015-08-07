@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECPartFileWatcher;
 import com.iukonline.amule.ec.ECPartFile;
@@ -35,9 +36,11 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
 
     
     interface RenameDialogContainer {
-        public void showRenameDialog(String fileName);
+        void showRenameDialog(String fileName);
     }
 
+    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static boolean DEBUG = BuildConfig.DEBUG;
     
     byte[] mHash;
     ECPartFile mPartFile;
@@ -147,7 +150,7 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
             } else {
                 if (! mPartFile.getHashAsString().equals(newECPartFile.getHashAsString())) {
                     Toast.makeText(mApp, R.string.error_unexpected, Toast.LENGTH_LONG).show();
-                    if (mApp.enableLog) Log.e(AmuleControllerApplication.AC_LOGTAG, "Got a different hash in updateECPartFile!");
+                    if (DEBUG) Log.e(TAG, "Got a different hash in updateECPartFile!");
                     mApp.mECHelper.resetClient();
                 }
             }

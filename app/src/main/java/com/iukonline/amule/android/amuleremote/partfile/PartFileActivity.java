@@ -29,6 +29,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
+import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECPartFileActionWatcher;
@@ -45,6 +46,9 @@ import com.iukonline.amule.ec.ECPartFile;
 
 
 public class PartFileActivity extends ActionBarActivity implements AlertDialogListener, ClientStatusWatcher, ECPartFileWatcher, ECPartFileActionWatcher, RenameDialogContainer, RefreshingActivity {
+    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static boolean DEBUG = BuildConfig.DEBUG;
+    
     public final static String BUNDLE_PARAM_HASH = "hash";
     public static String BUNDLE_SELECTED_TAB = "tab";
     public final static String BUNDLE_NEEDS_REFRESH = "needs_refresh";
@@ -250,7 +254,7 @@ public class PartFileActivity extends ActionBarActivity implements AlertDialogLi
     
     public void showRenameDialog(String fileName) {
         EditTextDialogFragment d = new EditTextDialogFragment(R.string.dialog_rename_partfile, fileName);
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "PartFileActivity.showRenameDialog: showing dialog");
+        if (DEBUG) Log.d(TAG, "PartFileActivity.showRenameDialog: showing dialog");
         d.show(getSupportFragmentManager(), TAG_DIALOG_RENAME);
     }
     
@@ -258,7 +262,7 @@ public class PartFileActivity extends ActionBarActivity implements AlertDialogLi
     private void showDeleteConfirmDialog() {
         
         AlertDialogFragment d = new AlertDialogFragment(R.string.partfile_dialog_delete_confirm, true);
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "PartFileActivity.showRenameDialog: showing dialog");
+        if (DEBUG) Log.d(TAG, "PartFileActivity.showRenameDialog: showing dialog");
         d.show(getSupportFragmentManager(), TAG_DIALOG_DELETE);
     }
     
@@ -394,7 +398,7 @@ public class PartFileActivity extends ActionBarActivity implements AlertDialogLi
             } else {
                 if (! mPartFile.getHashAsString().equals(newECPartFile.getHashAsString())) {
                     Toast.makeText(mApp, R.string.error_unexpected, Toast.LENGTH_LONG).show();
-                    if (mApp.enableLog) Log.e(AmuleControllerApplication.AC_LOGTAG, "Got a different hash in updateECPartFile!");
+                    if (DEBUG) Log.e(TAG, "Got a different hash in updateECPartFile!");
                     mApp.mECHelper.resetClient();
                 }
             }
@@ -511,19 +515,19 @@ public class PartFileActivity extends ActionBarActivity implements AlertDialogLi
     @Override
     public void alertDialogEvent(AlertDialogFragment dialog, int event, Bundle values) {
         String tag = dialog.getTag();
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "PartFileActivity.alertDialogEvent: dialog tag " + tag + ", event " + event);
+        if (DEBUG) Log.d(TAG, "PartFileActivity.alertDialogEvent: dialog tag " + tag + ", event " + event);
         if (tag != null) {
             if (tag.equals(TAG_DIALOG_RENAME)) {
                 if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK && values != null) {
                     String newName = values.getString(EditTextDialogFragment.BUNDLE_EDIT_STRING);
                     if (newName != null) {
-                        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "PartFileActivity.alertDialogEvent: Launching rename action with name " + EditTextDialogFragment.BUNDLE_EDIT_STRING);
+                        if (DEBUG) Log.d(TAG, "PartFileActivity.alertDialogEvent: Launching rename action with name " + EditTextDialogFragment.BUNDLE_EDIT_STRING);
                         doPartFileAction(ECPartFileAction.RENAME, true, newName);
                     }
                 }
             } else if (tag.equals(TAG_DIALOG_DELETE)) {
                 if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK) {
-                    if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "PartFileActivity.alertDialogEvent: delete confirmed");
+                    if (DEBUG) Log.d(TAG, "PartFileActivity.alertDialogEvent: delete confirmed");
                     doPartFileAction(ECPartFileAction.DELETE, false);
                 }
             }

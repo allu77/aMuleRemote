@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECSearchListWatcher;
 
@@ -25,9 +26,11 @@ public class SearchResultsListFragment extends ListFragment implements ECSearchL
     
     
     public interface SearchResultsListFragmentContainter {
-        public void viewResultDetails(int selected) ;
+        void viewResultDetails(int selected) ;
     }
-    
+
+    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static boolean DEBUG = BuildConfig.DEBUG;
     
     AmuleControllerApplication mApp;
     SearchResultsListAdapter mAdapter;
@@ -53,9 +56,9 @@ public class SearchResultsListFragment extends ListFragment implements ECSearchL
             //return null;
         }
         
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultsListFragment.onCreateView: Inflating view");
+        if (DEBUG) Log.d(TAG, "SearchResultsListFragment.onCreateView: Inflating view");
         View v = inflater.inflate(R.layout.frag_search_results_list, container, false);
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultsListFragment.onCreateView: Inflated view");
+        if (DEBUG) Log.d(TAG, "SearchResultsListFragment.onCreateView: Inflated view");
         return v;
     }
 
@@ -107,7 +110,7 @@ public class SearchResultsListFragment extends ListFragment implements ECSearchL
             return UpdateResult.DO_NOTHING;
         }
         if (mAdapter == null) {
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultsListFragment.updateECSearchList: Creating new adapter");
+            if (DEBUG) Log.d(TAG, "SearchResultsListFragment.updateECSearchList: Creating new adapter");
             mAdapter = new SearchResultsListAdapter(getActivity(), R.layout.frag_search_results_list, new ArrayList<SearchContainer>());
             setListAdapter(mAdapter);
         }
@@ -115,15 +118,15 @@ public class SearchResultsListFragment extends ListFragment implements ECSearchL
         int searchesSize = searches.size();
         int adapterSize = mAdapter.getCount();
         
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultsListFragment.updateECSearchList: Search List update received. Size is " + searchesSize + " while current adapter size is " + adapterSize);
+        if (DEBUG) Log.d(TAG, "SearchResultsListFragment.updateECSearchList: Search List update received. Size is " + searchesSize + " while current adapter size is " + adapterSize);
         
         if (searchesSize == 0 ) {
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultsListFragment.updateECSearchList: Empty search list");
+            if (DEBUG) Log.d(TAG, "SearchResultsListFragment.updateECSearchList: Empty search list");
             mAdapter.clear();
         } else {
             if (adapterSize == 0) {
                 // Adapter is empty
-                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultsListFragment.updateECSearchList: Adapter is empty");
+                if (DEBUG) Log.d(TAG, "SearchResultsListFragment.updateECSearchList: Adapter is empty");
                 
                 // mAdapter.addAll(searches); Doesn't seem to work
                 for (SearchContainer s : searches) {
@@ -132,24 +135,24 @@ public class SearchResultsListFragment extends ListFragment implements ECSearchL
                 
             } else if (searches.get(searchesSize - 1) != mAdapter.getItem(adapterSize - 1)) {
                 // Eldest search item is different... => Two different search lists, let's clear and re-populate
-                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultsListFragment.updateECSearchList: Search List changed");
+                if (DEBUG) Log.d(TAG, "SearchResultsListFragment.updateECSearchList: Search List changed");
                 mAdapter.clear();
                 for (SearchContainer s : searches) {
                     mAdapter.add(s);
                 }
             } else if (adapterSize < searchesSize) {
                 // Eldest search item is the same, but size differs. We need to add new elements
-                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultsListFragment.updateECSearchList: Search List is bigger");
+                if (DEBUG) Log.d(TAG, "SearchResultsListFragment.updateECSearchList: Search List is bigger");
                 for (int i = 0 ; i < searchesSize - adapterSize; i++) {
                     mAdapter.insert(searches.get(i), i);
                 }
             } else if (adapterSize == searchesSize) {
-                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultsListFragment.updateECSearchList: Search List is the same");
+                if (DEBUG) Log.d(TAG, "SearchResultsListFragment.updateECSearchList: Search List is the same");
                 // Do nothing. The list is the same.
                 mAdapter.notifyDataSetChanged();
             } else {
                 // TODO Raise exception
-                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultsListFragment.updateECSearchList: This should never happen...");
+                if (DEBUG) Log.d(TAG, "SearchResultsListFragment.updateECSearchList: This should never happen...");
                 mAdapter.clear();
             }
         }

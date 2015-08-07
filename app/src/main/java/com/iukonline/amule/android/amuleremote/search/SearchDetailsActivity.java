@@ -18,6 +18,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
+import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECSearchListWatcher;
@@ -34,9 +35,11 @@ import com.iukonline.amule.ec.ECSearchFile;
 import java.util.ArrayList;
 
 public class SearchDetailsActivity extends ActionBarActivity implements AlertDialogListener, SearchResultDetailsFragmentContainter, RefreshingActivity, ClientStatusWatcher, ECSearchListWatcher {
+
+    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static boolean DEBUG = BuildConfig.DEBUG;
     
     public final static String BUNDLE_PARAM_POSITION = "position";
-    
     public final static String TAG_DIALOG_ADD_SEARCH = "add_search_dialog";
     
     AmuleControllerApplication mApp;
@@ -50,13 +53,13 @@ public class SearchDetailsActivity extends ActionBarActivity implements AlertDia
     public void onCreate(Bundle savedInstanceState) {
         mApp = (AmuleControllerApplication) getApplication();
         
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.onCreate: Calling super");
+        if (DEBUG) Log.d(TAG, "SearchDetailsActivity.onCreate: Calling super");
         super.onCreate(savedInstanceState);
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.onCreate: Back from super");
+        if (DEBUG) Log.d(TAG, "SearchDetailsActivity.onCreate: Back from super");
         
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.onCreate: Calling setContentView");
+        if (DEBUG) Log.d(TAG, "SearchDetailsActivity.onCreate: Calling setContentView");
         setContentView(R.layout.act_search_details);
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.onCreate: Back from setContentView");
+        if (DEBUG) Log.d(TAG, "SearchDetailsActivity.onCreate: Back from setContentView");
         
         mPosition = getIntent().getExtras().getInt(BUNDLE_PARAM_POSITION);
         mSearch = mApp.mECHelper.getSearchItem(mPosition);
@@ -99,25 +102,25 @@ public class SearchDetailsActivity extends ActionBarActivity implements AlertDia
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.onCreateOptionsMenu: Inflating menu");
+        if (DEBUG) Log.d(TAG, "SearchDetailsActivity.onCreateOptionsMenu: Inflating menu");
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_options, menu);
 
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.onCreateOptionsMenu: Saving MenuItems");
+        if (DEBUG) Log.d(TAG, "SearchDetailsActivity.onCreateOptionsMenu: Saving MenuItems");
         
         refreshItem = menu.findItem(R.id.menu_search_opt_refresh);
         
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.onCreateOptionsMenu: Calling super");
+        if (DEBUG) Log.d(TAG, "SearchDetailsActivity.onCreateOptionsMenu: Calling super");
         boolean superRet = super.onCreateOptionsMenu(menu);
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.onCreateOptionsMenu: super returned " + superRet + " - end");
+        if (DEBUG) Log.d(TAG, "SearchDetailsActivity.onCreateOptionsMenu: super returned " + superRet + " - end");
         return superRet;
     }
     
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         
-        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.onPrepareOptionsMenu: Setting items visibility");
+        if (mApp != null && DEBUG) Log.d(TAG, "SearchDetailsActivity.onPrepareOptionsMenu: Setting items visibility");
         
         if (refreshItem != null)  {
             
@@ -135,9 +138,9 @@ public class SearchDetailsActivity extends ActionBarActivity implements AlertDia
             }
         }
         
-        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.onPrepareOptionsMenu: calling super");
+        if (mApp != null && DEBUG) Log.d(TAG, "SearchDetailsActivity.onPrepareOptionsMenu: calling super");
         boolean superRet = super.onPrepareOptionsMenu(menu);
-        if (mApp != null && mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.onPrepareOptionsMenu: super returned " + superRet + " - end");
+        if (mApp != null && DEBUG) Log.d(TAG, "SearchDetailsActivity.onPrepareOptionsMenu: super returned " + superRet + " - end");
         return superRet;
     }
 
@@ -145,11 +148,11 @@ public class SearchDetailsActivity extends ActionBarActivity implements AlertDia
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.menu_search_opt_refresh:
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.onOptionsItemSelected: menu_opt_refresh selected");
+            if (DEBUG) Log.d(TAG, "SearchDetailsActivity.onOptionsItemSelected: menu_opt_refresh selected");
             refreshSearchDetails(TaskScheduleMode.QUEUE);
             return true;
         default:
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.onOptionsItemSelected: Unknown item selected. Calling super");
+            if (DEBUG) Log.d(TAG, "SearchDetailsActivity.onOptionsItemSelected: Unknown item selected. Calling super");
             return super.onOptionsItemSelected(item);
         }
     }
@@ -219,7 +222,7 @@ public class SearchDetailsActivity extends ActionBarActivity implements AlertDia
         
         String dialogMsg = getResources().getString(R.string.dialog_add_search_file, sf.getFileName());
         AlertDialogFragment d = new AlertDialogFragment(null, dialogMsg, true);
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.startSearchResult: showing dialog");
+        if (DEBUG) Log.d(TAG, "SearchDetailsActivity.startSearchResult: showing dialog");
         d.show(getSupportFragmentManager(), "add_search_dialog");
 
     }
@@ -227,11 +230,11 @@ public class SearchDetailsActivity extends ActionBarActivity implements AlertDia
     @Override
     public void alertDialogEvent(AlertDialogFragment dialog, int event, Bundle values) {
         String tag = dialog.getTag();
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.alertDialogEvent: dialog tag " + tag + ", event " + event);
+        if (DEBUG) Log.d(TAG, "SearchDetailsActivity.alertDialogEvent: dialog tag " + tag + ", event " + event);
         if (tag != null) {
             if (tag.equals(TAG_DIALOG_ADD_SEARCH)) {
                 if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK) {
-                    if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchDetailsActivity.alertDialogEvent: add to download");
+                    if (DEBUG) Log.d(TAG, "SearchDetailsActivity.alertDialogEvent: add to download");
                     if (mApp.mStartDownload != null) {
                         SearchStartResultAsyncTask t = (SearchStartResultAsyncTask)mApp.mECHelper.getNewTask(SearchStartResultAsyncTask.class);
                         t.setECSearchFile(mApp.mStartDownload);

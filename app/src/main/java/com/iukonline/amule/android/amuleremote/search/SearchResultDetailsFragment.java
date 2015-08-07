@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECSearchListWatcher;
 import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchStatus;
@@ -31,8 +32,11 @@ import java.util.Collection;
 public class SearchResultDetailsFragment extends ListFragment implements ECSearchListWatcher {
 
     public interface SearchResultDetailsFragmentContainter {
-        public void startSearchResult(ECSearchFile sf) ;
+        void startSearchResult(ECSearchFile sf) ;
     }
+
+    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static boolean DEBUG = BuildConfig.DEBUG;
 
     private final static int SETTINGS_SORT_FILENAME = 1;
     private final static int SETTINGS_SORT_SIZE = 2;
@@ -54,7 +58,7 @@ public class SearchResultDetailsFragment extends ListFragment implements ECSearc
     public void onCreate(Bundle savedInstanceState) {
         mApp = (AmuleControllerApplication) getActivity().getApplication();
         // mSearch = mApp.mECHelper.getSearchItem(mPosition);
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultDetailsFragment.onCreate: Will show details for position " + mPosition);
+        if (DEBUG) Log.d(TAG, "SearchResultDetailsFragment.onCreate: Will show details for position " + mPosition);
         super.onCreate(savedInstanceState);
         
         if (savedInstanceState != null) {
@@ -86,9 +90,9 @@ public class SearchResultDetailsFragment extends ListFragment implements ECSearc
             //return null;
         }
         
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultDetailsFragment.onCreateView: Inflating view");
+        if (DEBUG) Log.d(TAG, "SearchResultDetailsFragment.onCreateView: Inflating view");
         View v = inflater.inflate(R.layout.frag_search_result_details_list, container, false);
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultDetailsFragment.onCreateView: Inflated view");
+        if (DEBUG) Log.d(TAG, "SearchResultDetailsFragment.onCreateView: Inflated view");
         return v;
     }
 
@@ -167,7 +171,7 @@ public class SearchResultDetailsFragment extends ListFragment implements ECSearc
         }
         
         if (mAdapter == null) {
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultDetailsFragment.updateECSearchList: Creating new adapter");
+            if (DEBUG) Log.d(TAG, "SearchResultDetailsFragment.updateECSearchList: Creating new adapter");
             mAdapter = new SearchResultDetailsListAdapter(getActivity(), R.layout.frag_search_results_list, new ArrayList<ECSearchFile>());
             setListAdapter(mAdapter);
             switch (mSortBy) {
@@ -201,14 +205,14 @@ public class SearchResultDetailsFragment extends ListFragment implements ECSearc
         if (mSearch.mResults != null) newList = mSearch.mResults.resultMap.values();
         
         if (newList == null) {
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultDetailsFragment.updateECSearchList: No results, clearing adapter");
+            if (DEBUG) Log.d(TAG, "SearchResultDetailsFragment.updateECSearchList: No results, clearing adapter");
             mAdapter.clear();
         } else {
             int i = 0;
             
             ArrayList<Object> foundItems = new ArrayList<Object>();
             
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultDetailsFragment.updateECSearchList: Looking for results to be removed");
+            if (DEBUG) Log.d(TAG, "SearchResultDetailsFragment.updateECSearchList: Looking for results to be removed");
             while (i < mAdapter.getCount()) {
                 ECSearchFile pOld = mAdapter.getItem(i);
 
@@ -220,13 +224,13 @@ public class SearchResultDetailsFragment extends ListFragment implements ECSearc
                 }
             }
             
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultDetailsFragment.updateECSearchList: Adding new results");
+            if (DEBUG) Log.d(TAG, "SearchResultDetailsFragment.updateECSearchList: Adding new results");
             
             for (ECSearchFile p : newList) {
                 if (! foundItems.contains(p)) mAdapter.add(p);
             }
             
-            if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchResultDetailsFragment.updateECSearchList: Refreshing data");
+            if (DEBUG) Log.d(TAG, "SearchResultDetailsFragment.updateECSearchList: Refreshing data");
             
             mAdapter.sort(mComparator);
             mAdapter.notifyDataSetChanged();

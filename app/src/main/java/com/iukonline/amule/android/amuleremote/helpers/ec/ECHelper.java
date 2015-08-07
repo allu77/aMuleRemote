@@ -592,6 +592,7 @@ public class ECHelper {
     }
     
     public void sendParsingExceptionIfEnabled(Exception e) {
-        if (mApp.sendExceptions && Flavor.ACRA_ENABLED) ACRA.getErrorReporter().handleException(e);
+        // TODO: sendExceptions disabled since app version 17... What shall we do?
+        //if (mApp.sendExceptions && Flavor.ACRA_ENABLED) ACRA.getErrorReporter().handleException(e);
     }
 }

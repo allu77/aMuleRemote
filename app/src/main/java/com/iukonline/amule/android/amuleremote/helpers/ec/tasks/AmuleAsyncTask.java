@@ -13,6 +13,7 @@ import android.os.Build;
 import android.util.Log;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.ECHelper;
@@ -31,6 +32,9 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
 
     public enum TaskScheduleMode { BEST_EFFORT, PREEMPTIVE, QUEUE } 
     public enum TaskScheduleQueueStatus { QUEUED, LAUNCHED }
+
+    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static boolean DEBUG = BuildConfig.DEBUG;
 
     protected ECHelper mECHelper;
     protected TaskScheduleMode mMode;
@@ -67,7 +71,7 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
         
         if (mPreExecuteError != null) return mPreExecuteError;
         try {
-            if (mECHelper.mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Requesting ECClient");
+            if (DEBUG) Log.d(TAG, "Requesting ECClient");
             mECClient = mECHelper.getECClient();
             if (mECClient == null) return new AmuleAsyncTaskException(mECHelper.mApp.getResources().getString(R.string.error_null_client));
         } catch (UnknownHostException e1) {
@@ -79,9 +83,9 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
         }
         
         try {
-            if (mECHelper.mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Launching backgroundTask: " + getClass().getName());
+            if (DEBUG) Log.d(TAG, "Launching backgroundTask: " + getClass().getName());
             backgroundTask();
-            if (mECHelper.mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "backgroundTask finished");
+            if (DEBUG) Log.d(TAG, "backgroundTask finished");
         } catch (IOException e) {
             
             if (mECClient.isStateful()) {
@@ -89,16 +93,16 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
             }
             if (isCancelled()) return null;
             
-            if (mECHelper.mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Resetting ECClient");
+            if (DEBUG) Log.d(TAG, "Resetting ECClient");
             mECHelper.resetClient();
             
             try {
-                if (mECHelper.mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Requesting ECClient");
+                if (DEBUG) Log.d(TAG, "Requesting ECClient");
                 mECClient = mECHelper.getECClient();
                 if (mECClient == null) return new AmuleAsyncTaskException(mECHelper.mApp.getResources().getString(R.string.error_null_client));
-                if (mECHelper.mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "Launching backgroundTask: " + getClass().getName());
+                if (DEBUG) Log.d(TAG, "Launching backgroundTask: " + getClass().getName());
                 backgroundTask();
-                if (mECHelper.mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "backgroundTask finished");
+                if (DEBUG) Log.d(TAG, "backgroundTask finished");
                 
             } catch (Exception e2) {
                 return isCancelled() ? null : e2;
@@ -122,7 +126,7 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
     protected void logToDropBox(String msg) {
         // mDropBox is not null only for >= FROYO
         if (mECHelper.mDropBox != null) {
-            mECHelper.mDropBox.addText(AmuleControllerApplication.AC_LOGTAG, msg);
+            mECHelper.mDropBox.addText(TAG, msg);
         }
         
     }
@@ -145,8 +149,8 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
                 notifyText = r.getText(R.string.error_server) + " - " + result.getMessage();
             } else if (result instanceof ECClientException) {
                 notifyText = r.getText(R.string.error_client) + " - " + result.getMessage();
-                if (mECHelper.mApp.enableLog) {
-                    Log.e(AmuleControllerApplication.AC_LOGTAG, notifyText);
+                if (DEBUG) {
+                    Log.e(TAG, notifyText);
                     ECPacket req = ((ECClientException)result).getRequestPacket();
                     ECPacket resp = ((ECClientException)result).getResponsePacket();
                     if (req != null) {
@@ -165,8 +169,8 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
                 mECHelper.sendParsingExceptionIfEnabled(result);
             } else if (result instanceof ECPacketParsingException) {
                 notifyText = r.getText(R.string.error_packet_parsing) + " - " + result.getMessage();
-                if (mECHelper.mApp.enableLog) {
-                    Log.e(AmuleControllerApplication.AC_LOGTAG, notifyText);
+                if (DEBUG) {
+                    Log.e(TAG, notifyText);
                     ECRawPacket p = ((ECPacketParsingException)result).getCausePacket();
                     if (p != null) {
                         logToDropBox("Packet");
@@ -187,7 +191,7 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
                 notifyText = result.getMessage();
             } else {
                 notifyText = r.getText(R.string.error_unexpected).toString();
-                if (mECHelper.mApp.enableLog) Log.e(AmuleControllerApplication.AC_LOGTAG, "Got an unexpected exception " + result.getClass().getName() + " for background task " + getClass().getName());
+                if (DEBUG) Log.e(TAG, "Got an unexpected exception " + result.getClass().getName() + " for background task " + getClass().getName());
             }
 
             //Toast.makeText(mECHelper.getApplication(), notifyText, Toast.LENGTH_LONG).show();

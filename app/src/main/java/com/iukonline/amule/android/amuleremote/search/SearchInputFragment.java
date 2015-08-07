@@ -24,9 +24,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 
 public class SearchInputFragment extends Fragment {
+
+    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static boolean DEBUG = BuildConfig.DEBUG;
     
     private final static String BUNDLE_FILE_NAME = "file_name";
     private final static String BUNDLE_SEARCH_TYPE = "search_type";
@@ -40,7 +44,7 @@ public class SearchInputFragment extends Fragment {
     private final static String BUNDLE_AVAILABILITY = "availability";
     
     public interface SearchInputFragmentContainter {
-        public void startSearch(SearchContainer s) ;
+        void startSearch(SearchContainer s) ;
     }
     
     AmuleControllerApplication mApp;
@@ -114,9 +118,9 @@ public class SearchInputFragment extends Fragment {
             //return null;
         }
         
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchInputFragment.onCreateView: Inflating view");
+        if (DEBUG) Log.d(TAG, "SearchInputFragment.onCreateView: Inflating view");
         View v = inflater.inflate(R.layout.frag_search_input, container, false);
-        if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchInputFragment.onCreateView: Inflated view");
+        if (DEBUG) Log.d(TAG, "SearchInputFragment.onCreateView: Inflated view");
         
         mFileNameEdit = (EditText) v.findViewById(R.id.search_file_name);
         mTypeSpinner = (Spinner) v.findViewById(R.id.search_search_type);
@@ -155,7 +159,7 @@ public class SearchInputFragment extends Fragment {
         mGoButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 
-                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchInputFragment.goButton.onClick: Fetching search parameters");
+                if (DEBUG) Log.d(TAG, "SearchInputFragment.goButton.onClick: Fetching search parameters");
                 
                 SearchContainer s = new SearchContainer();
                 s.mFileName = mFileNameEdit.getText().toString();
@@ -228,7 +232,7 @@ public class SearchInputFragment extends Fragment {
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(mFileNameEdit.getWindowToken(), 0);
                 
-                if (mApp.enableLog) Log.d(AmuleControllerApplication.AC_LOGTAG, "SearchInputFragment.goButton.onClick: Starting search");
+                if (DEBUG) Log.d(TAG, "SearchInputFragment.goButton.onClick: Starting search");
                 ((SearchInputFragmentContainter) getActivity()).startSearch(s);
             }
         });

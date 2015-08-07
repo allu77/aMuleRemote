@@ -406,7 +406,7 @@ public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialo
         addEd2kItem.setVisible(mServerConfigured);
         
         if (mApp != null) {
-            if (debugOptionsItem != null) debugOptionsItem.setVisible(mApp.enableDebugOptions);
+            if (debugOptionsItem != null) debugOptionsItem.setVisible(DEBUG);
         }
 
         if (mApp != null && DEBUG) Log.d(TAG, "AmuleRemoteActivity.onPrepareOptionsMenu: calling super");

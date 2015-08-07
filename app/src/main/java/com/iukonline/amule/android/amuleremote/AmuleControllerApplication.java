@@ -101,9 +101,7 @@ public class AmuleControllerApplication extends Application {
     public static final String AC_SETTING_LAST_APP_VER  = "amule_client_last_app_ver";
     public static final String AC_SETTING_TIPS_SHOWN    = "amule_client_tips_shown";
 
-    public static final String AC_SETTING_ENABLE_LOG    = "debug_enable_log";
-    public static final String AC_SETTING_ENABLE_EXCEPTIONS = "debug_enable_exceptions";
-    public static final String AC_SETTING_ENABLE_DEBUG_OPTIONS = "debug_enable_options";
+
 
     public static final byte AC_SETTING_SORT_FILENAME = 0x0;
     public static final byte AC_SETTING_SORT_STATUS = 0x1;
@@ -123,9 +121,6 @@ public class AmuleControllerApplication extends Application {
 
     private final static String TAG_DIALOG_WHATS_NEW = "dialog_whats_new";
 
-    public boolean sendExceptions = false;
-    public boolean enableLog = false;
-    public boolean enableDebugOptions = false;
     public int mVersionCode = -1;
     public String mVersionName;
 
@@ -288,10 +283,6 @@ public class AmuleControllerApplication extends Application {
     }
 
     public void refreshDebugSettings() {
-        sendExceptions = mSettings.getBoolean(AC_SETTING_ENABLE_EXCEPTIONS, false);
-        enableLog = mSettings.getBoolean(AC_SETTING_ENABLE_LOG, false);
-        enableDebugOptions = mSettings.getBoolean(AC_SETTING_ENABLE_DEBUG_OPTIONS, false);
-
         if (mECHelper != null && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
             Object o = getSystemService(DROPBOX_SERVICE);
             if (o != null) mECHelper.mDropBox = (DropBoxManager) o;
@@ -335,9 +326,10 @@ public class AmuleControllerApplication extends Application {
         int lastAppVer = mSettings.getInt(AC_SETTING_LAST_APP_VER, -1);
         SharedPreferences.Editor e = mSettings.edit();
 
-        // Version 17 removed option to send EC protocol errors as exceptions
-        if (lastAppVer < 17) {
-            e.remove(AmuleControllerApplication.AC_SETTING_ENABLE_EXCEPTIONS);
+        if (lastAppVer < 17) e.remove("debug_enable_exceptions");
+        if (lastAppVer < 20) {
+            e.remove("debug_enable_log");
+            e.remove("debug_enable_options");
         }
         e.commit();
 
