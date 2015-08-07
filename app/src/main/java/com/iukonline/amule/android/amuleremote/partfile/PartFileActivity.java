@@ -15,7 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,7 +45,7 @@ import com.iukonline.amule.android.amuleremote.partfile.PartFileSourceNamesFragm
 import com.iukonline.amule.ec.ECPartFile;
 
 
-public class PartFileActivity extends ActionBarActivity implements AlertDialogListener, ClientStatusWatcher, ECPartFileWatcher, ECPartFileActionWatcher, RenameDialogContainer, RefreshingActivity {
+public class PartFileActivity extends AppCompatActivity implements AlertDialogListener, ClientStatusWatcher, ECPartFileWatcher, ECPartFileActionWatcher, RenameDialogContainer, RefreshingActivity {
     private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
     

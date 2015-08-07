@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +20,7 @@ import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.SettingsHelper;
 
-public class ServerSettingsActivity extends ActionBarActivity implements SharedPreferences.OnSharedPreferenceChangeListener, ServerSettingsFragment.ServerSettingsFragmentContainer {
+public class ServerSettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, ServerSettingsFragment.ServerSettingsFragmentContainer {
     private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
 

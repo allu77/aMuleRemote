@@ -8,7 +8,7 @@ package com.iukonline.amule.android.amuleremote.search;
 
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,7 +34,7 @@ import com.iukonline.amule.ec.ECSearchFile;
 
 import java.util.ArrayList;
 
-public class SearchDetailsActivity extends ActionBarActivity implements AlertDialogListener, SearchResultDetailsFragmentContainter, RefreshingActivity, ClientStatusWatcher, ECSearchListWatcher {
+public class SearchDetailsActivity extends AppCompatActivity implements AlertDialogListener, SearchResultDetailsFragmentContainter, RefreshingActivity, ClientStatusWatcher, ECSearchListWatcher {
 
     private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;

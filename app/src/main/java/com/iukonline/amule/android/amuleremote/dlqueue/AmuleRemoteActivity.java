@@ -18,7 +18,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -67,7 +67,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class AmuleRemoteActivity extends ActionBarActivity implements AlertDialogListener, ClientStatusWatcher, DlQueueFragmentContainer, ECStatsWatcher, CategoriesWatcher, RefreshingActivity, UpdatesWatcher  {
+public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialogListener, ClientStatusWatcher, DlQueueFragmentContainer, ECStatsWatcher, CategoriesWatcher, RefreshingActivity, UpdatesWatcher  {
     private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
     
