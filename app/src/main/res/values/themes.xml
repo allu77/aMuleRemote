@@ -7,9 +7,24 @@
 
 <resources>
 	<style name="Theme.AmuleRemote" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="alertDialogTheme">@style/Theme.AmuleRemote.AlertDialog</item>
+        <item name="colorPrimaryDark">@color/amuleRemotePrimaryDark</item>
+        <item name="colorPrimary">@color/amuleRemotePrimary</item>
+        <item name="colorAccent">@color/amuleRemoteAccent</item>
 	</style>
 
+
   <style name="Theme.AmuleRemote.Settings" parent="@style/Theme.AppCompat">
+  </style>
+
+  <style name="Theme.AmuleRemote.AlertDialog" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
+    <item name="colorAccent">@color/amuleRemoteAccent</item>
+    <item name="android:windowTitleStyle">@style/AlertDialogTitle</item>
+  </style>
+
+  <style name="AlertDialogTitle">
+    <item name="android:textColor">@color/amuleRemotePrimary</item>
+    <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
   </style>
 
 </resources>

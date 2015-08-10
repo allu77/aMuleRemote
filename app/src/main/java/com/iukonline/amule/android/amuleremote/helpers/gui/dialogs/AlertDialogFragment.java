@@ -7,13 +7,12 @@
 package com.iukonline.amule.android.amuleremote.helpers.gui.dialogs;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 
 import com.iukonline.amule.android.amuleremote.R;
 
@@ -93,7 +92,8 @@ public class AlertDialogFragment extends DialogFragment {
             mCancelMessage = savedInstanceState.getParcelable(BUNDLE_CANCEL_MSG);
             mShowCancel = savedInstanceState.getBoolean(BUNDLE_SHOW_CANCEL);
         }
-        
+
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         
         if (mTitle >= 0) {
@@ -115,7 +115,6 @@ public class AlertDialogFragment extends DialogFragment {
                                 }
                             }
                         );
-        
         if (mShowCancel) {
             builder.setNegativeButton(R.string.alert_dialog_cancel,
                             new DialogInterface.OnClickListener() {
@@ -128,7 +127,7 @@ public class AlertDialogFragment extends DialogFragment {
         } else {
             setCancelable(false);
         }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) builder.setInverseBackgroundForced(true);
+        //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) builder.setInverseBackgroundForced(true);
 
         return builder;
     }

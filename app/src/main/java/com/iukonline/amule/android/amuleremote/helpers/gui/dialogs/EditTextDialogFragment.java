@@ -6,10 +6,10 @@
 
 package com.iukonline.amule.android.amuleremote.helpers.gui.dialogs;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.widget.EditText;
 
 import com.iukonline.amule.android.amuleremote.R;

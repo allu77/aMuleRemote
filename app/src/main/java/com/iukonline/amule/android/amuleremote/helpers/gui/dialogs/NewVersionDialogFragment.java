@@ -6,9 +6,9 @@
 
 package com.iukonline.amule.android.amuleremote.helpers.gui.dialogs;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.TextView;
 

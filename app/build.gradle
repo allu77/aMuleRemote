@@ -54,11 +54,11 @@ def getDate() {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile files('libs/JavaAmuleEC-0.5.jar')
+    compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'ch.acra:acra:4.5.0'
-    compile 'com.google.android.gms:play-services:7.3.0'
+    compile 'com.google.android.gms:play-services-ads:7.5.0'
     compile 'de.keyboardsurfer.android.widget:crouton:1.8.5@aar'
     compile 'com.github.machinarius:preferencefragment:0.1.1'
     compile 'com.jakewharton:butterknife:6.1.0'
-    compile files('libs/JavaAmuleEC-0.5.jar')
 }

@@ -6,6 +6,6 @@
   -->
 
 <resources>
-    <style name="Theme.AmuleRemote.Settings" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+    <style name="Theme.AmuleRemote.Settings" parent="@style/Theme.AmuleRemote">
     </style>
 </resources>

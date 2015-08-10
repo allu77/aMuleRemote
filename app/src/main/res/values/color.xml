@@ -23,5 +23,9 @@
     <color name="ratingFair">#ffffb600</color>
     <color name="ratingGood">#FF00DD00</color>
     <color name="ratingExcellent">#FF00DD00</color>
-    
+
+    <color name="amuleRemotePrimaryDark">#594F45</color>
+    <color name="amuleRemotePrimary">#9B6439</color>
+    <color name="amuleRemoteAccent">#C19765</color>
+
 </resources>
