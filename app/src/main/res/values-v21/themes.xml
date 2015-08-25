@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2015. Gianluca Vegetti, All Rights Reserved
+  ~ Unauthorized copying of this file, via any medium is strictly prohibited
+  ~ Proprietary and confidential
+  -->
+
+<resources>
+    <style name="Theme.AmuleRemote" parent="@style/Theme.Base.AmuleRemote">
+        <!--<item name="android:navigationBarColor">@color/primary_dark</item>-->
+        <item name="android:statusBarColor">@color/primary_dark</item>
+    </style>
+</resources>
