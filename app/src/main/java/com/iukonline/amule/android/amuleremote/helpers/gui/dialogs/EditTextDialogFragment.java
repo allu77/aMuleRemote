@@ -8,6 +8,7 @@ package com.iukonline.amule.android.amuleremote.helpers.gui.dialogs;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -59,16 +60,24 @@ public class EditTextDialogFragment extends AlertDialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = getDefaultAlertDialogBuilder(savedInstanceState);
 
+        mInput = new EditText(getActivity());
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            /* Bug on Froyo prevents margin to be set in FrameLayout
+               http://stackoverflow.com/questions/24842244/margins-inside-framelayout-is-not-working-in-android-2-2
+               Let's skip older release for now
+             */
+
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.leftMargin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+            params.rightMargin = params.leftMargin;
+
+            mInput.setLayoutParams(params);
+        }
 
         FrameLayout container = new FrameLayout(getActivity());
-        FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.leftMargin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
-        params.rightMargin = params.leftMargin;
-
-        mInput = new EditText(getActivity());
-        mInput.setLayoutParams(params);
-
         container.addView(mInput);
+
         if (mDefaultText != null) mInput.setText(mDefaultText);
         
         if (savedInstanceState != null) mInput.setText(savedInstanceState.getString(BUNDLE_EDIT_STRING));
