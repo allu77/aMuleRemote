@@ -333,14 +333,7 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
                     float perc = ((float) o.getSizeDone()) * 100f / ((float) o.getSizeFull());
 
                     holder.mFileName.setText(o.getFileName());
-                    /*
-                    holder.mTransfered.setText(String.format("%s/%s (%.1f%%)",
-                                    GUIUtils.longToBytesFormatted(o.getSizeDone()),
-                                    GUIUtils.longToBytesFormatted(o.getSizeFull()),
-                                    perc
-                                    ));
-                    */
-                   holder.mTransfered.setText(String.format("%s/%s",
+                    holder.mTransfered.setText(String.format("%s/%s",
                             GUIUtils.longToBytesFormatted(o.getSizeDone()),
                             GUIUtils.longToBytesFormatted(o.getSizeFull())
                     ));
@@ -386,8 +379,14 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
                         if (sourceXfer > 0) source.append(" (" + Integer.toString(sourceXfer) + ")");
                         
                         holder.mSources.setText(source.toString());
-                        
-                        holder.mETA.setText(GUIUtils.getETA(getContext(), o.getSizeFull() - o.getSizeDone(), o.getSpeed()));
+
+                        if (o.getSpeed() > 0L) {
+                            holder.mETA.setText(GUIUtils.getETA(getContext(), o.getSizeFull() - o.getSizeDone(), o.getSpeed()));
+                            holder.mETA.setVisibility(View.VISIBLE);
+                        } else {
+                            holder.mETA.setVisibility(View.GONE);
+                        }
+
                         
                         switch (o.getPrio()) {
                         case ECPartFile.PR_LOW:

@@ -60,7 +60,7 @@
 			android:layout_width="wrap_content"
 			android:paddingLeft="@dimen/activity_horizontal_margin"
 			tools:text="10mins"
-			/>
+			android:visibility="visible" />
 	</LinearLayout>
 
 	<LinearLayout
