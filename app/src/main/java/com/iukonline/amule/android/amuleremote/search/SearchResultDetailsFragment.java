@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECSearchListWatcher;
@@ -35,7 +35,7 @@ public class SearchResultDetailsFragment extends ListFragment implements ECSearc
         void startSearchResult(ECSearchFile sf) ;
     }
 
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
 
     private final static int SETTINGS_SORT_FILENAME = 1;
@@ -47,7 +47,7 @@ public class SearchResultDetailsFragment extends ListFragment implements ECSearc
     
     private int mSortBy = SETTINGS_SORT_SOURCES;
     
-    AmuleControllerApplication mApp;
+    AmuleRemoteApplication mApp;
     SearchResultDetailsListAdapter mAdapter;
     ECSearchFileComparator mComparator;
     
@@ -56,7 +56,7 @@ public class SearchResultDetailsFragment extends ListFragment implements ECSearc
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        mApp = (AmuleControllerApplication) getActivity().getApplication();
+        mApp = (AmuleRemoteApplication) getActivity().getApplication();
         // mSearch = mApp.mECHelper.getSearchItem(mPosition);
         if (DEBUG) Log.d(TAG, "SearchResultDetailsFragment.onCreate: Will show details for position " + mPosition);
         super.onCreate(savedInstanceState);

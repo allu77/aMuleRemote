@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECPartFileWatcher;
@@ -27,12 +27,12 @@ import java.text.DateFormat;
 
 public class PartFileDetailsFragment extends Fragment implements ECPartFileWatcher {
 
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
 
     byte[] mHash;
     ECPartFile mPartFile;
-    AmuleControllerApplication mApp;
+    AmuleRemoteApplication mApp;
 
 
     @Override
@@ -40,7 +40,7 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
         super.onCreate(savedInstanceState);
 
         mHash = getArguments().getByteArray(PartFileActivity.BUNDLE_PARAM_HASH);
-        mApp = (AmuleControllerApplication) getActivity().getApplication();
+        mApp = (AmuleRemoteApplication) getActivity().getApplication();
         
         setHasOptionsMenu(true);
 
@@ -59,7 +59,7 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
             //return null;
         }
 
-        View v = inflater.inflate(R.layout.partfile_details_fragment, container, false);
+        View v = inflater.inflate(R.layout.frag_partfile_details, container, false);
         return v;
     }
 

@@ -17,7 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECPartFileWatcher;
@@ -30,12 +30,12 @@ import java.util.ArrayList;
 
 public class PartFileCommentsFragment extends ListFragment implements ECPartFileWatcher {
 
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
 
     byte[] mHash;
     ECPartFile mPartFile;
-    AmuleControllerApplication mApp;
+    AmuleRemoteApplication mApp;
     
     CommentsAdapter mCommentsAdpater;
 
@@ -45,7 +45,7 @@ public class PartFileCommentsFragment extends ListFragment implements ECPartFile
         super.onCreate(savedInstanceState);
         
         mHash = getArguments().getByteArray(PartFileActivity.BUNDLE_PARAM_HASH);
-        mApp = (AmuleControllerApplication) getActivity().getApplication();
+        mApp = (AmuleRemoteApplication) getActivity().getApplication();
 
     }
     
@@ -62,7 +62,7 @@ public class PartFileCommentsFragment extends ListFragment implements ECPartFile
             //return null;
         }
         
-        View v = inflater.inflate(R.layout.partfile_comments_fragment, container, false);
+        View v = inflater.inflate(R.layout.frag_comments, container, false);
         return v;
     }
 
@@ -92,7 +92,7 @@ public class PartFileCommentsFragment extends ListFragment implements ECPartFile
         if (newECPartFile != null) {
             if (mPartFile == null) {
                 mPartFile = newECPartFile;
-                mCommentsAdpater = new CommentsAdapter(getActivity(), R.layout.partfile_sourcenames_fragment, mPartFile.getComments() );
+                mCommentsAdpater = new CommentsAdapter(getActivity(), R.layout.frag_sourcenames, mPartFile.getComments() );
                 setListAdapter(mCommentsAdpater);
             } else {
                 if (! mPartFile.getHashAsString().equals(newECPartFile.getHashAsString())) {
@@ -129,7 +129,7 @@ public class PartFileCommentsFragment extends ListFragment implements ECPartFile
                 View v = convertView;
                 if (v == null) {
                     LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    v = vi.inflate(R.layout.amuledl_comments_row, null);
+                    v = vi.inflate(R.layout.part_comments_row, null);
                 }
                 int ratingColor = android.R.color.primary_text_dark;
                 ECPartFileComment o = items.get(position);

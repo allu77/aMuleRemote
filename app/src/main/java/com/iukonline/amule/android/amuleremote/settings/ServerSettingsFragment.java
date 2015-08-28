@@ -15,13 +15,13 @@ import android.preference.PreferenceGroup;
 import android.util.Log;
 
 import com.github.machinarius.preferencefragment.PreferenceFragment;
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 
 public class ServerSettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
 
     private final static String BUNDLE_PARAM_SERVER_INDEX = "server_index";
@@ -30,7 +30,7 @@ public class ServerSettingsFragment extends PreferenceFragment implements Shared
         boolean addServer();
     }
 
-    private AmuleControllerApplication mApp;
+    private AmuleRemoteApplication mApp;
     private int mServerIndex = -1;
     private PreferenceGroup mPrefGroup;
 
@@ -47,7 +47,7 @@ public class ServerSettingsFragment extends PreferenceFragment implements Shared
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mApp = (AmuleControllerApplication) activity.getApplication();
+        mApp = (AmuleRemoteApplication) activity.getApplication();
         mContainer = (ServerSettingsFragmentContainer) activity;
     }
 

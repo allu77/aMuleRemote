@@ -24,7 +24,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.DlQueueWatcher;
@@ -43,7 +43,7 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
         void partFileSelected(byte[] hash);
     }
 
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
     
     private final static String BUNDLE_SORT_BY = "sort";
@@ -51,7 +51,7 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
     private final static String BUNDLE_CATEGORY_FILTER = "category";
 
 
-    AmuleControllerApplication mApp;
+    AmuleRemoteApplication mApp;
     DlQueueFragmentContainer mActivity;
 
     
@@ -65,7 +65,7 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mApp = (AmuleControllerApplication) activity.getApplication();
+        mApp = (AmuleRemoteApplication) activity.getApplication();
         mActivity = (DlQueueFragmentContainer) activity;
     }
 
@@ -74,15 +74,15 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
         super.onCreate(savedInstanceState);
         
         if (savedInstanceState == null) {
-            mSortBy = (byte) mApp.mSettings.getLong(AmuleControllerApplication.AC_SETTING_SORT, AmuleControllerApplication.AC_SETTING_SORT_FILENAME);
+            mSortBy = (byte) mApp.mSettings.getLong(AmuleRemoteApplication.AC_SETTING_SORT, AmuleRemoteApplication.AC_SETTING_SORT_FILENAME);
         } else {
-            mSortBy = savedInstanceState.getByte(BUNDLE_SORT_BY, AmuleControllerApplication.AC_SETTING_SORT_FILENAME);
+            mSortBy = savedInstanceState.getByte(BUNDLE_SORT_BY, AmuleRemoteApplication.AC_SETTING_SORT_FILENAME);
             mRestoreSelected = savedInstanceState.getInt(BUNDLE_SELECTED_ITEM, -1);
             mCatId = savedInstanceState.getLong(BUNDLE_CATEGORY_FILTER, ECCategory.NEW_CATEGORY_ID);
         }
 
         if (DEBUG) Log.d(TAG, "Sort settings onCreate is " + mSortBy);
-        mDlQueueComparator = new ECPartFileComparator(AmuleControllerApplication.getDlComparatorTypeFromSortSetting(mSortBy));
+        mDlQueueComparator = new ECPartFileComparator(AmuleRemoteApplication.getDlComparatorTypeFromSortSetting(mSortBy));
         setHasOptionsMenu(true);
     }
     
@@ -99,7 +99,7 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
             //return null;
         }
         
-        View v = inflater.inflate(R.layout.dlqueue_fragment, container, false);
+        View v = inflater.inflate(R.layout.frag_dlqueue, container, false);
         return v;
     }
     
@@ -119,7 +119,7 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
         mApp.mECHelper.unRegisterFromDlQueueUpdates(this);
         
         SharedPreferences.Editor e = mApp.mSettings.edit();
-        e.putLong(AmuleControllerApplication.AC_SETTING_SORT, mSortBy);
+        e.putLong(AmuleRemoteApplication.AC_SETTING_SORT, mSortBy);
         e.commit();
         if (DEBUG) Log.d(TAG, "Sort settings saved onPause is " + mSortBy);
 
@@ -148,37 +148,37 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
         case R.id.menu_dlqueue_opt_sort_filename:
-            mSortBy = AmuleControllerApplication.AC_SETTING_SORT_FILENAME;
+            mSortBy = AmuleRemoteApplication.AC_SETTING_SORT_FILENAME;
             break;
         case R.id.menu_dlqueue_opt_sort_progress:
-            mSortBy = AmuleControllerApplication.AC_SETTING_SORT_PROGRESS;
+            mSortBy = AmuleRemoteApplication.AC_SETTING_SORT_PROGRESS;
             break;
         case R.id.menu_dlqueue_opt_sort_status:
-            mSortBy = AmuleControllerApplication.AC_SETTING_SORT_STATUS;
+            mSortBy = AmuleRemoteApplication.AC_SETTING_SORT_STATUS;
             break;
         case R.id.menu_dlqueue_opt_sort_transfered:
-            mSortBy = AmuleControllerApplication.AC_SETTING_SORT_TRANSFERED;
+            mSortBy = AmuleRemoteApplication.AC_SETTING_SORT_TRANSFERED;
             break;
         case R.id.menu_dlqueue_opt_sort_size:
-            mSortBy = AmuleControllerApplication.AC_SETTING_SORT_SIZE;
+            mSortBy = AmuleRemoteApplication.AC_SETTING_SORT_SIZE;
             break;
         case R.id.menu_dlqueue_opt_sort_speed:
-            mSortBy = AmuleControllerApplication.AC_SETTING_SORT_SPEED;
+            mSortBy = AmuleRemoteApplication.AC_SETTING_SORT_SPEED;
             break;
         case R.id.menu_dlqueue_opt_sort_priority:
-            mSortBy = AmuleControllerApplication.AC_SETTING_SORT_PRIORITY;
+            mSortBy = AmuleRemoteApplication.AC_SETTING_SORT_PRIORITY;
             break;
         case R.id.menu_dlqueue_opt_sort_remaining:
-            mSortBy = AmuleControllerApplication.AC_SETTING_SORT_REMAINING;
+            mSortBy = AmuleRemoteApplication.AC_SETTING_SORT_REMAINING;
             break;
         case R.id.menu_dlqueue_opt_sort_last_seen_complete:
-            mSortBy = AmuleControllerApplication.AC_SETTING_SORT_LAST_SEE_COMPLETE;
+            mSortBy = AmuleRemoteApplication.AC_SETTING_SORT_LAST_SEE_COMPLETE;
             break;
         default:
             return super.onOptionsItemSelected(item);
         }
         
-        mDlQueueComparator.setCompType(AmuleControllerApplication.getDlComparatorTypeFromSortSetting(mSortBy));
+        mDlQueueComparator.setCompType(AmuleRemoteApplication.getDlComparatorTypeFromSortSetting(mSortBy));
         
         refreshView();
         return true;
@@ -200,7 +200,7 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
             mDlAdapter.notifyDataSetChanged();
         } else {
             if (mDlQueue != null) {
-                mDlAdapter = new DownloadListAdapter(getActivity(), R.layout.dlqueue_fragment, new ArrayList<ECPartFile> (mDlQueue.values()));
+                mDlAdapter = new DownloadListAdapter(getActivity(), R.layout.frag_dlqueue, new ArrayList<ECPartFile> (mDlQueue.values()));
         
                 if (DEBUG) Log.d(TAG, "refreshView sorting with type " + mDlQueueComparator.getCompType());
                 mDlAdapter.sort(mDlQueueComparator);
@@ -309,7 +309,7 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
             View v = convertView;
             if (v == null) {
                 LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = vi.inflate(R.layout.amuledl_row, null);
+                v = vi.inflate(R.layout.part_dlqueue_row, null);
                 holder = new DlQueueViewHolder();
                 holder.mFileName = (TextView) v.findViewById(R.id.amuledl_row_filename);
                 holder.mTransfered = (TextView) v.findViewById(R.id.amuledl_row_transferred);

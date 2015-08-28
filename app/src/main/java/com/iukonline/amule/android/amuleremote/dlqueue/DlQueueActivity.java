@@ -32,9 +32,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.iukonline.amule.android.amuleremote.AboutDialogFragment;
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.dlqueue.DlQueueFragment.DlQueueFragmentContainer;
@@ -50,6 +49,7 @@ import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.GetDlQueueAsyncT
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.GetECStatsAsyncTask;
 import com.iukonline.amule.android.amuleremote.helpers.gui.GUIUtils;
 import com.iukonline.amule.android.amuleremote.helpers.gui.TooltipHelper;
+import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AboutDialogFragment;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment.AlertDialogListener;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.EditTextDialogFragment;
@@ -67,8 +67,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialogListener, ClientStatusWatcher, DlQueueFragmentContainer, ECStatsWatcher, CategoriesWatcher, RefreshingActivity, UpdatesWatcher  {
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+public class DlQueueActivity extends AppCompatActivity implements AlertDialogListener, ClientStatusWatcher, DlQueueFragmentContainer, ECStatsWatcher, CategoriesWatcher, RefreshingActivity, UpdatesWatcher  {
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
     
     
@@ -83,7 +83,7 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
     private final static String TAG_DIALOG_ADD_ED2K = "dialog_add_ed2k";
     private final static String TAG_DIALOG_TOOLTIP = "dialog_tooltip";
     
-    private AmuleControllerApplication mApp;
+    private AmuleRemoteApplication mApp;
     private String mHandleURI;
     private NavigationAdapter mNavigationAdapter;
 
@@ -116,23 +116,23 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        mApp = (AmuleControllerApplication) getApplication();
+        mApp = (AmuleRemoteApplication) getApplication();
         mApp.refreshDebugSettings();
         mTooltipHelper = new TooltipHelper(mApp.mSettings);
         
         mFragManager = getSupportFragmentManager();
         
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreate: Calling super");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onCreate: Calling super");
         super.onCreate(savedInstanceState);
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreate: Back from super");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onCreate: Back from super");
         
         if (savedInstanceState != null) {
             mCatId = savedInstanceState.getLong(BUNDLE_CATEGORY_FILTER, ECCategory.NEW_CATEGORY_ID);
         }
         
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreate: Calling setContentView");
-        setContentView(R.layout.main);
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreate: back from setContentView");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onCreate: Calling setContentView");
+        setContentView(R.layout.act_dlqueue);
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onCreate: back from setContentView");
         ButterKnife.inject(this);
 
         mActionBar = getSupportActionBar();
@@ -150,7 +150,7 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
         
         mHandleURI = (a != null && a.equals(Intent.ACTION_VIEW)) ? i.getData().toString() : NO_URI_TO_HANDLE; 
 
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreate: end");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onCreate: end");
 
     }
 
@@ -180,13 +180,13 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
 
                 NavigationItem n = mNavigationAdapter.getItem(position);
                 if (n.isCategory()) {
-                    if (DEBUG) Log.d(TAG, "AmuleRemoteActivity->onNavigationItemSelected: category " + n.getCategory().getId() + " clicked");
+                    if (DEBUG) Log.d(TAG, "DlQueueActivity->onNavigationItemSelected: category " + n.getCategory().getId() + " clicked");
                     mCatId = n.getCategory().getId();
                     if (mDlQueueFragment != null)
                         mDlQueueFragment.filterDlQueueByCategory(mCatId);
                 } else {
                     int serverIndex = mNavigationAdapter.getServerIndex(position);
-                    if (DEBUG) Log.d(TAG, "AmuleRemoteActivity->onNavigationItemSelected: setting server " + serverIndex);
+                    if (DEBUG) Log.d(TAG, "DlQueueActivity->onNavigationItemSelected: setting server " + serverIndex);
                     mNavigationAdapter.cleanCategories();
                     mNavigationAdapter.setSelectedServer(serverIndex);
                     mApp.mSettingsHelper.setCurrentServer(serverIndex);
@@ -217,14 +217,14 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
 
         mApp.mOnTopActivity = this;
 
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onResume: Reading settings");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onResume: Reading settings");
         mApp.refreshDebugSettings();
         mServerConfigured = mApp.refreshServerSettings();
 
         if (mServerConfigured && mApp.mSettingsHelper.mNeedNavigationRefresh) {
             int serverCount = mApp.mSettingsHelper.getServerCount();
             int selectedServer = mApp.mSettingsHelper.getCurrentServer();
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onResume: Navigation needs a refresh. Setting server " + selectedServer + ", server count " + serverCount);
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.onResume: Navigation needs a refresh. Setting server " + selectedServer + ", server count " + serverCount);
             mNavigationAdapter.clear();
             mNavigationAdapter.setServerCount(serverCount);
             if (serverCount > 1) {
@@ -242,9 +242,9 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
         }
 
 
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onResume: Calling super");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onResume: Calling super");
         super.onResume();
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onResume: Back from super");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onResume: Back from super");
         
 
         // TBV: Everything that creates a dialog should be in onPostResume due to a bug in ICS
@@ -256,17 +256,17 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
         mApp.registerRefreshActivity(this);
 
         if (! mApp.mECHelper.isDlQueueValid()) {
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onResume: launching refreshDlQueue");
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.onResume: launching refreshDlQueue");
             refreshDlQueue();
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onResume: back from refreshDlQueue");
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.onResume: back from refreshDlQueue");
         }
 
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onResume: end");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onResume: end");
         
     }
 
     private void registerAllListeners() {
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onResume: registering for async activities");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onResume: registering for async activities");
         notifyStatusChange(mApp.mECHelper.registerForAmuleClientStatusUpdates(this));
         updateECStats(mApp.mECHelper.registerForECStatsUpdates(this));
         updateCategories(mApp.mECHelper.registerForCategoriesUpdates(this));
@@ -305,7 +305,7 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
         
         if (! mServerConfigured) {
             if (mFragManager.findFragmentByTag(TAG_DIALOG_NO_SERVER) == null) {
-                if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.showPostResumeDialog: no server configured - showing dialog");
+                if (DEBUG) Log.d(TAG, "DlQueueActivity.showPostResumeDialog: no server configured - showing dialog");
                 AlertDialogFragment d = new AlertDialogFragment(R.string.dlqueue_dialog_title_no_server_configured, R.string.dlqueue_dialog_message_no_server_configured, true);
                 d.show(mFragManager, TAG_DIALOG_NO_SERVER);
             }
@@ -318,7 +318,7 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
             if (parURI.toLowerCase().startsWith("ed2k://%7c")) {
                 parURI = parURI.replaceAll("%7C", "|").replaceAll("%7c", "|");
             }
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onPostResume: handling ed2k URI");
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.onPostResume: handling ed2k URI");
             showAddED2KDialog(parURI);
             return;
         }
@@ -340,7 +340,7 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
     @Override
     protected void onPause() {
 
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onPause: un-registering from async activities");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onPause: un-registering from async activities");
 
         mApp.mECHelper.unRegisterFromAmuleClientStatusUpdates(this);
         mApp.mECHelper.unRegisterFromECStatsUpdates(this);
@@ -349,9 +349,9 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
         mApp.registerRefreshActivity(null);
         mApp.mUpdateChecker.registerUpdatesWatcher(null);
 
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onPause: calling super");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onPause: calling super");
         super.onPause();
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onPause: end");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onPause: end");
 
         mApp.mOnTopActivity = null;
 
@@ -359,11 +359,11 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onSaveInstanceState: adding data to bundle");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onSaveInstanceState: adding data to bundle");
         outState.putLong(BUNDLE_CATEGORY_FILTER, mCatId);
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onSaveInstanceState: calling super");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onSaveInstanceState: calling super");
         super.onSaveInstanceState(outState);
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onSaveInstanceState: end");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onSaveInstanceState: end");
 
     }
     
@@ -371,33 +371,33 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreateOptionsMenu: Inflating menu");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onCreateOptionsMenu: Inflating menu");
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_options, menu);
 
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreateOptionsMenu: Saving MenuItems");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onCreateOptionsMenu: Saving MenuItems");
         
         refreshItem = menu.findItem(R.id.menu_opt_refresh);
         addEd2kItem = menu.findItem(R.id.menu_opt_added2k);
 
         debugOptionsItem = menu.findItem(R.id.menu_opt_debug);
         
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreateOptionsMenu: Calling super");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onCreateOptionsMenu: Calling super");
         boolean superRet = super.onCreateOptionsMenu(menu);
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onCreateOptionsMenu: super returned " + superRet + " - end");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.onCreateOptionsMenu: super returned " + superRet + " - end");
         return superRet;
     }
     
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         
-        if (mApp != null && DEBUG) Log.d(TAG, "AmuleRemoteActivity.onPrepareOptionsMenu: Setting items visibility");
+        if (mApp != null && DEBUG) Log.d(TAG, "DlQueueActivity.onPrepareOptionsMenu: Setting items visibility");
         
         if (refreshItem != null) {
             refreshItem.setVisible(mServerConfigured);
             if (mIsProgressShown) {
-                MenuItemCompat.setActionView(refreshItem, R.layout.refresh_progress);
+                MenuItemCompat.setActionView(refreshItem, R.layout.part_refresh_progress);
             } else {
                 MenuItemCompat.setActionView(refreshItem, null);
             }
@@ -409,9 +409,9 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
             if (debugOptionsItem != null) debugOptionsItem.setVisible(DEBUG);
         }
 
-        if (mApp != null && DEBUG) Log.d(TAG, "AmuleRemoteActivity.onPrepareOptionsMenu: calling super");
+        if (mApp != null && DEBUG) Log.d(TAG, "DlQueueActivity.onPrepareOptionsMenu: calling super");
         boolean superRet = super.onPrepareOptionsMenu(menu);
-        if (mApp != null && DEBUG) Log.d(TAG, "AmuleRemoteActivity.onPrepareOptionsMenu: super returned " + superRet + " - end");
+        if (mApp != null && DEBUG) Log.d(TAG, "DlQueueActivity.onPrepareOptionsMenu: super returned " + superRet + " - end");
         return superRet;
     }
 
@@ -420,32 +420,32 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.menu_opt_refresh:
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_refresh selected");
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.onOptionsItemSelected: menu_opt_refresh selected");
             refreshDlQueue(TaskScheduleMode.QUEUE);
             return true;
         case R.id.menu_opt_refresh_cat:
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_refresh_cat selected");
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.onOptionsItemSelected: menu_opt_refresh_cat selected");
             refreshCategories(TaskScheduleMode.QUEUE);
             return true;
         case R.id.menu_opt_settings:
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_settings selected");
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.onOptionsItemSelected: menu_opt_settings selected");
             Intent settingsActivity = new Intent(this, SettingsActivity.class);
             startActivity(settingsActivity);
             return true; 
         case R.id.menu_opt_reset:
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_reset selected");
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.onOptionsItemSelected: menu_opt_reset selected");
             mApp.mECHelper.resetClient();
             return true;
         case R.id.menu_opt_added2k:
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_added2k selected");
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.onOptionsItemSelected: menu_opt_added2k selected");
             showAddED2KDialog(null);
             return true;
         case R.id.menu_opt_about:
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_about selected");
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.onOptionsItemSelected: menu_opt_about selected");
             showAboutDialog();
             return true;
         case R.id.menu_opt_send_report:
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onOptionsItemSelected: menu_opt_send_report selected");
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.onOptionsItemSelected: menu_opt_send_report selected");
             //ErrorReporter.getInstance().handleException(new Exception("MANUAL BUG REPORT"));
             showManualBugReportDialog();
             return true;
@@ -464,7 +464,7 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
             mTooltipHelper.resetShown();
             return true; 
         default:
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.onOptionsItemSelected: Unknown item selected. Calling super");
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.onOptionsItemSelected: Unknown item selected. Calling super");
             return super.onOptionsItemSelected(item);
         }
     }
@@ -477,16 +477,16 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
     public void refreshDlQueue(TaskScheduleMode mode)  {
 
         if (mApp.mECHelper.getCategories() == null) {
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.refreshDlQueue: Category list null, scheduling refresh");
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.refreshDlQueue: Category list null, scheduling refresh");
             if (!refreshCategories(mode)) return;
             mode = TaskScheduleMode.QUEUE;
         }
         
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.refreshDlQueue: Scheduling Get Stats Task");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.refreshDlQueue: Scheduling Get Stats Task");
         if (mApp.mECHelper.executeTask(mApp.mECHelper.getNewTask(GetECStatsAsyncTask.class), mode)) {
             GetDlQueueAsyncTask t = (GetDlQueueAsyncTask) mApp.mECHelper.getNewTask(GetDlQueueAsyncTask.class);
             t.setDlQueue(mApp.mECHelper.getDlQueue());
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.refreshDlQueue: Scheduling GetDlQueue Task");
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.refreshDlQueue: Scheduling GetDlQueue Task");
             mApp.mECHelper.executeTask(t, TaskScheduleMode.QUEUE);
         }
     }
@@ -496,7 +496,7 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
     }
     
     public boolean refreshCategories(TaskScheduleMode mode) {
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.refreshCategories: Scheduling GetGategories Task");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.refreshCategories: Scheduling GetGategories Task");
         return mApp.mECHelper.executeTask(mApp.mECHelper.getNewTask(GetCategoriesAsyncTask.class), mode);
     }
     
@@ -505,7 +505,7 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
         if (mFragManager.findFragmentByTag(TAG_DIALOG_ADD_ED2K) == null) {
             EditTextDialogFragment d = new EditTextDialogFragment(R.string.dialog_added2k_title, url);
     
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.showAddED2KDialog: showing dialog");
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.showAddED2KDialog: showing dialog");
             d.show(mFragManager, TAG_DIALOG_ADD_ED2K);
         }
     }
@@ -520,7 +520,7 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
         }
         
         AboutDialogFragment d = new AboutDialogFragment(versionName, mApp.getReleaseNotes());
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.showAboutDialog: showing dialog");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.showAboutDialog: showing dialog");
         d.show(getSupportFragmentManager(), "about_dialog");
     }
     
@@ -548,7 +548,7 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
     // DlQueueFragmentContainer
     
     public void partFileSelected(byte[] hash) {
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.partFileSelected: Partfile " + ECUtils.byteArrayToHexString(hash) + " selected, starting PartFileActivity");
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.partFileSelected: Partfile " + ECUtils.byteArrayToHexString(hash) + " selected, starting PartFileActivity");
 
         Intent i = new Intent(this, PartFileActivity.class);
         i.putExtra(PartFileActivity.BUNDLE_PARAM_HASH, hash);
@@ -584,7 +584,7 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
     @Override
     public void updateECStats(ECStats newStats) {
         if (newStats != null) {
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.updateECStats: Updating Stats");
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.updateECStats: Updating Stats");
             
             mTextDlRate.setText(GUIUtils.longToBytesFormatted(newStats.getDlSpeed()) + "/s \u2193");
             mTextUlRate.setText(GUIUtils.longToBytesFormatted(newStats.getUlSpeed()) + "/s \u2191");
@@ -612,9 +612,9 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
             }
             
             mViewConnBar.setVisibility(View.VISIBLE);
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.updateECStats: Stats updated");
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.updateECStats: Stats updated");
         } else {
-            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.updateECStats: Hiding connection bar");
+            if (DEBUG) Log.d(TAG, "DlQueueActivity.updateECStats: Hiding connection bar");
             mViewConnBar.setVisibility(View.GONE);
         }
     }
@@ -828,11 +828,11 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
     @Override
     public void alertDialogEvent(AlertDialogFragment dialog, int event, Bundle values) {
         String tag = dialog.getTag();
-        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.alertDialogEvent: dialog tag " + tag + ", event " + event);
+        if (DEBUG) Log.d(TAG, "DlQueueActivity.alertDialogEvent: dialog tag " + tag + ", event " + event);
         if (tag != null) {
             if (tag.equals(TAG_DIALOG_NO_SERVER)) {
                 if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK) {
-                    Intent settingsActivity = new Intent(AmuleRemoteActivity.this, SettingsActivity.class);
+                    Intent settingsActivity = new Intent(DlQueueActivity.this, SettingsActivity.class);
                     startActivity(settingsActivity);
                 } else {
                     showPostResumeDialog();
@@ -844,13 +844,13 @@ public class AmuleRemoteActivity extends AppCompatActivity implements AlertDialo
                 if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK && values != null) {
                     String u = values.getString(EditTextDialogFragment.BUNDLE_EDIT_STRING);
                     if (u != null) {
-                        if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.alertDialogEvent: ed2k URI provided, scheduling add task");
+                        if (DEBUG) Log.d(TAG, "DlQueueActivity.alertDialogEvent: ed2k URI provided, scheduling add task");
                         
                         AddEd2kAsyncTask ed2kTask = (AddEd2kAsyncTask) mApp.mECHelper.getNewTask(AddEd2kAsyncTask.class);
                         ed2kTask.setEd2kUrl(u);
                         
                         if (mApp.mECHelper.executeTask(ed2kTask, TaskScheduleMode.QUEUE)) {
-                            if (DEBUG) Log.d(TAG, "AmuleRemoteActivity.alertDialogEvent: ed2k URI provided, scheduling refreshDlQueue task");
+                            if (DEBUG) Log.d(TAG, "DlQueueActivity.alertDialogEvent: ed2k URI provided, scheduling refreshDlQueue task");
                             refreshDlQueue(TaskScheduleMode.QUEUE);
                         }
                     }

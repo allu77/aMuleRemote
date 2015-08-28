@@ -10,7 +10,7 @@ package com.iukonline.amule.android.amuleremote.helpers.ec;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
 import com.iukonline.amule.ec.ECClient;
 import com.iukonline.amule.ec.ECFakeTestClient;
 
@@ -19,7 +19,7 @@ public class ECHelperFakeClient extends ECHelper {
     
     
     
-    public ECHelperFakeClient(AmuleControllerApplication application) {
+    public ECHelperFakeClient(AmuleRemoteApplication application) {
         super(application);
     }
     

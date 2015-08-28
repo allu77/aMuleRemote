@@ -9,7 +9,7 @@ package com.iukonline.amule.android.amuleremote.helpers;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
 import com.iukonline.amule.android.amuleremote.Flavor;
 
 import org.apache.http.HttpResponse;
@@ -24,7 +24,7 @@ import java.io.IOException;
 
 public class UpdateChecker {
 
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
 
     private static final String AC_UPDATE_URL = Flavor.UPDATE_CHECKER_URL_PREFIX;
     private static final long AC_UPDATE_INTERVAL = Flavor.UPDATE_CHECKER_INTERVAL;

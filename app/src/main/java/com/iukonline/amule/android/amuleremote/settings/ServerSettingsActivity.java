@@ -15,13 +15,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.SettingsHelper;
 
 public class ServerSettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, ServerSettingsFragment.ServerSettingsFragmentContainer {
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
 
     public final static String BUNDLE_PARAM_SERVER_INDEX = "server_index";
@@ -34,7 +34,7 @@ public class ServerSettingsActivity extends AppCompatActivity implements SharedP
     public final static String SETTINGS_SERVER_VERSION = "placeholder_server_version";
 
     private int mServerIndex = -1;
-    private AmuleControllerApplication mApp;
+    private AmuleRemoteApplication mApp;
     private SettingsHelper.ServerSettings mServerSettings;
 
     private boolean mInitialized = false;
@@ -48,7 +48,7 @@ public class ServerSettingsActivity extends AppCompatActivity implements SharedP
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mApp = (AmuleControllerApplication) getApplication();
+        mApp = (AmuleRemoteApplication) getApplication();
         setContentView(R.layout.act_server_settings);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

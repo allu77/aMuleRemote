@@ -9,7 +9,7 @@ package com.iukonline.amule.android.amuleremote.helpers.ec.tasks;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.search.SearchContainer;
@@ -22,7 +22,7 @@ import java.io.IOException;
 
 public class SearchAsyncTask extends AmuleAsyncTask {
 
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
     
     private SearchContainer mSearch;

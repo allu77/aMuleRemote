@@ -9,7 +9,7 @@ package com.iukonline.amule.android.amuleremote.helpers;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 
 import org.json.JSONArray;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class SettingsHelper {
 
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
 
     public final static String SETTING_SERVER_LIST = "amule_server_list";

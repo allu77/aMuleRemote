@@ -12,7 +12,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
@@ -33,7 +33,7 @@ public abstract class AmuleAsyncTask extends AsyncTask<Void, Void, Exception> {
     public enum TaskScheduleMode { BEST_EFFORT, PREEMPTIVE, QUEUE } 
     public enum TaskScheduleQueueStatus { QUEUED, LAUNCHED }
 
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
 
     protected ECHelper mECHelper;

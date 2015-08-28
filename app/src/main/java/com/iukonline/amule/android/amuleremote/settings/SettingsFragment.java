@@ -19,14 +19,14 @@ import android.preference.PreferenceScreen;
 import android.util.Log;
 
 import com.github.machinarius.preferencefragment.PreferenceFragment;
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.SettingsHelper;
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
 
 
@@ -34,7 +34,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private SettingsHelper mSettingsHelper;
     private PreferenceCategory mServerCategory;
     private Activity mActivity;
-    private AmuleControllerApplication mApp;
+    private AmuleRemoteApplication mApp;
 
     private PreferenceGroup mPrefGroup;
 
@@ -42,7 +42,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mActivity = activity;
-        mApp = (AmuleControllerApplication) activity.getApplication();
+        mApp = (AmuleRemoteApplication) activity.getApplication();
 
 
         mSettingsHelper = new SettingsHelper(mApp.mSettings);
@@ -56,9 +56,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         PreferenceManager.setDefaultValues(mApp, R.xml.settings, false);
         mPrefGroup = getPreferenceScreen();
 
-        setPreferenceSummary(AmuleControllerApplication.AC_SETTING_AUTOREFRESH_INTERVAL, mApp.mSettings.getString(AmuleControllerApplication.AC_SETTING_AUTOREFRESH_INTERVAL, ""));
-        setPreferenceSummary(AmuleControllerApplication.AC_SETTING_CONNECT_TIMEOUT, mApp.mSettings.getString(AmuleControllerApplication.AC_SETTING_CONNECT_TIMEOUT, ""));
-        setPreferenceSummary(AmuleControllerApplication.AC_SETTING_READ_TIMEOUT, mApp.mSettings.getString(AmuleControllerApplication.AC_SETTING_READ_TIMEOUT, ""));
+        setPreferenceSummary(AmuleRemoteApplication.AC_SETTING_AUTOREFRESH_INTERVAL, mApp.mSettings.getString(AmuleRemoteApplication.AC_SETTING_AUTOREFRESH_INTERVAL, ""));
+        setPreferenceSummary(AmuleRemoteApplication.AC_SETTING_CONNECT_TIMEOUT, mApp.mSettings.getString(AmuleRemoteApplication.AC_SETTING_CONNECT_TIMEOUT, ""));
+        setPreferenceSummary(AmuleRemoteApplication.AC_SETTING_READ_TIMEOUT, mApp.mSettings.getString(AmuleRemoteApplication.AC_SETTING_READ_TIMEOUT, ""));
     }
 
     @Override
@@ -102,7 +102,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (! AmuleControllerApplication.AC_SETTING_AUTOREFRESH.equals(key)) {
+        if (! AmuleRemoteApplication.AC_SETTING_AUTOREFRESH.equals(key)) {
             setPreferenceSummary(key, sharedPreferences.getString(key, ""));
         }
     }
@@ -111,13 +111,13 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         if (DEBUG) Log.d(TAG, "SettingsFragment.setPreferenceSummary(): Setting summary for " + key + " and value " + value);
         String summary = value;
 
-        if (key.equals(AmuleControllerApplication.AC_SETTING_AUTOREFRESH_INTERVAL)) {
+        if (key.equals(AmuleRemoteApplication.AC_SETTING_AUTOREFRESH_INTERVAL)) {
             summary = getString(R.string.settings_summary_client_autorefresh_interval, Integer.parseInt(value));
 
-        } else if (key.equals(AmuleControllerApplication.AC_SETTING_CONNECT_TIMEOUT)) {
+        } else if (key.equals(AmuleRemoteApplication.AC_SETTING_CONNECT_TIMEOUT)) {
             summary = getString(R.string.settings_summary_client_connect_timeout, Integer.parseInt(value));
 
-        } else if (key.equals(AmuleControllerApplication.AC_SETTING_READ_TIMEOUT)) {
+        } else if (key.equals(AmuleRemoteApplication.AC_SETTING_READ_TIMEOUT)) {
             summary = getString(R.string.settings_summary_client_read_timeout, Integer.parseInt(value));
         }
         Preference p = mPrefGroup.findPreference(key);

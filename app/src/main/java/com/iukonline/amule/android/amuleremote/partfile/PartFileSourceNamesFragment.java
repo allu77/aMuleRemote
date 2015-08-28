@@ -20,7 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECPartFileWatcher;
@@ -39,12 +39,12 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
         void showRenameDialog(String fileName);
     }
 
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
     
     byte[] mHash;
     ECPartFile mPartFile;
-    AmuleControllerApplication mApp;
+    AmuleRemoteApplication mApp;
     
     SourceNamesAdapter mSourceNamesAdpater;
     
@@ -55,7 +55,7 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
         super.onCreate(savedInstanceState);
         
         mHash = getArguments().getByteArray(PartFileActivity.BUNDLE_PARAM_HASH);
-        mApp = (AmuleControllerApplication) getActivity().getApplication();
+        mApp = (AmuleRemoteApplication) getActivity().getApplication();
         
     }
     
@@ -72,7 +72,7 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
             //return null;
         }
         
-        View v = inflater.inflate(R.layout.partfile_sourcenames_fragment, container, false);
+        View v = inflater.inflate(R.layout.frag_sourcenames, container, false);
         return v;
     }
     
@@ -145,7 +145,7 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
         if (newECPartFile != null) {
             if (mPartFile == null) {
                 mPartFile = newECPartFile;
-                mSourceNamesAdpater = new SourceNamesAdapter(getActivity(), R.layout.partfile_sourcenames_fragment, mPartFile.getSourceNames() );
+                mSourceNamesAdpater = new SourceNamesAdapter(getActivity(), R.layout.frag_sourcenames, mPartFile.getSourceNames() );
                 setListAdapter(mSourceNamesAdpater);
             } else {
                 if (! mPartFile.getHashAsString().equals(newECPartFile.getHashAsString())) {
@@ -185,7 +185,7 @@ public class PartFileSourceNamesFragment extends ListFragment implements ECPartF
                 View v = convertView;
                 if (v == null) {
                     LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    v = vi.inflate(R.layout.amuledl_sourcenames_row, null);
+                    v = vi.inflate(R.layout.part_sourcenames_row, null);
                 }
                 ECPartFileSourceName o = items.get(position);
                 if (o != null) {

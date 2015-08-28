@@ -19,8 +19,8 @@ import android.view.MenuItem;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
@@ -38,7 +38,7 @@ import java.util.ArrayList;
 
 public class SearchActivity extends AppCompatActivity implements AlertDialogListener, RefreshingActivity, SearchInputFragmentContainter, SearchResultsListFragmentContainter, ClientStatusWatcher, ECSearchListWatcher {
 
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
     
     private final static String TAG_DIALOG_SERVER_VERSION = "dialog_server_version";
@@ -49,7 +49,7 @@ public class SearchActivity extends AppCompatActivity implements AlertDialogList
 
     
     
-    AmuleControllerApplication mApp;
+    AmuleRemoteApplication mApp;
     MenuItem refreshItem;
     boolean mIsProgressShown = false;
     SearchContainer lastSearch = null;
@@ -58,7 +58,7 @@ public class SearchActivity extends AppCompatActivity implements AlertDialogList
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        mApp = (AmuleControllerApplication) getApplication();
+        mApp = (AmuleRemoteApplication) getApplication();
 
         if (DEBUG) Log.d(TAG, "SearchActivity.onCreate: Calling super");
         super.onCreate(savedInstanceState);
@@ -164,8 +164,8 @@ public class SearchActivity extends AppCompatActivity implements AlertDialogList
             
             if (lastSearch != null && (lastSearch.mSearchStatus == ECSearchStatus.STARTING || lastSearch.mSearchStatus == ECSearchStatus.RUNNING)) {
                 if (mIsProgressShown) {
-                    MenuItemCompat.setActionView(refreshItem, R.layout.refresh_progress);
-                    //refreshItem.setActionView(R.layout.refresh_progress);
+                    MenuItemCompat.setActionView(refreshItem, R.layout.part_refresh_progress);
+                    //refreshItem.setActionView(R.layout.part_refresh_progress);
                 } else {
                     MenuItemCompat.setActionView(refreshItem, null);
                     //refreshItem.setActionView(null);

@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECSearchListWatcher;
@@ -29,15 +29,15 @@ public class SearchResultsListFragment extends ListFragment implements ECSearchL
         void viewResultDetails(int selected) ;
     }
 
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
     
-    AmuleControllerApplication mApp;
+    AmuleRemoteApplication mApp;
     SearchResultsListAdapter mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        mApp = (AmuleControllerApplication) getActivity().getApplication();
+        mApp = (AmuleRemoteApplication) getActivity().getApplication();
         super.onCreate(savedInstanceState);
         
 

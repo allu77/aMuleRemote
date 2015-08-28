@@ -23,13 +23,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 
 public class SearchInputFragment extends Fragment {
 
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
     
     private final static String BUNDLE_FILE_NAME = "file_name";
@@ -47,7 +47,7 @@ public class SearchInputFragment extends Fragment {
         void startSearch(SearchContainer s) ;
     }
     
-    AmuleControllerApplication mApp;
+    AmuleRemoteApplication mApp;
     
     EditText mFileNameEdit;
     Button mGoButton;
@@ -68,7 +68,7 @@ public class SearchInputFragment extends Fragment {
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        mApp = (AmuleControllerApplication) getActivity().getApplication();
+        mApp = (AmuleRemoteApplication) getActivity().getApplication();
         super.onCreate(savedInstanceState);
         
         setHasOptionsMenu(true);
@@ -97,7 +97,7 @@ public class SearchInputFragment extends Fragment {
         
         if (mTypeSpinner != null) {
             SharedPreferences.Editor e = mApp.mSettings.edit();
-            e.putLong(AmuleControllerApplication.AC_SETTING_SEARCH_TYPE, mTypeSpinner.getSelectedItemPosition());
+            e.putLong(AmuleRemoteApplication.AC_SETTING_SEARCH_TYPE, mTypeSpinner.getSelectedItemPosition());
             e.commit();
         }
 
@@ -152,7 +152,7 @@ public class SearchInputFragment extends Fragment {
             showAdvancedParams(savedInstanceState.getBoolean(BUNDLE_SHOW_ADVANCED));
         } else {
             showAdvancedParams(false);
-            mTypeSpinner.setSelection((int) mApp.mSettings.getLong(AmuleControllerApplication.AC_SETTING_SEARCH_TYPE, 0));
+            mTypeSpinner.setSelection((int) mApp.mSettings.getLong(AmuleRemoteApplication.AC_SETTING_SEARCH_TYPE, 0));
         }
         
         
@@ -326,7 +326,7 @@ public class SearchInputFragment extends Fragment {
             setInputFields(s.mFileName, (int) s.mSearchType, fileType, s.mExtension, minSize, minSizeDim, maxSize, maxSizeDim, availability);
 
         } else {
-            setInputFields("", (int) mApp.mSettings.getLong(AmuleControllerApplication.AC_SETTING_SEARCH_TYPE, 0), 0, "", "", 0, "", 0, "");
+            setInputFields("", (int) mApp.mSettings.getLong(AmuleRemoteApplication.AC_SETTING_SEARCH_TYPE, 0), 0, "", "", 0, "", 0, "");
         }
     }
     

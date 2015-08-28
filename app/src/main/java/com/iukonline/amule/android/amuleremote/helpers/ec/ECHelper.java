@@ -10,7 +10,7 @@ import android.os.AsyncTask;
 import android.os.DropBoxManager;
 import android.util.Log;
 
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.Flavor;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.CategoriesWatcher;
@@ -51,13 +51,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ECHelper {
 
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
     
     private final static long DATA_MAX_AGE_MILLIS = 120000L;
     private final static long IDLE_CLIENT_MAX_AGE_MILLIS = 60000L;
     
-    public AmuleControllerApplication mApp;
+    public AmuleRemoteApplication mApp;
 
     // TBV: Possiamo farne a meno? 
     // private boolean isClientStale = false;
@@ -185,12 +185,12 @@ public class ECHelper {
     
     
     
-    public ECHelper(AmuleControllerApplication application) {
+    public ECHelper(AmuleRemoteApplication application) {
         mApp = application;
     }
     
   
-    public AmuleControllerApplication getApplication() {
+    public AmuleRemoteApplication getApplication() {
         return mApp;
     }
     

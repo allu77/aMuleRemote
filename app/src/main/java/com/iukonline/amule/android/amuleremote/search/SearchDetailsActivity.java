@@ -16,8 +16,8 @@ import android.view.MenuItem;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
@@ -36,13 +36,13 @@ import java.util.ArrayList;
 
 public class SearchDetailsActivity extends AppCompatActivity implements AlertDialogListener, SearchResultDetailsFragmentContainter, RefreshingActivity, ClientStatusWatcher, ECSearchListWatcher {
 
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
     
     public final static String BUNDLE_PARAM_POSITION = "position";
     public final static String TAG_DIALOG_ADD_SEARCH = "add_search_dialog";
     
-    AmuleControllerApplication mApp;
+    AmuleRemoteApplication mApp;
     MenuItem refreshItem;
     boolean mIsProgressShown = false;
     int mPosition;
@@ -51,7 +51,7 @@ public class SearchDetailsActivity extends AppCompatActivity implements AlertDia
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        mApp = (AmuleControllerApplication) getApplication();
+        mApp = (AmuleRemoteApplication) getApplication();
         
         if (DEBUG) Log.d(TAG, "SearchDetailsActivity.onCreate: Calling super");
         super.onCreate(savedInstanceState);
@@ -126,8 +126,8 @@ public class SearchDetailsActivity extends AppCompatActivity implements AlertDia
             
             if (mSearch != null && (mSearch.mSearchStatus== ECSearchStatus.STARTING || mSearch.mSearchStatus == ECSearchStatus.RUNNING)) {
                 if (mIsProgressShown) {
-                    MenuItemCompat.setActionView(refreshItem, R.layout.refresh_progress);
-                    //refreshItem.setActionView(R.layout.refresh_progress);
+                    MenuItemCompat.setActionView(refreshItem, R.layout.part_refresh_progress);
+                    //refreshItem.setActionView(R.layout.part_refresh_progress);
                 } else {
                     MenuItemCompat.setActionView(refreshItem, null);
                     //refreshItem.setActionView(null);

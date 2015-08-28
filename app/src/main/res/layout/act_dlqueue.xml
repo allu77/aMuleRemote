@@ -115,7 +115,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        tools:layout="@layout/dlqueue_fragment" >
+        tools:layout="@layout/frag_dlqueue" >
     </fragment>
 
     <com.google.android.gms.ads.AdView

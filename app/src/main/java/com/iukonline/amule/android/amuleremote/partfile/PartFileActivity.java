@@ -27,8 +27,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication;
-import com.iukonline.amule.android.amuleremote.AmuleControllerApplication.RefreshingActivity;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
+import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication.RefreshingActivity;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
@@ -46,7 +46,7 @@ import com.iukonline.amule.ec.ECPartFile;
 
 
 public class PartFileActivity extends AppCompatActivity implements AlertDialogListener, ClientStatusWatcher, ECPartFileWatcher, ECPartFileActionWatcher, RenameDialogContainer, RefreshingActivity {
-    private final static String TAG = AmuleControllerApplication.AC_LOGTAG;
+    private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
     
     public final static String BUNDLE_PARAM_HASH = "hash";
@@ -57,7 +57,7 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
     private final static String TAG_DIALOG_DELETE = "delete_dialog";
 
     
-    private AmuleControllerApplication mApp;
+    private AmuleRemoteApplication mApp;
     
     byte[] mHash = null;
     ECPartFile mPartFile;
@@ -79,8 +79,8 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mApp = (AmuleControllerApplication) getApplication();
-        this.setContentView(R.layout.partfile_activity);
+        mApp = (AmuleRemoteApplication) getApplication();
+        this.setContentView(R.layout.act_partfile);
         
         Intent i = getIntent();
         if (i != null) {
@@ -203,8 +203,8 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
         
         if (refreshItem != null) {
             if (mIsProgressShown) {
-                MenuItemCompat.setActionView(refreshItem, R.layout.refresh_progress);
-                //refreshItem.setActionView(R.layout.refresh_progress);
+                MenuItemCompat.setActionView(refreshItem, R.layout.part_refresh_progress);
+                //refreshItem.setActionView(R.layout.part_refresh_progress);
             } else {
                 MenuItemCompat.setActionView(refreshItem, null);
                 //refreshItem.setActionView(null);
