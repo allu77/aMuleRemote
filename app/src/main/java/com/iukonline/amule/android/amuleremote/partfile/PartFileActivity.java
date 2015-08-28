@@ -253,7 +253,7 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
     
     
     public void showRenameDialog(String fileName) {
-        EditTextDialogFragment d = new EditTextDialogFragment(R.string.dialog_rename_partfile, fileName);
+        EditTextDialogFragment d = EditTextDialogFragment.newInstance(R.string.dialog_rename_partfile, fileName);
         if (DEBUG) Log.d(TAG, "PartFileActivity.showRenameDialog: showing dialog");
         d.show(getSupportFragmentManager(), TAG_DIALOG_RENAME);
     }
@@ -261,7 +261,7 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
     
     private void showDeleteConfirmDialog() {
         
-        AlertDialogFragment d = new AlertDialogFragment(R.string.partfile_dialog_delete_confirm, true);
+        AlertDialogFragment d = AlertDialogFragment.newInstance(R.string.partfile_dialog_delete_confirm, true);
         if (DEBUG) Log.d(TAG, "PartFileActivity.showRenameDialog: showing dialog");
         d.show(getSupportFragmentManager(), TAG_DIALOG_DELETE);
     }

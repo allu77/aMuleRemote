@@ -8,6 +8,7 @@ package com.iukonline.amule.android.amuleremote.helpers.gui.dialogs;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.TextView;
@@ -23,12 +24,18 @@ public class WhatsNewDialogFragment extends AlertDialogFragment {
     
     public WhatsNewDialogFragment() {}
     
-    public WhatsNewDialogFragment(String welcome, String features) {
-        mShowCancel = false;
-        mWelcome = welcome;
-        mFeatures = features;
+    public static WhatsNewDialogFragment newInstance(String welcome, String features) {
+
+        Bundle args = new Bundle();
+        args.putString(BUNDLE_WELCOME, welcome);
+        args.putString(BUNDLE_FEATURES, features);
+        args.putBoolean(BUNDLE_SHOW_CANCEL, false);
+
+        WhatsNewDialogFragment fragment = new WhatsNewDialogFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
-    
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putString(BUNDLE_WELCOME, mWelcome);
@@ -36,13 +43,15 @@ public class WhatsNewDialogFragment extends AlertDialogFragment {
         super.onSaveInstanceState(outState);
     }
     
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = getDefaultAlertDialogBuilder(savedInstanceState);
-        
-        if (savedInstanceState != null) {
-            mWelcome = savedInstanceState.getString(BUNDLE_WELCOME);
-            mFeatures = savedInstanceState.getString(BUNDLE_FEATURES);
+
+        Bundle b = (savedInstanceState == null ? getArguments() : savedInstanceState);
+        if (b != null) {
+            mWelcome = b.getString(BUNDLE_WELCOME);
+            mFeatures = b.getString(BUNDLE_FEATURES);
         }
         
         View whatsNewView = getActivity().getLayoutInflater().inflate(R.layout.dialog_whats_new, null);

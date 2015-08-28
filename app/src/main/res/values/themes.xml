@@ -31,7 +31,7 @@
   </style>
 
   <style name="AlertDialogTitle">
-    <item name="android:textColor">@color/accent</item>
+    <item name="android:textColor">@color/primary_dark</item>
     <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
   </style>
 

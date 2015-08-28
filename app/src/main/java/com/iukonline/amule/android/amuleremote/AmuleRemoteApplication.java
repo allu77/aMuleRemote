@@ -394,7 +394,7 @@ public class AmuleRemoteApplication extends Application {
                 if (currVersion < 14) sb.append(getResources().getString(R.string.dialog_whats_new_features_14));
                 if (currVersion < 18) sb.append("\n" + getResources().getString(R.string.dialog_whats_new_features_18));
                 if (currVersion < 20) sb.append("\n" + getResources().getString(R.string.dialog_whats_new_features_20));
-                WhatsNewDialogFragment d = new WhatsNewDialogFragment(getResources().getString(R.string.dialog_whats_new_welcome, mVersionName), sb.toString());
+                WhatsNewDialogFragment d = WhatsNewDialogFragment.newInstance(getResources().getString(R.string.dialog_whats_new_welcome, mVersionName), sb.toString());
                 d.show(fm, TAG_DIALOG_WHATS_NEW);
                 SharedPreferences.Editor e = mSettings.edit();
                 e.putInt(AmuleRemoteApplication.AC_SETTING_LAST_APP_VER, mVersionCode);

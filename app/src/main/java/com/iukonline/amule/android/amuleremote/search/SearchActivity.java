@@ -126,7 +126,7 @@ public class SearchActivity extends AppCompatActivity implements AlertDialogList
             
             if (mFragManager.findFragmentByTag(TAG_DIALOG_SERVER_VERSION) == null) {
                 
-                AlertDialogFragment d = new AlertDialogFragment(R.string.dialog_search_not_available_title, R.string.dialog_search_not_available_message, false);
+                AlertDialogFragment d = AlertDialogFragment.newInstance(R.string.dialog_search_not_available_title, R.string.dialog_search_not_available_message, false);
                 
                 if (DEBUG) Log.d(TAG, "SearchActivity.onResume: search not available - showing dialog");
                 d.show(mFragManager, TAG_DIALOG_SERVER_VERSION);
@@ -201,7 +201,7 @@ public class SearchActivity extends AppCompatActivity implements AlertDialogList
         if (lastSearch != null && (lastSearch.mSearchStatus == ECSearchStatus.STARTING || lastSearch.mSearchStatus == ECSearchStatus.RUNNING)) {
             
             mApp.mStartSearch = s;
-            AlertDialogFragment d = new AlertDialogFragment(R.string.dialog_start_search, true);
+            AlertDialogFragment d = AlertDialogFragment.newInstance(R.string.dialog_start_search, true);
             if (DEBUG) Log.d(TAG, "SearchActivity.startSearch: showing dialog");
             d.show(getSupportFragmentManager(), TAG_DIALOG_START_SEARCH);
             

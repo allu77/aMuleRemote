@@ -9,6 +9,7 @@ package com.iukonline.amule.android.amuleremote.helpers.gui.dialogs;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.CheckBox;
@@ -24,10 +25,15 @@ public class TooltipDialogFragment extends AlertDialogFragment {
     protected CheckBox mCheckBox;
     
     public TooltipDialogFragment() {}
-    
-    public TooltipDialogFragment(long tooltipId, int title, int msg) {
-        super(title, msg, false);
-        mTooltipId = tooltipId;
+
+    public static TooltipDialogFragment newInstance(long tooltipId, int title, int msg) {
+
+        TooltipDialogFragment fragment = new TooltipDialogFragment();
+        fragment.setAlertDialogFragmentArguments(title, msg, false);
+        Bundle args = fragment.getArguments();
+        args.putLong(BUNDLE_TOOLTIP_ID, tooltipId);
+        fragment.setArguments(args);
+        return fragment;
     }
     
     @Override
@@ -36,14 +42,28 @@ public class TooltipDialogFragment extends AlertDialogFragment {
         super.onSaveInstanceState(outState);
     }
 
-    
-    
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mTooltipId = savedInstanceState.getInt(BUNDLE_TOOLTIP_ID);
+        } else {
+            Bundle args = getArguments();
+            if (args != null) mTooltipId = getArguments().getLong(BUNDLE_TOOLTIP_ID);
+        }
+
+    }
+
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        
+
+        /*
         if (savedInstanceState != null) {
             mTooltipId = savedInstanceState.getInt(BUNDLE_TOOLTIP_ID);
         }
+        */
 
         View checkBoxView = View.inflate(getActivity(), R.layout.dialog_tooltip, null);
         mCheckBox = (CheckBox) checkBoxView.findViewById(R.id.dialog_tooltip_checkbox);

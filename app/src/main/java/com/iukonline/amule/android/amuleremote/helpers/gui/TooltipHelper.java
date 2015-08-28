@@ -6,14 +6,14 @@
 
 package com.iukonline.amule.android.amuleremote.helpers.gui;
 
-import java.util.Locale;
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.TooltipDialogFragment;
+
+import java.util.Locale;
 
 public class TooltipHelper {
     
@@ -38,7 +38,7 @@ public class TooltipHelper {
             //} else if (l.getLanguage().equals("pt") && l.getCountry().equals("BR")) {
             //    return new TooltipDialogFragment(TOOLTIPHELPER_TOOLTIP_LOCALIZATION, R.string.dialog_tooltip_title, R.string.dialog_tooltip_auto_localization);
             } else {
-                return new TooltipDialogFragment(TOOLTIPHELPER_TOOLTIP_LOCALIZATION, R.string.dialog_tooltip_title, R.string.dialog_tooltip_no_localization);
+                return TooltipDialogFragment.newInstance(TOOLTIPHELPER_TOOLTIP_LOCALIZATION, R.string.dialog_tooltip_title, R.string.dialog_tooltip_no_localization);
             }
         } 
         return null;

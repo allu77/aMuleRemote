@@ -306,7 +306,10 @@ public class DlQueueActivity extends AppCompatActivity implements AlertDialogLis
         if (! mServerConfigured) {
             if (mFragManager.findFragmentByTag(TAG_DIALOG_NO_SERVER) == null) {
                 if (DEBUG) Log.d(TAG, "DlQueueActivity.showPostResumeDialog: no server configured - showing dialog");
-                AlertDialogFragment d = new AlertDialogFragment(R.string.dlqueue_dialog_title_no_server_configured, R.string.dlqueue_dialog_message_no_server_configured, true);
+                AlertDialogFragment d = AlertDialogFragment.newInstance(
+                        R.string.dlqueue_dialog_title_no_server_configured,
+                        R.string.dlqueue_dialog_message_no_server_configured,
+                        true);
                 d.show(mFragManager, TAG_DIALOG_NO_SERVER);
             }
             return;
@@ -503,7 +506,7 @@ public class DlQueueActivity extends AppCompatActivity implements AlertDialogLis
     public void showAddED2KDialog(String url) {
         
         if (mFragManager.findFragmentByTag(TAG_DIALOG_ADD_ED2K) == null) {
-            EditTextDialogFragment d = new EditTextDialogFragment(R.string.dialog_added2k_title, url);
+            EditTextDialogFragment d = EditTextDialogFragment.newInstance(R.string.dialog_added2k_title, url);
     
             if (DEBUG) Log.d(TAG, "DlQueueActivity.showAddED2KDialog: showing dialog");
             d.show(mFragManager, TAG_DIALOG_ADD_ED2K);
@@ -519,7 +522,7 @@ public class DlQueueActivity extends AppCompatActivity implements AlertDialogLis
         } catch (NameNotFoundException e) {
         }
         
-        AboutDialogFragment d = new AboutDialogFragment(versionName, mApp.getReleaseNotes());
+        AboutDialogFragment d = AboutDialogFragment.newInstance(versionName, mApp.getReleaseNotes());
         if (DEBUG) Log.d(TAG, "DlQueueActivity.showAboutDialog: showing dialog");
         d.show(getSupportFragmentManager(), "about_dialog");
     }
@@ -633,7 +636,7 @@ public class DlQueueActivity extends AppCompatActivity implements AlertDialogLis
         
         // FIXME: Prima di rilasciare verificare che app number sul manifest sia incrementato...
         
-        NewVersionDialogFragment d = new NewVersionDialogFragment(newReleaseURL, releaseNotes);
+        NewVersionDialogFragment d = NewVersionDialogFragment.newInstance(newReleaseURL, releaseNotes);
         d.show(getSupportFragmentManager(), "new_release_dialog");
         
     }

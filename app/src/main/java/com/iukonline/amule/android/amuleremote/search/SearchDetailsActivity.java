@@ -221,7 +221,7 @@ public class SearchDetailsActivity extends AppCompatActivity implements AlertDia
         mApp.mStartDownload = sf;
         
         String dialogMsg = getResources().getString(R.string.dialog_add_search_file, sf.getFileName());
-        AlertDialogFragment d = new AlertDialogFragment(null, dialogMsg, true);
+        AlertDialogFragment d = AlertDialogFragment.newInstance(null, dialogMsg, true);
         if (DEBUG) Log.d(TAG, "SearchDetailsActivity.startSearchResult: showing dialog");
         d.show(getSupportFragmentManager(), "add_search_dialog");
 
