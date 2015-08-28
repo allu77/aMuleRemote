@@ -5,93 +5,121 @@
   ~ Proprietary and confidential
   -->
 
-<RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"   android:paddingTop="5dip"
-  android:paddingBottom="5dip">
-
 <LinearLayout
-	android:id="@+id/amuledl_row_titlebar"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:orientation="horizontal">
-	
-  <TextView 
-  	android:layout_height="wrap_content" 
-  	android:id="@+id/amuledl_row_filename" 
-  	android:layout_width="0dip"
-  	android:layout_weight="1" 
-  	android:singleLine="true" 
-  	android:textStyle="bold" />
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 
-  <TextView 
-  	android:layout_height="wrap_content" 
-  	android:layout_width="wrap_content" 
-  	android:id="@+id/amuledl_row_hascomments" 
-  	/>
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:paddingLeft="@dimen/activity_horizontal_margin"
+	android:paddingRight="@dimen/activity_horizontal_margin"
+	android:paddingTop="8dp"
+	android:paddingBottom="8dp">
+
+
+	<LinearLayout
+		android:orientation="horizontal"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:id="@+id/amuledl_row_filename"
+			android:layout_width="0dip"
+			android:layout_weight="1"
+			android:singleLine="true"
+			tools:text="Filename Here.Extension"
+			android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:id="@+id/amuledl_row_hascomments"
+			tools:text="!"
+			/>
+	</LinearLayout>
+
+	<LinearLayout
+		android:orientation="horizontal"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:id="@+id/amuledl_row_progress"
+            android:scrollbarStyle="insideInset"
+            android:layout_height="2dp"
+            android:layout_width="0dp"
+			android:layout_weight="1"
+			android:layout_gravity="center_vertical" />
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:id="@+id/amuledl_row_eta"
+			android:layout_width="wrap_content"
+			android:paddingLeft="@dimen/activity_horizontal_margin"
+			tools:text="10mins"
+			/>
+	</LinearLayout>
+
+	<LinearLayout
+		android:orientation="horizontal"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:id="@+id/amuledl_row_transferred"
+			android:layout_width="0dp"
+			tools:text="200MB/1GB"
+			android:layout_weight="1" />
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:id="@+id/amuledl_row_status"
+			android:layout_width="wrap_content"
+			tools:text="Downloading 1MB/s"
+			/>
+
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:orientation="horizontal"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:id="@+id/amuledl_row_label_sources"
+			android:layout_width="wrap_content"
+			android:text="@string/label_sources"/>
+
+		<TextView
+			android:layout_width="0dip"
+			android:layout_weight="1"
+			android:layout_height="wrap_content"
+			android:id="@+id/amuledl_row_sources"
+			tools:text="100(5)/102+10"
+			/>
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:id="@+id/amuledl_row_prio"
+			android:layout_width="wrap_content"
+			tools:text="High"
+			/>
+
+	</LinearLayout>
+
+
+
+
+
+
+
+
+
 
 </LinearLayout>
-  <TextView 
-  	android:layout_height="wrap_content" 
-  	android:id="@+id/amuledl_row_transferred" 
-  	android:layout_width="wrap_content"
-  	android:layout_below="@+id/amuledl_row_titlebar"
-  	/>
-
-  <TextView 
-  	android:layout_height="wrap_content" 
-  	android:id="@+id/amuledl_row_eta" 
-  	android:layout_width="wrap_content"
-  	android:layout_alignBaseline="@+id/amuledl_row_transferred"
-  	android:layout_toLeftOf="@+id/amuledl_row_prio"
-  	android:layout_marginRight="10dp"/>
-
-  <TextView 
-  	android:layout_height="wrap_content" 
-  	android:id="@+id/amuledl_row_prio" 
-  	android:layout_width="wrap_content"
-  	android:layout_alignBaseline="@+id/amuledl_row_transferred"
-  	android:layout_alignParentRight="true"
-  	/>
-
-  <ProgressBar 
-  	style="?android:attr/progressBarStyleHorizontal" 
-  	android:id="@+id/amuledl_row_progress" 
-  	android:scrollbarStyle="insideInset" 
-  	android:layout_height="5dip" 
-  	android:layout_width="wrap_content" 
-  	android:layout_below="@+id/amuledl_row_transferred"
-  	android:layout_alignParentLeft="true" 
-  	android:layout_alignParentRight="true" />
-  	
-  <TextView 
-  	android:layout_height="wrap_content" 
-  	android:id="@+id/amuledl_row_label_sources" 
-  	android:layout_width="wrap_content"
-  	android:layout_below="@+id/amuledl_row_progress"
-  	android:layout_alignParentLeft="true"
-  	android:text="@string/label_sources"/>
-
-  <TextView 
-  	android:layout_width="wrap_content" 
-  	android:layout_height="wrap_content" 
-  	android:id="@+id/amuledl_row_sources" 
-  	android:layout_alignBaseline="@+id/amuledl_row_label_sources" 
-  	android:layout_toRightOf="@+id/amuledl_row_label_sources"
-	/>  	 
-
-
-  <TextView 
-  	android:layout_height="wrap_content" 
-  	android:id="@+id/amuledl_row_status" 
-  	android:layout_width="wrap_content" 
-  	android:layout_alignParentRight="true"
-  	android:layout_alignBaseline="@+id/amuledl_row_sources"
-	/>
-	
-  	
-  	
-   
-</RelativeLayout>

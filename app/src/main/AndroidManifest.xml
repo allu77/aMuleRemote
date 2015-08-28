@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   ~ Copyright (c) 2015. Gianluca Vegetti, All Rights Reserved
   ~ Unauthorized copying of this file, via any medium is strictly prohibited
@@ -62,9 +61,9 @@
             android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name=".settings.SettingsActivity"
-            android:theme="@style/Theme.AmuleRemote.Settings"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".dlqueue.AmuleRemoteActivity" >
+            android:parentActivityName=".dlqueue.AmuleRemoteActivity"
+            android:theme="@style/Theme.AmuleRemote.Settings" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iukonline.amule.android.amuleremote.dlqueue.AmuleRemoteActivity" />
@@ -72,8 +71,8 @@
         <activity
             android:name=".settings.ServerSettingsActivity"
             android:label="@string/title_activity_server_settings"
-            android:theme="@style/Theme.AmuleRemote.Settings"
-            android:parentActivityName=".settings.SettingsActivity" >
+            android:parentActivityName=".settings.SettingsActivity"
+            android:theme="@style/Theme.AmuleRemote.Settings" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.iukonline.amule.android.amuleremote.settings.SettingsActivity" />

@@ -10,7 +10,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/main_conn_bar"
@@ -18,7 +18,13 @@
         android:layout_height="wrap_content"
         android:baselineAligned="false"
         android:orientation="horizontal"
-        android:visibility="gone" >
+        android:visibility="visible"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/space_between_content_areas"
+        android:background="@color/primary_light"
+        >
 
         <LinearLayout
             android:layout_width="0dip"
@@ -37,7 +43,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="top"
-                    android:text="@string/stats_label_edonkey" />
+                    android:text="@string/stats_label_edonkey"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <TextView
                     android:id="@+id/main_edonkey_status"
@@ -45,7 +52,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="top"
                     android:text="STATUS"
-                    tools:ignore="HardcodedText" />
+                    tools:ignore="HardcodedText"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
             </LinearLayout>
 
@@ -59,7 +67,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="bottom"
-                    android:text="@string/stats_label_kad" />
+                    android:text="@string/stats_label_kad"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <TextView
                     android:id="@+id/main_kad_status"
@@ -67,7 +76,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="bottom"
                     android:text="STATUS"
-                    tools:ignore="HardcodedText" />
+                    tools:ignore="HardcodedText"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
             </LinearLayout>
         </LinearLayout>

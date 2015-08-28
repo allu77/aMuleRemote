@@ -6,17 +6,11 @@
   -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-<!--     <style name="AmuleRemoteActionButtonStyle" parent="@android:style/Widget.Holo.ActionButton">
-
-        
-        	<item name="android:layout_marginLeft">0dip</item>
-        	<item name="android:layout_marginRight">0dip</item>
-        	<item name="android:layout_width">24dip</item>
-        	<item name="android:layout_height">24dip</item>
-        	
-        	    <item name="android:minWidth">0dip</item>
-    <item name="android:paddingLeft">0dip</item>
-    <item name="android:paddingRight">0dip</item>
+    <style name="RobotoTextViewStyle" parent="android:Widget.TextView">
     </style>
-    -->
+
+    <style name="RobotoButtonStyle" parent="Widget.AppCompat.Button">
+    </style>
+
+
 </resources>

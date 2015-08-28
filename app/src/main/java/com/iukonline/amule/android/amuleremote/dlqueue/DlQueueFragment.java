@@ -330,16 +330,22 @@ public class DlQueueFragment extends ListFragment implements DlQueueWatcher {
             if (position < getCount()) {
                 ECPartFile o = getItem(position);
                 if (o != null) {
-                        float perc = ((float) o.getSizeDone()) * 100f / ((float) o.getSizeFull());
-                        
-                        holder.mFileName.setText(o.getFileName());
-                        holder.mTransfered.setText(String.format("%s/%s (%.1f%%)", 
-                                        GUIUtils.longToBytesFormatted(o.getSizeDone()), 
-                                        GUIUtils.longToBytesFormatted(o.getSizeFull()),
-                                        perc
-                                        ));
-                        
-                        if (o.getCommentCount() == 0) {
+                    float perc = ((float) o.getSizeDone()) * 100f / ((float) o.getSizeFull());
+
+                    holder.mFileName.setText(o.getFileName());
+                    /*
+                    holder.mTransfered.setText(String.format("%s/%s (%.1f%%)",
+                                    GUIUtils.longToBytesFormatted(o.getSizeDone()),
+                                    GUIUtils.longToBytesFormatted(o.getSizeFull()),
+                                    perc
+                                    ));
+                    */
+                   holder.mTransfered.setText(String.format("%s/%s",
+                            GUIUtils.longToBytesFormatted(o.getSizeDone()),
+                            GUIUtils.longToBytesFormatted(o.getSizeFull())
+                    ));
+
+                    if (o.getCommentCount() == 0) {
                             holder.mComment.setVisibility(View.GONE);
                         } else {
                             holder.mComment.setVisibility(View.VISIBLE);

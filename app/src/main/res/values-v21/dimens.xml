@@ -8,5 +8,4 @@
 <resources>
 
     <dimen name="progress_on_bar_size">28dip</dimen>
-    <!--<dimen name="progress_on_bar_width">48dp</dimen> -->
 </resources>

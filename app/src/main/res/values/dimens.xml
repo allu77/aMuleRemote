@@ -1,0 +1,17 @@
+<!--
+  ~ Copyright (c) 2015. Gianluca Vegetti, All Rights Reserved
+  ~ Unauthorized copying of this file, via any medium is strictly prohibited
+  ~ Proprietary and confidential
+  -->
+
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="space_between_content_areas">8dp</dimen>
+
+    <dimen name="progress_on_bar_size">24dip</dimen>
+    <dimen name="progress_on_bar_width">48dp</dimen>
+
+</resources>
