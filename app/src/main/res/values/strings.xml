@@ -38,15 +38,15 @@
     <string name="settings_summary_server_port">TCP port for EC</string>
     <string name="settings_summary_server_password">Your EC password</string>
     <string name="settings_summary_client_autorefresh">Refresh contents automatically</string>
-    <string name="partfile_detail_label_sources_active">Active: </string>
-    <string name="partfile_detail_label_sources_notcurrent">Not current: </string>
-    <string name="partfile_detail_label_sources_a4af">Asked for another file: </string>
-    <string name="partfile_detail_label_sources_available">Available: </string>
+    <string name="partfile_detail_label_sources_active">active</string>
+    <string name="partfile_detail_label_sources_notcurrent">not current</string>
+    <string name="partfile_detail_label_sources_a4af">asked for another file</string>
+    <string name="partfile_detail_label_sources_available">available</string>
     <string name="partfile_detail_label_sources">Sources</string>
-    <string name="partfile_detail_label_remaining">Time remaining: </string>
+    <string name="partfile_detail_label_remaining">remaining</string>
     <string name="partfile_detail_label_done">Transferred: </string>
     <string name="partfile_detail_label_size">Size: </string>
-    <string name="partfile_detail_label_link">ED2K Link: </string>
+    <string name="partfile_detail_label_link">ED2K Link</string>
     <string name="menu_detail_opt_a4af_now">Switch A4AF Now</string>
     <string name="menu_detail_opt_a4af_auto">Switch A4AF Auto</string>
     <string name="menu_detail_opt_a4af_away">Move A4AF away</string>
@@ -58,7 +58,7 @@
     <string name="partfile_prio_auto_normal">Auto [No]</string>
     <string name="partfile_prio_auto_high">Auto [Hi]</string>
     <string name="partfile_prio_unknown">Unknown</string>
-    <string name="partfile_detail_label_priority">Priority: </string>
+    <string name="partfile_detail_label_priority">Priority</string>
     <string name="menu_detail_opt_prio">Change priority</string>
     <string name="partfile_prio_auto">Auto</string>
     <string name="menu_detail_opt_a4af">A4AF</string>
@@ -210,4 +210,5 @@
 	<string name="settings_label_button_add">Add aMule PC</string>
 
 	<string name="settings_summary_client_autorefresh_interval">Every %d seconds</string>
+	<string name="partfile_details_label_size_of">of</string>
 </resources>
