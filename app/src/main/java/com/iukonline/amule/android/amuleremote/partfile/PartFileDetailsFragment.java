@@ -23,7 +23,12 @@ import com.iukonline.amule.android.amuleremote.helpers.gui.GUIUtils;
 import com.iukonline.amule.ec.ECCategory;
 import com.iukonline.amule.ec.ECPartFile;
 
-import java.text.DateFormat;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Months;
+import org.joda.time.format.DateTimeFormat;
+
+import java.util.Date;
 
 public class PartFileDetailsFragment extends Fragment implements ECPartFileWatcher {
 
@@ -123,11 +128,46 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
 
             ((TextView) v.findViewById(R.id.partfile_detail_remaining)).setText(GUIUtils.getETA(getActivity(), mPartFile.getSizeFull() - mPartFile.getSizeDone(), mPartFile.getSpeed()));
 
-            ((TextView) v.findViewById(R.id.partfile_detail_lastseencomplete)).setText(
-                            mPartFile.getLastSeenComp() == null || mPartFile.getLastSeenComp().getTime() == 0 ?
-                            getResources().getString(R.string.partfile_last_seen_never)
-                            :
-                            DateFormat.getDateTimeInstance().format(mPartFile.getLastSeenComp()));
+            TextView lastSeenCompleteTv = (TextView) v.findViewById(R.id.partfile_detail_lastseencomplete);
+            Date lastSeenComplateDate = mPartFile.getLastSeenComp();
+            DateTime lastSeenComplateDateTime = new DateTime(lastSeenComplateDate);
+            DateTime now = new DateTime();
+            if (lastSeenComplateDate == null || lastSeenComplateDate.getTime() == 0L) {
+                lastSeenCompleteTv.setText(getResources().getString(R.string.partfile_last_seen_never));
+            } else {
+                long lastSeenSeconds = (System.currentTimeMillis() -  mPartFile.getLastSeenComp().getTime()) / 1000L;
+
+                if (lastSeenSeconds <= 60L) {
+                    lastSeenCompleteTv.setText(getResources().getString(R.string.partfile_last_seen_now));
+                } else if (lastSeenSeconds <= 3600L) {
+                    lastSeenCompleteTv.setText(getResources().getQuantityString(R.plurals.partfile_last_seen_mins, (int) (lastSeenSeconds / 60L), lastSeenSeconds / 60L));
+                } else if (lastSeenSeconds <= 86400L) {
+                    int lastSeenHours = (int) (lastSeenSeconds / 86400);
+                    if (lastSeenHours < 12 || lastSeenComplateDateTime.getDayOfMonth() == now.getDayOfMonth()) {
+                        lastSeenCompleteTv.setText(getResources().getQuantityString(R.plurals.partfile_last_seen_hours, lastSeenHours, lastSeenHours));
+                    } else {
+                        lastSeenCompleteTv.setText(getResources().getString(R.string.partfile_last_seen_yesterday));
+                    }
+                } else {
+                    int diffDays = Days.daysBetween(lastSeenComplateDateTime, now).getDays();
+                    if (diffDays <= 31) {
+                        lastSeenCompleteTv.setText(getResources().getQuantityString(R.plurals.partfile_last_seen_days, diffDays, diffDays));
+                    } else if (diffDays <= 180) {
+                        int diffMonths = Months.monthsBetween(lastSeenComplateDateTime, now).getMonths();
+                        lastSeenCompleteTv.setText(getResources().getQuantityString(R.plurals.partfile_last_seen_months, diffMonths, diffMonths));
+                    } else {
+                        lastSeenCompleteTv.setText(
+                                getResources().getString(R.string.partfile_last_seen_date,
+                                        lastSeenComplateDateTime.toString(
+                                                DateTimeFormat
+                                                        .forStyle("L-")
+                                                        .withLocale(getResources().getConfiguration().locale)
+                                        )
+                                )
+                        );
+                    }
+                }
+            }
 
             ((TextView) v.findViewById(R.id.partfile_detail_sources_available)).setText(Integer.toString(mPartFile.getSourceCount() - mPartFile.getSourceNotCurrent()));
             ((TextView) v.findViewById(R.id.partfile_detail_sources_active)).setText(Integer.toString(mPartFile.getSourceXfer()));

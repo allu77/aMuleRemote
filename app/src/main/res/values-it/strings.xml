@@ -201,4 +201,24 @@ ACRA (http://acra.googlecode.com/).\n
     <string name="title_activity_server_settings">Impostazioni PC aMule</string>
     <string name="title_activity_settings">Impostazioni</string>
     <string name="dialog_whats_new_features_20">Gestione di più PC aMule</string>
+    <string name="partfile_details_label_size_of">di</string>
+    <string name="partfile_last_seen_date">Visto completo il %s</string>
+    <string name="partfile_last_seen_now">Fonti complete online</string>
+    <string name="partfile_last_seen_yesterday">Visto completo ieri</string>
+    <plurals name="partfile_last_seen_mins">
+        <item quantity="one">Visto completo %d minuto fa</item>
+        <item quantity="other">Visto completo %d minuti fa</item>
+    </plurals>
+    <plurals name="partfile_last_seen_hours">
+        <item quantity="one">Visto completo %d ora fa</item>
+        <item quantity="other">Visto completo %d ore fa</item>
+    </plurals>
+    <plurals name="partfile_last_seen_days">
+        <item quantity="one">Visto completo %d giorno fa</item>
+        <item quantity="other">Visto completo %d giorni fa</item>
+    </plurals>
+    <plurals name="partfile_last_seen_months">
+        <item quantity="one">Visto completo %d mese fa</item>
+        <item quantity="other">Visto completo %d mesi fa</item>
+    </plurals>
 </resources>

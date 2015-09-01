@@ -252,20 +252,13 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/partfile_detail_label_lastseencomplete"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/partfile_detail_label_lastseencomplete"
-                        android:paddingTop="@dimen/space_between_content_areas">
-                    </TextView>
-
-                    <TextView
                         android:id="@+id/partfile_detail_lastseencomplete"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Never"
                         tools:ignore="HardcodedText"
-                        android:ellipsize="end">
+                        android:ellipsize="end"
+                        android:paddingTop="@dimen/space_between_content_areas">
 
                     </TextView>
 

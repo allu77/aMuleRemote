@@ -167,7 +167,6 @@
 	<string name="search_no_search">No search executed yet</string>
 	<string name="category_uncategorized">Uncategorized</string>
 	<string name="search_details_label_sources">Sources: %1$d (%2$d)</string>
-	<string name="partfile_last_seen_never">Never</string>
 	<string name="guiutils_eta_secs">"%d secs"</string>
 	<string name="guiutils_eta_mins">"%1$d:%2$02d mins"</string>
 	<string name="guiutils_eta_hours">"%1$d:%2$02d hours"</string>
@@ -208,7 +207,27 @@
 	<string name="menu_server_settings_remove">Remove server</string>
 	<string name="dialog_whats_new_features_20">Multiple aMule PC support</string>
 	<string name="settings_label_button_add">Add aMule PC</string>
-
 	<string name="settings_summary_client_autorefresh_interval">Every %d seconds</string>
 	<string name="partfile_details_label_size_of">of</string>
+	<string name="partfile_last_seen_never">Never seen complete</string>
+	<string name="partfile_last_seen_now">Seeing complete right now</string>
+	<plurals name="partfile_last_seen_mins">
+		<item quantity="one">Seen complete %d minute ago</item>
+		<item quantity="other">Seen complete %d minutes ago</item>
+	</plurals>
+	<plurals name="partfile_last_seen_hours">
+		<item quantity="one">Seen complete %d hour ago</item>
+		<item quantity="other">Seen complete %d hours ago</item>
+	</plurals>
+	<string name="partfile_last_seen_yesterday">Last seen complete yesterday</string>
+	<plurals name="partfile_last_seen_days">
+		<item quantity="one">Seen complete %d day ago</item>
+		<item quantity="other">Seen complete %d days ago</item>
+	</plurals>
+	<plurals name="partfile_last_seen_months">
+		<item quantity="one">Seen complete %d month ago</item>
+		<item quantity="other">Seen complete %d months ago</item>
+	</plurals>
+	<string name="partfile_last_seen_date">Last seen complete on %s</string>
+
 </resources>
