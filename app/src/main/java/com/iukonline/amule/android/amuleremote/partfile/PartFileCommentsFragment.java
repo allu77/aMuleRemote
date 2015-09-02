@@ -162,7 +162,13 @@ public class PartFileCommentsFragment extends ListFragment implements ECPartFile
                     ((TextView) v.findViewById(R.id.amuledl_comments_row_rating)).setTextColor(getResources().getColor(ratingColor));
                     ((TextView) v.findViewById(R.id.amuledl_comments_row_author)).setText(o.getAuthor());
                     ((TextView) v.findViewById(R.id.amuledl_comments_row_filename)).setText(o.getSourceName());
-                    ((TextView) v.findViewById(R.id.amuledl_comments_row_comment)).setText(o.getComment());
+                    TextView commentTv = ((TextView) v.findViewById(R.id.amuledl_comments_row_comment));
+                    if (o.getComment() != null && o.getComment().length() > 0) {
+                        commentTv.setText(o.getComment());
+                        commentTv.setVisibility(View.VISIBLE);
+                    } else {
+                        commentTv.setVisibility(View.GONE);
+                    }
                 }
                 return v;
         }

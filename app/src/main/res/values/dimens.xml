@@ -9,11 +9,15 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="list_activity_vertical_margin">0dp</dimen> <!-- list_activity_margin + list_vertical_padding = activity_vertical_margin -->
+    <dimen name="list_vertical_padding">16dp</dimen>
+
     <dimen name="space_between_content_areas">8dp</dimen>
     <dimen name="space_between_words_regular">4dp</dimen>
     <dimen name="space_between_words_large">6dp</dimen>
 
     <dimen name="partfile_lower_details_min_width">256dp</dimen>
+    <dimen name="partfile_sourcenames_sourcecount_witdh">48dp</dimen>
 
     <dimen name="progress_on_bar_size">24dip</dimen>
     <dimen name="progress_on_bar_width">48dp</dimen>

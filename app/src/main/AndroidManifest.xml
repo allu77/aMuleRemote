@@ -45,7 +45,12 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity android:name=".partfile.PartFileActivity" />
+        <activity android:name=".partfile.PartFileActivity"
+            android:parentActivityName=".dlqueue.DlQueueActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.iukonline.amule.android.amuleremote.dlqueue.DlQueueActivity" />
+        </activity>
         <activity
             android:name=".search.SearchActivity"
             android:windowSoftInputMode="stateHidden" />
@@ -67,7 +72,7 @@
             android:theme="@style/Theme.AmuleRemote.Settings" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".dlqueue.DlQueueActivity" />
+                android:value="com.iukonline.amule.android.amuleremote.dlqueue.DlQueueActivity" />
         </activity>
         <activity
             android:name=".settings.ServerSettingsActivity"

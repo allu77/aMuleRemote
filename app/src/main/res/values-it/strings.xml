@@ -37,15 +37,15 @@
     <string name="settings_summary_server_port">"Porta TCP per la connessione remota (EC)"</string>
     <string name="settings_summary_server_password">"Password EC"</string>
     <string name="settings_summary_client_autorefresh">Aggiorna automaticamente i dati</string>
-    <string name="partfile_detail_label_sources_active">"Attive: "</string>
-    <string name="partfile_detail_label_sources_notcurrent">"Non disponibili: "</string>
-    <string name="partfile_detail_label_sources_a4af">"In coda per un altro file (A4AF): "</string>
-    <string name="partfile_detail_label_sources_available">"Disponibili: "</string>
-    <string name="partfile_detail_label_sources">"Sorgenti"</string>
-    <string name="partfile_detail_label_remaining">"Tempo rimanente: "</string>
+    <string name="partfile_detail_label_sources_active">"attive</string>
+    <string name="partfile_detail_label_sources_notcurrent">non disponibili"</string>
+    <string name="partfile_detail_label_sources_a4af">"in coda per un altro file (A4AF)"</string>
+    <string name="partfile_detail_label_sources_available">"disponibili"</string>
+    <string name="partfile_detail_label_sources">"Fonti"</string>
+    <string name="partfile_detail_label_remaining">"al termine"</string>
     <string name="partfile_detail_label_done">"Trasferito: "</string>
     <string name="partfile_detail_label_size">"Dimensioni: "</string>
-    <string name="partfile_detail_label_link">"Link ED2K: "</string>
+    <string name="partfile_detail_label_link">"Link ED2K"</string>
     <string name="menu_detail_opt_a4af_now">"Sposta ogni A4AF su questo file"</string>
     <string name="menu_detail_opt_a4af_auto">"Sposta ogni A4AF su questo file (auto)"</string>
     <string name="menu_detail_opt_a4af_away">"Sposta ogni A4AF sugli altri file"</string>
@@ -57,7 +57,7 @@
     <string name="partfile_prio_auto_normal">"Automatica [Normale]"</string>
     <string name="partfile_prio_auto_high">"Automatica [Alta]"</string>
     <string name="partfile_prio_unknown">"Sconosciuta"</string>
-    <string name="partfile_detail_label_priority">"Priorità: "</string>
+    <string name="partfile_detail_label_priority">"Priorità"</string>
     <string name="menu_detail_opt_prio">"Cambia priorità"</string>
     <string name="partfile_prio_auto">"Automatica"</string>
     <string name="menu_detail_opt_a4af">"A4AF"</string>
@@ -221,4 +221,5 @@ ACRA (http://acra.googlecode.com/).\n
         <item quantity="one">Visto completo %d mese fa</item>
         <item quantity="other">Visto completo %d mesi fa</item>
     </plurals>
+    <string name="menu_detail_opt_delete">Elimina</string>
 </resources>

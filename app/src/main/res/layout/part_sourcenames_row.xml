@@ -6,25 +6,31 @@
   -->
 
 <LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="horizontal"
-  android:layout_width="fill_parent"
-  android:layout_height="wrap_content"
-  android:paddingTop="5dip"
-  android:paddingBottom="5dip">
-    
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/list_vertical_padding"
+    android:paddingBottom="@dimen/list_vertical_padding"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/amuledl_sourcenames_count"
+        android:layout_marginRight="@dimen/space_between_content_areas"
+        android:layout_width="@dimen/partfile_sourcenames_sourcecount_witdh"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:gravity="right"
+        tools:text="99"/>
+
     <TextView 
     	android:id="@+id/amuledl_sourcenames_name"  
     	android:layout_weight="1"   
     	android:layout_width="0dip" 
     	android:layout_height="wrap_content"
-    	></TextView>
-    <TextView 
-    	android:id="@+id/amuledl_sourcenames_count" 
-    	android:layout_marginLeft="5dip" 
-    	android:layout_width="wrap_content" 
-    	android:layout_height="wrap_content"
-  		></TextView>
-    
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        tools:text="Source name example very very very long"
+    	/>
 </LinearLayout>
   	

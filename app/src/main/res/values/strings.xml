@@ -230,4 +230,6 @@
 	</plurals>
 	<string name="partfile_last_seen_date">Last seen complete on %s</string>
 
+	<string name="menu_detail_opt_delete">Delete</string>
+
 </resources>

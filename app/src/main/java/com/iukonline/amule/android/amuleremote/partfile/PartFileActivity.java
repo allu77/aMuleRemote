@@ -69,12 +69,13 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
     
     Button bPause;
     Button bResume;
-    Button bDelete;
-    
+
     private boolean mIsProgressShown = false;
     private boolean mNeedsRefresh = true;
-    
-    
+
+    private boolean mPauseEnabled = false;
+    private boolean mResumeEnabled = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +92,7 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
         }
         
         mBar = getSupportActionBar();
+        mBar.setDisplayHomeAsUpEnabled(true);
         mBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         
         
@@ -127,15 +129,11 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
         
         bPause = (Button) findViewById(R.id.partfile_button_pause);
         bResume = (Button) findViewById(R.id.partfile_button_resume);
-        bDelete = (Button) findViewById(R.id.partfile_button_delete);
-        
-        
+
         bPause.setOnClickListener(new OnClickListener() { public void onClick(View v) { doPartFileAction(ECPartFileAction.PAUSE); } });
         bResume.setOnClickListener(new OnClickListener() { public void onClick(View v) { doPartFileAction(ECPartFileAction.RESUME); } });
         
         
-        bDelete.setOnClickListener(new View.OnClickListener() { public void onClick(View v) { showDeleteConfirmDialog(); } });
-
         AdView adView = (AdView)this.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
@@ -209,7 +207,6 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
                 MenuItemCompat.setActionView(refreshItem, null);
                 //refreshItem.setActionView(null);
             }
-
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -245,7 +242,9 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
         case R.id.menu_detail_opt_rename:
             showRenameDialog(mPartFile.getFileName());
             return true;
-            
+        case R.id.menu_detail_opt_delete:
+            showDeleteConfirmDialog();
+            return true;
         }
         
         return super.onOptionsItemSelected(item);
@@ -305,10 +304,6 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
     
     private void refreshView() {
         
-        boolean pauseEnabled = false;
-        boolean resumeEnabled = false;
-        boolean deleteEnabled = false;
-
         if (mPartFile != null) {
             
             mBar.setTitle(mPartFile.getFileName());
@@ -325,37 +320,31 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
                     mBar.addTab(mTabComments);
                 }
             }
-            
-            
+
+            mPauseEnabled = false;
+            mResumeEnabled = false;
+
             switch (mPartFile.getStatus()) {
             case ECPartFile.PS_EMPTY:
-                pauseEnabled = true;
-                deleteEnabled = true;
+                mPauseEnabled = true;
                 break;
             case ECPartFile.PS_ERROR:
-                deleteEnabled = true;
                 break;
             case ECPartFile.PS_HASHING:
-                deleteEnabled = true;
                 break;
             case ECPartFile.PS_PAUSED:
-                deleteEnabled = true;
-                resumeEnabled = true;
+                mResumeEnabled = true;
                 break;
             case ECPartFile.PS_READY:
-                deleteEnabled = true;
-                pauseEnabled = true;
+                mPauseEnabled = true;
                 break;
             case ECPartFile.PS_WAITINGFORHASH:
-                deleteEnabled = true;
                 break;
             }
         }
 
-        bPause.setEnabled(pauseEnabled);
-        bResume.setEnabled(resumeEnabled);
-        bDelete.setEnabled(deleteEnabled);
-
+        bPause.setVisibility(mPauseEnabled ? View.VISIBLE : View.GONE);
+        bResume.setVisibility(mResumeEnabled ? View.VISIBLE: View.GONE);
     }
     
     public void showProgress(boolean show) {

@@ -8,8 +8,22 @@
 <menu
     xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:android="http://schemas.android.com/apk/res/android">
-  	<item android:title="@string/menu_opt_refresh" android:id="@+id/menu_detail_opt_refresh" android:icon="@drawable/ic_refresh_white_24dp" app:showAsAction="always"></item>
-    <item android:title="@string/menu_detail_opt_prio" android:id="@+id/menu_detail_opt_prio">
+  	<item
+        android:title="@string/menu_opt_refresh"
+        android:id="@+id/menu_detail_opt_refresh"
+        android:icon="@drawable/ic_refresh_white_24dp"
+        app:showAsAction="always"
+        android:orderInCategory="2"/>
+    <item
+        android:title="@string/menu_detail_opt_delete"
+        android:id="@+id/menu_detail_opt_delete"
+        android:icon="@drawable/ic_delete_white_24dp"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="1"/>
+
+    <item android:title="@string/menu_detail_opt_prio"
+        android:id="@+id/menu_detail_opt_prio"
+        android:orderInCategory="3">
         <menu>
             <item android:title="@string/partfile_prio_auto" android:id="@+id/menu_detail_opt_prio_auto"></item>
             <item android:title="@string/partfile_prio_high" android:id="@+id/menu_detail_opt_prio_high"></item>
@@ -17,13 +31,13 @@
             <item android:title="@string/partfile_prio_low" android:id="@+id/menu_detail_opt_prio_low"></item>
         </menu>
     </item>
-    <item android:id="@+id/menu_detail_opt_a4af" android:title="@string/menu_detail_opt_a4af">
+    <item android:id="@+id/menu_detail_opt_a4af" android:title="@string/menu_detail_opt_a4af" android:orderInCategory="5">
         <menu>
             <item android:title="@string/menu_detail_opt_a4af_now" android:id="@+id/menu_detail_opt_a4af_now"></item>
             <item android:title="@string/menu_detail_opt_a4af_auto" android:id="@+id/menu_detail_opt_a4af_auto"></item>
             <item android:title="@string/menu_detail_opt_a4af_away" android:id="@+id/menu_detail_opt_a4af_away"></item>
         </menu>
     </item>
-    <item android:id="@+id/menu_detail_opt_rename" android:title="@string/menu_detail_opt_rename"></item>
+    <item android:id="@+id/menu_detail_opt_rename" android:title="@string/menu_detail_opt_rename" android:orderInCategory="4"></item>
     
 </menu>
