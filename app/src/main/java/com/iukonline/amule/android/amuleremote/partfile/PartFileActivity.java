@@ -9,6 +9,7 @@ package com.iukonline.amule.android.amuleremote.partfile;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -22,7 +23,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -67,8 +67,7 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
     ActionBar.Tab mTabSourceNames;
     ActionBar.Tab mTabComments;
     
-    Button bPause;
-    Button bResume;
+    FloatingActionButton mFab;
 
     private boolean mIsProgressShown = false;
     private boolean mNeedsRefresh = true;
@@ -127,11 +126,21 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
             mNeedsRefresh = savedInstanceState.getBoolean(BUNDLE_NEEDS_REFRESH, true);
         }
         
-        bPause = (Button) findViewById(R.id.partfile_button_pause);
-        bResume = (Button) findViewById(R.id.partfile_button_resume);
+        mFab = (FloatingActionButton) findViewById(R.id.partfile_fab);
+        mFab.setTag("PLAY");
 
-        bPause.setOnClickListener(new OnClickListener() { public void onClick(View v) { doPartFileAction(ECPartFileAction.PAUSE); } });
-        bResume.setOnClickListener(new OnClickListener() { public void onClick(View v) { doPartFileAction(ECPartFileAction.RESUME); } });
+        mFab.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mFab.getTag().equals("PAUSE")) {
+                    if (DEBUG) Log.d(TAG, "PartFileActivity.mFab.onClick: Pausing parftile");
+                    doPartFileAction(ECPartFileAction.PAUSE);
+                } else {
+                    if (DEBUG) Log.d(TAG, "PartFileActivity.mFab.onClick: Resuming parftile");
+                    doPartFileAction(ECPartFileAction.RESUME);
+                }
+            }
+        });
         
         
         AdView adView = (AdView)this.findViewById(R.id.adView);
@@ -288,6 +297,7 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
     }
     
     private void doPartFileAction(ECPartFileAction actionType, boolean refreshAfter, String stringParam ) {
+        if (DEBUG) Log.d(TAG, "PartFileActivity.doParcFileAction: Executing action " + actionType + " with parameter " + stringParam);
         ECPartFileActionAsyncTask actionTask = (ECPartFileActionAsyncTask) mApp.mECHelper.getNewTask(ECPartFileActionAsyncTask.class);
         actionTask.setECPartFile(mPartFile).setAction(actionType);
         if (stringParam != null) actionTask.setStringParam(stringParam);
@@ -305,7 +315,7 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
     private void refreshView() {
         
         if (mPartFile != null) {
-            
+
             mBar.setTitle(mPartFile.getFileName());
             
             if (mPartFile.getCommentCount() == 0) {
@@ -326,25 +336,24 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
 
             switch (mPartFile.getStatus()) {
             case ECPartFile.PS_EMPTY:
-                mPauseEnabled = true;
-                break;
-            case ECPartFile.PS_ERROR:
-                break;
-            case ECPartFile.PS_HASHING:
+            case ECPartFile.PS_READY:
+                mFab.setTag("PAUSE");
+                mFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_white_24dp));
+                mFab.setVisibility(View.VISIBLE);
                 break;
             case ECPartFile.PS_PAUSED:
-                mResumeEnabled = true;
+                mFab.setTag("PLAY");
+                mFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_white_24dp));
+                mFab.setVisibility(View.VISIBLE);
                 break;
-            case ECPartFile.PS_READY:
-                mPauseEnabled = true;
-                break;
-            case ECPartFile.PS_WAITINGFORHASH:
+            default:
+                mFab.setVisibility(View.GONE);
                 break;
             }
-        }
 
-        bPause.setVisibility(mPauseEnabled ? View.VISIBLE : View.GONE);
-        bResume.setVisibility(mResumeEnabled ? View.VISIBLE: View.GONE);
+        } else {
+            mFab.setVisibility(View.GONE);
+        }
     }
     
     public void showProgress(boolean show) {

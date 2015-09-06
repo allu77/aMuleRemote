@@ -5,9 +5,10 @@
   ~ Proprietary and confidential
   -->
 
-<LinearLayout
+<RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:ads="http://schemas.android.com/apk/res-auto"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
@@ -18,23 +19,29 @@
 	<FrameLayout
 		android:id="@+id/partfile_tabcontent"
 		android:layout_width="match_parent"
-		android:layout_height="0dip"
-		android:layout_weight="1">
+		android:layout_height="match_parent"
+		android:layout_above="@+id/adView">
 	</FrameLayout>
-	
 
-	
-	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/partfile_detail_control_buttons">	
-	  <Button android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_weight="1" android:id="@+id/partfile_button_pause" android:text="@string/partfile_detail_button_pause"></Button>
-	  <Button android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_weight="1" android:id="@+id/partfile_button_resume" android:text="@string/partfile_detail_button_resume"></Button>
-	</LinearLayout>
+
+	<android.support.design.widget.FloatingActionButton
+		android:id="@+id/partfile_fab"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:src="@drawable/ic_play_arrow_white_24dp"
+		android:layout_gravity="bottom|end"
+		app:elevation="6dp"
+		app:pressedTranslationZ="12dp"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/adView" />
 
 	<com.google.android.gms.ads.AdView
 		android:id="@+id/adView"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		ads:adSize="SMART_BANNER"
-		ads:adUnitId="ca-app-pub-1535323231055867/2727208235">
+		ads:adUnitId="ca-app-pub-1535323231055867/2727208235"
+        android:layout_alignParentBottom="true">
 	</com.google.android.gms.ads.AdView>
 
-</LinearLayout>
+</RelativeLayout>

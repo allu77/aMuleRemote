@@ -63,6 +63,7 @@ repositories {
 dependencies {
     compile 'com.iukonline.amule:JavaAmuleEC:0.5.1-SNAPSHOT'
     compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:design:22.2.0'
     compile 'ch.acra:acra:4.5.0'
     compile 'com.google.android.gms:play-services-ads:7.5.0'
     compile 'de.keyboardsurfer.android.widget:crouton:1.8.5@aar'
