@@ -28,7 +28,7 @@
             tools:text="Filename goes here and can be very long, so better check what happens.ext"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:gravity="center"
-            android:textColor="@color/primary_dark">
+            android:textColor="@color/accent">
         </TextView>
 
         <TextView
@@ -65,7 +65,7 @@
                 android:text="1MB"
                 tools:ignore="HardcodedText"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/accent">
+                android:textColor="@color/primary_text">
 
             </TextView>
 
@@ -77,7 +77,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:paddingLeft="@dimen/space_between_words_large"
                 android:paddingRight="@dimen/space_between_words_large"
-                android:textColor="@color/accent" />
+                android:textColor="@color/primary_text" />
 
             <TextView
                 android:id="@+id/partfile_detail_size"
@@ -86,7 +86,7 @@
                 android:text="10MB"
                 tools:ignore="HardcodedText"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/accent">
+                android:textColor="@color/primary_text">
 
             </TextView>
 
@@ -140,7 +140,7 @@
                     android:text="@string/partfile_detail_label_priority"
                     android:paddingTop="@dimen/space_between_content_areas"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/accent">
+                    android:textColor="@color/primary_text">
                 </TextView>
 
                 <TextView
@@ -159,7 +159,7 @@
                     android:paddingTop="@dimen/space_between_content_areas"
                     android:text="@string/partfile_detail_label_sources"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/accent">
+                    android:textColor="@color/primary_text">
                 </TextView>
 
                 <LinearLayout
@@ -272,7 +272,7 @@
                     android:paddingTop="@dimen/space_between_content_areas"
                     android:text="@string/partfile_detail_label_link"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/accent">
+                    android:textColor="@color/primary_text">
                 </TextView>
 
                 <TextView
