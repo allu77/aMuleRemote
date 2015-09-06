@@ -29,15 +29,27 @@
 			android:layout_width="0dip"
 			android:layout_weight="1"
 			android:singleLine="true"
-			tools:text="Filename Here.Extension"
-			android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+			tools:text="Filename Here May be quite long actually.Extension"
+			android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+			android:textColor="@color/primary_text" />
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:id="@+id/amuledl_row_eta"
+			android:layout_width="wrap_content"
+			android:paddingLeft="@dimen/space_between_content_areas"
+			tools:text="10mins"
+			android:visibility="visible"
+			android:textColor="@color/accent" />
 
 		<TextView
 			android:layout_height="wrap_content"
 			android:layout_width="wrap_content"
 			android:id="@+id/amuledl_row_hascomments"
+			android:paddingLeft="@dimen/space_between_content_areas"
 			tools:text="!"
 			/>
+
 	</LinearLayout>
 
 	<LinearLayout
@@ -54,13 +66,6 @@
 			android:layout_weight="1"
 			android:layout_gravity="center_vertical" />
 
-		<TextView
-			android:layout_height="wrap_content"
-			android:id="@+id/amuledl_row_eta"
-			android:layout_width="wrap_content"
-			android:paddingLeft="@dimen/activity_horizontal_margin"
-			tools:text="10mins"
-			android:visibility="visible" />
 	</LinearLayout>
 
 	<LinearLayout

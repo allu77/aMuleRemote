@@ -18,6 +18,7 @@
     <color name="progressBlockedStart">#FFFA0000</color>
     <color name="progressBlockedMid">#FFDD0000</color>
     <color name="progressBlockedEnd">#FFF20000</color>
+
     <color name="ratingInvalid">#FFDD0000</color>
     <color name="ratingPoor">#FFDD0000</color>
     <color name="ratingFair">#ffffb600</color>
@@ -27,7 +28,7 @@
     <color name="primary">#3F51B5</color>
     <color name="primary_dark">#303F9F</color>
     <color name="primary_light">#C5CAE9</color>
-    <color name="accent">#FFC107</color>
+    <color name="accent">#e67e22</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
     <color name="icons">#FFFFFF</color>
