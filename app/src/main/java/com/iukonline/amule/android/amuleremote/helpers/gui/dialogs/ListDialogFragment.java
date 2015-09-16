@@ -25,8 +25,8 @@ public class ListDialogFragment extends AlertDialogFragment {
     public final static String BUNDLE_LIST_SELECTED_STRING = "list_selected_string";
     public final static String BUNDLE_LIST_SELECTED_PARCELABLE = "list_selected_parcelable";
 
-    private String[] mStringList;
-    private Parcelable[] mParcelableList;
+    protected String[] mStringList;
+    protected Parcelable[] mParcelableList;
 
     public static ListDialogFragment newInstance(int title, String[] stringList) {
         ListDialogFragment fragment = new ListDialogFragment();

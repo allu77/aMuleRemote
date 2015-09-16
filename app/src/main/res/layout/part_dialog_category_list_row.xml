@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2015. Gianluca Vegetti, All Rights Reserved
+  ~ Unauthorized copying of this file, via any medium is strictly prohibited
+  ~ Proprietary and confidential
+  -->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:paddingLeft="@dimen/dialog_horizontal_margin"
+    android:paddingRight="@dimen/dialog_horizontal_margin"
+    android:layout_height="@dimen/dialog_list_row_height"
+    android:minHeight="@dimen/dialog_list_row_height">
+
+    <ImageView
+        android:id="@+id/dialog_category_list_cat_box"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/cat_color_box"
+        android:layout_marginRight="@dimen/space_between_content_areas" />
+
+    <TextView
+        android:id="@+id/dialog_category_list_text"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:textColor="@color/secondary_text"
+        android:textSize="@dimen/dialog_list_row_text_size"
+        tools:text="List item"/>
+
+</LinearLayout>

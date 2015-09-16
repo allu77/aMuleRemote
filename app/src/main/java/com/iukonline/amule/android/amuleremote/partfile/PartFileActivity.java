@@ -41,6 +41,7 @@ import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.ECPartFileAction
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.ECPartFileGetDetailsAsyncTask;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment.AlertDialogListener;
+import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.CategoryListDialogFragment;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.EditTextDialogFragment;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.ListDialogFragment;
 import com.iukonline.amule.android.amuleremote.partfile.PartFileSourceNamesFragment.RenameDialogContainer;
@@ -278,7 +279,7 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
     }
 
     public void showChangeCategoryDialog() {
-        ListDialogFragment d = ListDialogFragment.newInstance(R.string.dialog_category_title, ECCategoryParcelable.convertArray(mApp.mECHelper.getCategories()));
+        CategoryListDialogFragment d = CategoryListDialogFragment.newInstance(R.string.dialog_category_title, ECCategoryParcelable.convertArray(mApp.mECHelper.getCategories()));
         if (DEBUG) Log.d(TAG, "PartFileActivity.showChangeCategoryDialog: showing dialog");
 
         if (DEBUG) {
@@ -567,9 +568,12 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
                 }
             } else if (tag.equals(TAG_DIALOG_CATEGORY)) {
                 if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK) {
-                    ECCategory selected = ((ECCategoryParcelable) values.getParcelable(ListDialogFragment.BUNDLE_LIST_SELECTED_PARCELABLE)).getECCategory();
-                    if (DEBUG) Log.d(TAG, "PartFileActivity.alertDialogEvent: Change to category " + selected);
-                    doPartFileAction(ECPartFileAction.SET_CATEGORY, true, "" + selected.getId());
+                    if (values != null && values.containsKey(ListDialogFragment.BUNDLE_LIST_SELECTED_PARCELABLE)) {
+                        ECCategory selected = ((ECCategoryParcelable) values.getParcelable(ListDialogFragment.BUNDLE_LIST_SELECTED_PARCELABLE)).getECCategory();
+                        if (DEBUG)
+                            Log.d(TAG, "PartFileActivity.alertDialogEvent: Change to category " + selected);
+                        doPartFileAction(ECPartFileAction.SET_CATEGORY, true, "" + selected.getId());
+                    }
                 }
             }
         }
