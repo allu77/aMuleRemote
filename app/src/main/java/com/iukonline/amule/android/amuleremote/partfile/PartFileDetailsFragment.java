@@ -6,6 +6,7 @@
 
 package com.iukonline.amule.android.amuleremote.partfile;
 
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -30,6 +31,9 @@ import org.joda.time.format.DateTimeFormat;
 
 import java.util.Date;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class PartFileDetailsFragment extends Fragment implements ECPartFileWatcher {
 
     private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
@@ -38,6 +42,20 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
     byte[] mHash;
     ECPartFile mPartFile;
     AmuleRemoteApplication mApp;
+
+    @InjectView(R.id.partfile_detail_status) TextView mStatusText;
+    @InjectView(R.id.partfile_detail_priority) TextView mPriorityText;
+    @InjectView(R.id.partfile_detail_filename) TextView mFileNameText;
+    @InjectView(R.id.partfile_detail_category) TextView mCategoryText;
+    @InjectView(R.id.partfile_detail_link) TextView mLinkText;
+    @InjectView(R.id.partfile_detail_done) TextView mDoneText;
+    @InjectView(R.id.partfile_detail_size) TextView mSizeText;
+    @InjectView(R.id.partfile_detail_remaining) TextView mRemainingText;
+    @InjectView(R.id.partfile_detail_lastseencomplete) TextView mLastSeenText;
+    @InjectView(R.id.partfile_detail_sources_available) TextView mSourcesAvailableText;
+    @InjectView(R.id.partfile_detail_sources_active) TextView mSourcesActiveText;
+    @InjectView(R.id.partfile_detail_sources_a4af) TextView mSourcesA4AFText;
+    @InjectView(R.id.partfile_detail_sources_notcurrent) TextView mSourcesNotCurrentText;
 
 
     @Override
@@ -65,6 +83,7 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
         }
 
         View v = inflater.inflate(R.layout.frag_partfile_details, container, false);
+        ButterKnife.inject(this, v);
         return v;
     }
 
@@ -95,68 +114,68 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
 
         if (mPartFile != null) {
 
-            TextView tvStatus = (TextView) v.findViewById(R.id.partfile_detail_status);
-            TextView tvPrio = (TextView) v.findViewById(R.id.partfile_detail_priority);
-
-
-            ((TextView) v.findViewById(R.id.partfile_detail_filename)).setText(mPartFile.getFileName());
+            mFileNameText.setText(mPartFile.getFileName());
 
             String textCat = getResources().getString(R.string.partfile_details_cat_unknown);
+            int backgroundColorCat = 0;
+            int textColorCat = getResources().getColor(R.color.secondary_text);
             long cat = mPartFile.getCat();
             if (cat == 0) {
                 textCat = getResources().getString(R.string.partfile_details_cat_nocat);
+
             } else {
                 ECCategory[] catList = mApp.mECHelper.getCategories();
                 if (catList != null) {
                     for (int i = 0; i < catList.length; i++) {
                         if (catList[i].getId() == cat) {
                             textCat = catList[i].getTitle();
+
+                            backgroundColorCat = 0xff000000 | (int) catList[i].getColor();
+                            textColorCat = 0xff000000 | GUIUtils.chooseFontColor((int) catList[i].getColor());
+
+
                             break;
                         }
                     }
                 }
             }
-            ((TextView) v.findViewById(R.id.partfile_detail_category)).setText(textCat);
+            mCategoryText.setText(textCat);
+            ((GradientDrawable) mCategoryText.getBackground()).setColor(backgroundColorCat);
+            mCategoryText.setTextColor(textColorCat);
 
+            mLinkText.setText(mPartFile.getEd2kLink());
+            mDoneText.setText(GUIUtils.longToBytesFormatted(mPartFile.getSizeDone()));
+            mSizeText.setText(GUIUtils.longToBytesFormatted(mPartFile.getSizeFull()));
+            mRemainingText.setText(GUIUtils.getETA(getActivity(), mPartFile.getSizeFull() - mPartFile.getSizeDone(), mPartFile.getSpeed()));
 
-
-            ((TextView) v.findViewById(R.id.partfile_detail_link)).setText(mPartFile.getEd2kLink());
-
-
-            ((TextView) v.findViewById(R.id.partfile_detail_done)).setText(GUIUtils.longToBytesFormatted(mPartFile.getSizeDone()));
-            ((TextView) v.findViewById(R.id.partfile_detail_size)).setText(GUIUtils.longToBytesFormatted(mPartFile.getSizeFull()));
-
-            ((TextView) v.findViewById(R.id.partfile_detail_remaining)).setText(GUIUtils.getETA(getActivity(), mPartFile.getSizeFull() - mPartFile.getSizeDone(), mPartFile.getSpeed()));
-
-            TextView lastSeenCompleteTv = (TextView) v.findViewById(R.id.partfile_detail_lastseencomplete);
             Date lastSeenComplateDate = mPartFile.getLastSeenComp();
             DateTime lastSeenComplateDateTime = new DateTime(lastSeenComplateDate);
             DateTime now = new DateTime();
             if (lastSeenComplateDate == null || lastSeenComplateDate.getTime() == 0L) {
-                lastSeenCompleteTv.setText(getResources().getString(R.string.partfile_last_seen_never));
+                mLastSeenText.setText(getResources().getString(R.string.partfile_last_seen_never));
             } else {
                 long lastSeenSeconds = (System.currentTimeMillis() -  mPartFile.getLastSeenComp().getTime()) / 1000L;
 
                 if (lastSeenSeconds <= 60L) {
-                    lastSeenCompleteTv.setText(getResources().getString(R.string.partfile_last_seen_now));
+                    mLastSeenText.setText(getResources().getString(R.string.partfile_last_seen_now));
                 } else if (lastSeenSeconds <= 3600L) {
-                    lastSeenCompleteTv.setText(getResources().getQuantityString(R.plurals.partfile_last_seen_mins, (int) (lastSeenSeconds / 60L), lastSeenSeconds / 60L));
+                    mLastSeenText.setText(getResources().getQuantityString(R.plurals.partfile_last_seen_mins, (int) (lastSeenSeconds / 60L), lastSeenSeconds / 60L));
                 } else if (lastSeenSeconds <= 86400L) {
-                    int lastSeenHours = (int) (lastSeenSeconds / 86400);
+                    int lastSeenHours = (int) (lastSeenSeconds / 3600);
                     if (lastSeenHours < 12 || lastSeenComplateDateTime.getDayOfMonth() == now.getDayOfMonth()) {
-                        lastSeenCompleteTv.setText(getResources().getQuantityString(R.plurals.partfile_last_seen_hours, lastSeenHours, lastSeenHours));
+                        mLastSeenText.setText(getResources().getQuantityString(R.plurals.partfile_last_seen_hours, lastSeenHours, lastSeenHours));
                     } else {
-                        lastSeenCompleteTv.setText(getResources().getString(R.string.partfile_last_seen_yesterday));
+                        mLastSeenText.setText(getResources().getString(R.string.partfile_last_seen_yesterday));
                     }
                 } else {
                     int diffDays = Days.daysBetween(lastSeenComplateDateTime, now).getDays();
                     if (diffDays <= 31) {
-                        lastSeenCompleteTv.setText(getResources().getQuantityString(R.plurals.partfile_last_seen_days, diffDays, diffDays));
+                        mLastSeenText.setText(getResources().getQuantityString(R.plurals.partfile_last_seen_days, diffDays, diffDays));
                     } else if (diffDays <= 180) {
                         int diffMonths = Months.monthsBetween(lastSeenComplateDateTime, now).getMonths();
-                        lastSeenCompleteTv.setText(getResources().getQuantityString(R.plurals.partfile_last_seen_months, diffMonths, diffMonths));
+                        mLastSeenText.setText(getResources().getQuantityString(R.plurals.partfile_last_seen_months, diffMonths, diffMonths));
                     } else {
-                        lastSeenCompleteTv.setText(
+                        mLastSeenText.setText(
                                 getResources().getString(R.string.partfile_last_seen_date,
                                         lastSeenComplateDateTime.toString(
                                                 DateTimeFormat
@@ -169,32 +188,32 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
                 }
             }
 
-            ((TextView) v.findViewById(R.id.partfile_detail_sources_available)).setText(Integer.toString(mPartFile.getSourceCount() - mPartFile.getSourceNotCurrent()));
-            ((TextView) v.findViewById(R.id.partfile_detail_sources_active)).setText(Integer.toString(mPartFile.getSourceXfer()));
-            ((TextView) v.findViewById(R.id.partfile_detail_sources_a4af)).setText(Integer.toString(mPartFile.getSourceA4AF()));
-            ((TextView) v.findViewById(R.id.partfile_detail_sources_notcurrent)).setText(Integer.toString(mPartFile.getSourceNotCurrent()));
+            mSourcesAvailableText.setText(Integer.toString(mPartFile.getSourceCount() - mPartFile.getSourceNotCurrent()));
+            mSourcesActiveText.setText(Integer.toString(mPartFile.getSourceXfer()));
+            mSourcesA4AFText.setText(Integer.toString(mPartFile.getSourceA4AF()));
+            mSourcesNotCurrentText.setText(Integer.toString(mPartFile.getSourceNotCurrent()));
 
             switch (mPartFile.getPrio()) {
             case ECPartFile.PR_LOW:
-                tvPrio.setText(R.string.partfile_prio_low);
+                mPriorityText.setText(R.string.partfile_prio_low);
                 break;
             case ECPartFile.PR_NORMAL:
-                tvPrio.setText(R.string.partfile_prio_normal);
+                mPriorityText.setText(R.string.partfile_prio_normal);
                 break;
             case ECPartFile.PR_HIGH:
-                tvPrio.setText(R.string.partfile_prio_high);
+                mPriorityText.setText(R.string.partfile_prio_high);
                 break;
             case ECPartFile.PR_AUTO_LOW:
-                tvPrio.setText(R.string.partfile_prio_auto_low);
+                mPriorityText.setText(R.string.partfile_prio_auto_low);
                 break;
             case ECPartFile.PR_AUTO_NORMAL:
-                tvPrio.setText(R.string.partfile_prio_auto_normal);
+                mPriorityText.setText(R.string.partfile_prio_auto_normal);
                 break;
             case ECPartFile.PR_AUTO_HIGH:
-                tvPrio.setText(R.string.partfile_prio_auto_high);
+                mPriorityText.setText(R.string.partfile_prio_auto_high);
                 break;
             default:
-                tvPrio.setText(R.string.partfile_prio_unknown);
+                mPriorityText.setText(R.string.partfile_prio_unknown);
                 break;
             }
 
@@ -204,54 +223,54 @@ public class PartFileDetailsFragment extends Fragment implements ECPartFileWatch
             switch (mPartFile.getStatus()) {
 
             case ECPartFile.PS_ALLOCATING:
-                tvStatus.setText(R.string.partfile_status_allocating);
+                mStatusText.setText(R.string.partfile_status_allocating);
                 break;
             case ECPartFile.PS_COMPLETE:
-                tvStatus.setText(R.string.partfile_status_complete);
+                mStatusText.setText(R.string.partfile_status_complete);
                 statusColor = R.color.progressRunningMid;
                 break;
             case ECPartFile.PS_COMPLETING:
-                tvStatus.setText(R.string.partfile_status_completing);
+                mStatusText.setText(R.string.partfile_status_completing);
                 statusColor = R.color.progressRunningMid;
                 break;
             case ECPartFile.PS_EMPTY:
-                tvStatus.setText(R.string.partfile_status_empty);
+                mStatusText.setText(R.string.partfile_status_empty);
                 statusColor = R.color.progressBlockedMid;
                 break;
             case ECPartFile.PS_ERROR:
-                tvStatus.setText(R.string.partfile_status_error);
+                mStatusText.setText(R.string.partfile_status_error);
                 statusColor = R.color.progressBlockedMid;
                 break;
             case ECPartFile.PS_WAITINGFORHASH:
             case ECPartFile.PS_HASHING:
-                tvStatus.setText(R.string.partfile_status_hashing);
+                mStatusText.setText(R.string.partfile_status_hashing);
                 break;
             case ECPartFile.PS_INSUFFICIENT:
-                tvStatus.setText(R.string.partfile_status_insuffcient);
+                mStatusText.setText(R.string.partfile_status_insuffcient);
                 statusColor = R.color.progressBlockedMid;
                 break;
             case ECPartFile.PS_PAUSED:
-                tvStatus.setText(R.string.partfile_status_paused);
+                mStatusText.setText(R.string.partfile_status_paused);
                 break;
             case ECPartFile.PS_READY:
                 if (mPartFile.getSourceXfer() > 0) {
-                    tvStatus.setText(R.string.partfile_status_downloading);
-                    tvStatus.append( " " + GUIUtils.longToBytesFormatted(mPartFile.getSpeed()) + "/s");
+                    mStatusText.setText(R.string.partfile_status_downloading);
+                    mStatusText.append(" " + GUIUtils.longToBytesFormatted(mPartFile.getSpeed()) + "/s");
                     statusColor = R.color.progressRunningMid;
                 } else {
-                    tvStatus.setText(R.string.partfile_status_waiting);
+                    mStatusText.setText(R.string.partfile_status_waiting);
                     statusColor = R.color.progressWaitingMid;
                 }
                 break;
             case ECPartFile.PS_UNKNOWN:
-                tvStatus.setText(R.string.partfile_status_unknown);
+                mStatusText.setText(R.string.partfile_status_unknown);
                 statusColor = R.color.progressStoppedMid;
                 break;
             default:
-                tvStatus.setText("UNKNOWN-" + mPartFile.getStatus());
+                mStatusText.setText("UNKNOWN-" + mPartFile.getStatus());
                 break;
             }
-            tvStatus.setTextColor(getResources().getColor(statusColor));
+            mStatusText.setTextColor(getResources().getColor(statusColor));
         }
     }
 

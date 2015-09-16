@@ -33,11 +33,16 @@
 
         <TextView
             android:id="@+id/partfile_detail_category"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Uncategorized"
-            android:gravity="center"
-            android:paddingTop="@dimen/space_between_content_areas">
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/space_between_content_areas"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:background="@drawable/cat_label_background">
 
         </TextView>
 

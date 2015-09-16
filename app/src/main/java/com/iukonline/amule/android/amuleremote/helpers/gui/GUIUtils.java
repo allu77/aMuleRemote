@@ -6,10 +6,10 @@
 
 package com.iukonline.amule.android.amuleremote.helpers.gui;
 
-import com.iukonline.amule.android.amuleremote.R;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
+
+import com.iukonline.amule.android.amuleremote.R;
 
 public class GUIUtils {
     @SuppressLint("DefaultLocale")
@@ -43,6 +43,26 @@ public class GUIUtils {
             sEta = "";
         }
         return sEta;
+    }
+
+    public static int chooseFontColor (int backgroundColor) {
+        // http://stackoverflow.com/questions/3942878/how-to-decide-font-color-in-white-or-black-depending-on-background-color
+
+        long r = backgroundColor / 65536L;
+        long g = (backgroundColor % 65536L) / 256L;
+        long b = backgroundColor % 256L;
+
+        double lR = ((double) r) / 255.0;
+        double lG = ((double) g) / 255.0;
+        double lB = ((double) b) / 255.0;
+
+        lR = lR < 0.03928 ? lR / 12.92 : Math.pow((lR + 0.055) / 1.055, 2.4);
+        lG = lG < 0.03928 ? lG / 12.92 : Math.pow((lG + 0.055) / 1.055, 2.4);
+        lB = lB < 0.03928 ? lB / 12.92 : Math.pow((lB + 0.055) / 1.055, 2.4);
+
+        double L = 0.2126 * lR + 0.7152 * lG + 0.0722 * lB;
+
+        return L > 0.179 ? 0 : 0xffffff;
     }
 
 }
