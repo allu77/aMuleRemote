@@ -74,11 +74,12 @@ public class AlertDialogFragment extends DialogFragment {
         setArguments(args);
     }
 
-    protected void setAlertDialogFragmentArguments(int title, boolean showCancel) {
+    protected Bundle setAlertDialogFragmentArguments(int title, boolean showCancel) {
         Bundle args = new Bundle();
         args.putInt(BUNDLE_TITLE, title);
         args.putBoolean(BUNDLE_SHOW_CANCEL, showCancel);
         setArguments(args);
+        return args;
     }
 
 

@@ -6,16 +6,14 @@
 
 package com.iukonline.amule.android.amuleremote.helpers.ec.tasks;
 
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
-
 import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.ec.ECCodes;
 import com.iukonline.amule.ec.ECPartFile;
 import com.iukonline.amule.ec.exceptions.ECClientException;
 import com.iukonline.amule.ec.exceptions.ECPacketParsingException;
 import com.iukonline.amule.ec.exceptions.ECServerException;
+
+import java.io.IOException;
 
 
 public class ECPartFileActionAsyncTask extends AmuleAsyncTask {
@@ -24,14 +22,14 @@ public class ECPartFileActionAsyncTask extends AmuleAsyncTask {
         PAUSE, RESUME, DELETE, 
         A4AF_NOW, A4AF_AUTO, A4AF_AWAY, 
         PRIO_LOW, PRIO_NORMAL, PRIO_HIGH, PRIO_AUTO,
-        RENAME
+        RENAME, SET_CATEGORY
     }
 
     ECPartFile mECPartFile;
     ECPartFileAction mAction;
     
     String mStringParam = null;
-    
+
     public ECPartFileActionAsyncTask setECPartFile(ECPartFile file) {
         mECPartFile = file;
         return this;
@@ -47,9 +45,9 @@ public class ECPartFileActionAsyncTask extends AmuleAsyncTask {
         return this;
     }
 
-    
+
     @Override
-    protected void backgroundTask() throws UnknownHostException, SocketTimeoutException, IOException, AmuleAsyncTaskException, ECClientException, ECPacketParsingException, ECServerException {
+    protected void backgroundTask() throws IOException, AmuleAsyncTaskException, ECClientException, ECPacketParsingException, ECServerException {
         
         if (isCancelled()) return;
         switch (mAction) {
@@ -87,6 +85,9 @@ public class ECPartFileActionAsyncTask extends AmuleAsyncTask {
             if (mStringParam == null) throw new AmuleAsyncTaskException(mECHelper.mApp.getResources().getString(R.string.partfile_task_rename_noname));
             mECClient.renamePartFile(mECPartFile.getHash(), mStringParam);
             break;
+        case SET_CATEGORY:
+            if (mStringParam == null) throw new AmuleAsyncTaskException(mECHelper.mApp.getResources().getString(R.string.partfile_task_set_cat_nocat));
+            mECClient.setPartFileCategory(mECPartFile.getHash(), Long.parseLong(mStringParam));
         }
     }
 

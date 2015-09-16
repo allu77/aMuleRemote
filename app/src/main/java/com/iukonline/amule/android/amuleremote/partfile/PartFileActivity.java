@@ -34,6 +34,7 @@ import com.iukonline.amule.android.amuleremote.R;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ClientStatusWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECPartFileActionWatcher;
 import com.iukonline.amule.android.amuleremote.helpers.ec.AmuleWatcher.ECPartFileWatcher;
+import com.iukonline.amule.android.amuleremote.helpers.ec.ECCategoryParcelable;
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.AmuleAsyncTask.TaskScheduleMode;
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.ECPartFileActionAsyncTask;
 import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.ECPartFileActionAsyncTask.ECPartFileAction;
@@ -41,8 +42,14 @@ import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.ECPartFileGetDet
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment.AlertDialogListener;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.EditTextDialogFragment;
+import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.ListDialogFragment;
 import com.iukonline.amule.android.amuleremote.partfile.PartFileSourceNamesFragment.RenameDialogContainer;
+import com.iukonline.amule.ec.ECCategory;
 import com.iukonline.amule.ec.ECPartFile;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
 
 public class PartFileActivity extends AppCompatActivity implements AlertDialogListener, ClientStatusWatcher, ECPartFileWatcher, ECPartFileActionWatcher, RenameDialogContainer, RefreshingActivity {
@@ -55,6 +62,7 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
     
     private final static String TAG_DIALOG_RENAME = "rename_dialog";
     private final static String TAG_DIALOG_DELETE = "delete_dialog";
+    private final static String TAG_DIALOG_CATEGORY = "category_dialog";
 
     
     private AmuleRemoteApplication mApp;
@@ -66,14 +74,12 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
     ActionBar.Tab mTabDetails;
     ActionBar.Tab mTabSourceNames;
     ActionBar.Tab mTabComments;
-    
-    FloatingActionButton mFab;
+
+    @InjectView(R.id.partfile_fab) FloatingActionButton mFab;
 
     private boolean mIsProgressShown = false;
     private boolean mNeedsRefresh = true;
 
-    private boolean mPauseEnabled = false;
-    private boolean mResumeEnabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,8 +131,9 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
             }
             mNeedsRefresh = savedInstanceState.getBoolean(BUNDLE_NEEDS_REFRESH, true);
         }
-        
-        mFab = (FloatingActionButton) findViewById(R.id.partfile_fab);
+
+
+        ButterKnife.inject(this);
         mFab.setTag("PLAY");
 
         mFab.setOnClickListener(new OnClickListener() {
@@ -192,7 +199,16 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
         outState.putBoolean(BUNDLE_NEEDS_REFRESH, mNeedsRefresh);
     }
 
-    
+    @OnClick(R.id.partfile_fab)
+    public void onFabPressed() {
+        if (mFab.getTag().equals("PAUSE")) {
+            if (DEBUG) Log.d(TAG, "PartFileActivity.mFab.onClick: Pausing parftile");
+            doPartFileAction(ECPartFileAction.PAUSE);
+        } else {
+            if (DEBUG) Log.d(TAG, "PartFileActivity.mFab.onClick: Resuming parftile");
+            doPartFileAction(ECPartFileAction.RESUME);
+        }
+    }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -220,7 +236,6 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
         return super.onPrepareOptionsMenu(menu);
     }
     
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -254,9 +269,33 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
         case R.id.menu_detail_opt_delete:
             showDeleteConfirmDialog();
             return true;
+        case R.id.menu_detail_opt_category:
+            showChangeCategoryDialog();
+            return true;
         }
         
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showChangeCategoryDialog() {
+        ListDialogFragment d = ListDialogFragment.newInstance(R.string.dialog_category_title, ECCategoryParcelable.convertArray(mApp.mECHelper.getCategories()));
+        if (DEBUG) Log.d(TAG, "PartFileActivity.showChangeCategoryDialog: showing dialog");
+
+        if (DEBUG) {
+            ECCategory[] tmpCat = mApp.mECHelper.getCategories();
+            Log.d(TAG, "PartFileActivity.showChangeCategoryDialog: Categories:");
+            for (int i = 0; i < tmpCat.length; i++) {
+                Log.d(TAG, "PartFileActivity.showChangeCategoryDialog: " + tmpCat[i].getTitle());
+            }
+            ECCategoryParcelable[] tmpParc = ECCategoryParcelable.convertArray(tmpCat);
+            Log.d(TAG, "PartFileActivity.showChangeCategoryDialog: Parcelable:");
+            for (int i = 0; i < tmpParc.length; i++) {
+                Log.d(TAG, "PartFileActivity.showChangeCategoryDialog: " + tmpParc[i].toString());
+            }
+
+        }
+
+        d.show(getSupportFragmentManager(), TAG_DIALOG_CATEGORY);
     }
     
     
@@ -331,8 +370,6 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
                 }
             }
 
-            mPauseEnabled = false;
-            mResumeEnabled = false;
 
             switch (mPartFile.getStatus()) {
             case ECPartFile.PS_EMPTY:
@@ -527,6 +564,12 @@ public class PartFileActivity extends AppCompatActivity implements AlertDialogLi
                 if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK) {
                     if (DEBUG) Log.d(TAG, "PartFileActivity.alertDialogEvent: delete confirmed");
                     doPartFileAction(ECPartFileAction.DELETE, false);
+                }
+            } else if (tag.equals(TAG_DIALOG_CATEGORY)) {
+                if (event == AlertDialogFragment.ALERTDIALOG_EVENT_OK) {
+                    ECCategory selected = ((ECCategoryParcelable) values.getParcelable(ListDialogFragment.BUNDLE_LIST_SELECTED_PARCELABLE)).getECCategory();
+                    if (DEBUG) Log.d(TAG, "PartFileActivity.alertDialogEvent: Change to category " + selected);
+                    doPartFileAction(ECPartFileAction.SET_CATEGORY, true, "" + selected.getId());
                 }
             }
         }

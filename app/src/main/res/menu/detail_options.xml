@@ -39,5 +39,6 @@
         </menu>
     </item>
     <item android:id="@+id/menu_detail_opt_rename" android:title="@string/menu_detail_opt_rename" android:orderInCategory="4"></item>
+    <item android:id="@+id/menu_detail_opt_category" android:title="@string/menu_detail_opt_category" android:orderInCategory="6"></item>
     
 </menu>

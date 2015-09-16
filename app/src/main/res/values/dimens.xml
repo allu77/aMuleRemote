@@ -12,6 +12,10 @@
     <dimen name="list_activity_vertical_margin">0dp</dimen> <!-- list_activity_margin + list_vertical_padding = activity_vertical_margin -->
     <dimen name="list_vertical_padding">16dp</dimen>
 
+    <dimen name="dialog_horizontal_margin">24dp</dimen>
+    <dimen name="dialog_list_row_height">48dp</dimen>
+    <dimen name="dialog_list_row_text_size">16sp</dimen>
+
     <dimen name="space_between_content_areas">8dp</dimen>
     <dimen name="space_between_words_regular">4dp</dimen>
     <dimen name="space_between_words_large">6dp</dimen>

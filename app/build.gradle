@@ -60,8 +60,16 @@ repositories {
     }
 }
 
+configurations.all {
+    resolutionStrategy {
+        cacheDynamicVersionsFor 0, 'seconds'
+        cacheChangingModulesFor 0, "seconds"
+    }
+
+}
+
 dependencies {
-    compile 'com.iukonline.amule:JavaAmuleEC:0.5.1-SNAPSHOT'
+    compile ('com.iukonline.amule:JavaAmuleEC:0.5.1-SNAPSHOT') { changing = true ; }
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:design:22.2.0'
     compile 'ch.acra:acra:4.5.0'

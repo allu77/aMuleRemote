@@ -222,4 +222,6 @@ ACRA (http://acra.googlecode.com/).\n
         <item quantity="other">Visto completo %d mesi fa</item>
     </plurals>
     <string name="menu_detail_opt_delete">Elimina</string>
+    <string name="menu_detail_opt_category">Cambia categoria</string>
+    <string name="dialog_category_title">Scegli una categoria</string>
 </resources>
