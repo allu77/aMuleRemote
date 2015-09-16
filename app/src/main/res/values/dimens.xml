@@ -20,6 +20,9 @@
     <dimen name="space_between_words_regular">4dp</dimen>
     <dimen name="space_between_words_large">6dp</dimen>
 
+    <dimen name="fab_margin_compensate_horizontal">0dp</dimen> <!-- FAB has already margin with support lib -->
+    <dimen name="fab_margin_compensate_vertical">0dp</dimen>
+
     <dimen name="partfile_lower_details_min_width">256dp</dimen>
     <dimen name="partfile_sourcenames_sourcecount_witdh">48dp</dimen>
 

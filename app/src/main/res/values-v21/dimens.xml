@@ -8,4 +8,7 @@
 <resources>
 
     <dimen name="progress_on_bar_size">28dip</dimen>
+
+    <dimen name="fab_margin_compensate_horizontal">16dp</dimen>
+    <dimen name="fab_margin_compensate_vertical">32dp</dimen>
 </resources>

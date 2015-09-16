@@ -13,8 +13,6 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
- 
-
 	
 	<FrameLayout
 		android:id="@+id/partfile_tabcontent"
@@ -33,7 +31,9 @@
 		app:elevation="6dp"
 		app:pressedTranslationZ="12dp"
         android:layout_alignParentRight="true"
-        android:layout_above="@+id/adView" />
+        android:layout_above="@+id/adView"
+		android:layout_marginBottom="@dimen/fab_margin_compensate_vertical"
+		android:layout_marginRight="@dimen/fab_margin_compensate_horizontal"/>
 
 	<com.google.android.gms.ads.AdView
 		android:id="@+id/adView"
