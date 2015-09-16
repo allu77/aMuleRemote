@@ -740,11 +740,8 @@ public class DlQueueActivity extends AppCompatActivity implements AlertDialogLis
                     if (cat.getId() == ECCategory.NEW_CATEGORY_ID || cat.getId() == 0L) {
                         ((GradientDrawable) holder.mNavCatBox.getDrawable()).setColor(Color.argb(0, 0, 0, 0));
                     } else {
-                        long color = cat.getColor();
-                        long r = color / 65536L;
-                        long g = (color % 65536L) / 256L;
-                        long b = color % 256L;
-                        ((GradientDrawable) holder.mNavCatBox.getDrawable()).setColor(Color.argb(255, (int) r, (int) g, (int) b));
+
+                        ((GradientDrawable) holder.mNavCatBox.getDrawable()).setColor((int) (255 << 24 | cat.getColor()));
                     }
 
                 }
