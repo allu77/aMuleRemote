@@ -200,7 +200,7 @@ ACRA (http://acra.googlecode.com/).\n
     <string name="settings_summary_server_name">Inserisci uno nome per il tuo PC aMule</string>
     <string name="title_activity_server_settings">Impostazioni PC aMule</string>
     <string name="title_activity_settings">Impostazioni</string>
-    <string name="dialog_whats_new_features_20">Gestione di più PC aMule</string>
+    <string name="dialog_whats_new_features_20">Nuovo layout\nGestione di più PC aMule\nPossibilità di impostare la categoria dei download</string>
     <string name="partfile_details_label_size_of">di</string>
     <string name="partfile_last_seen_date">Visto completo il %s</string>
     <string name="partfile_last_seen_now">Fonti complete online</string>

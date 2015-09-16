@@ -205,7 +205,7 @@
 	<string name="settings_summary_server_name">Enter a descriptive name for your aMule PC</string>
 	<string name="menu_server_settings_add">Add server</string>
 	<string name="menu_server_settings_remove">Remove server</string>
-	<string name="dialog_whats_new_features_20">Multiple aMule PC support</string>
+	<string name="dialog_whats_new_features_20">New layout\nMultiple aMule PC support\nChange category to download support</string>
 	<string name="settings_label_button_add">Add aMule PC</string>
 	<string name="settings_summary_client_autorefresh_interval">Every %d seconds</string>
 	<string name="partfile_details_label_size_of">of</string>

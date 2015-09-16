@@ -1,8 +1,9 @@
 aMule Remote 0.6
+- New layout
 - Added support for multiple aMule server configurations
+- Added support for setting download category
 - Fixed crashes during search refresh with Lollipop
 - Fixed issue with ed2k URIs from Chrome
-- External libraries refresh
 
 aMule Remote 0.5.2
 - Italian localization
