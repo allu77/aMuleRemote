@@ -16,9 +16,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -26,6 +26,10 @@ import android.widget.Spinner;
 import com.iukonline.amule.android.amuleremote.AmuleRemoteApplication;
 import com.iukonline.amule.android.amuleremote.BuildConfig;
 import com.iukonline.amule.android.amuleremote.R;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
 public class SearchInputFragment extends Fragment {
 
@@ -43,23 +47,23 @@ public class SearchInputFragment extends Fragment {
     private final static String BUNDLE_MAX_SIZE_DIM = "max_size_dim";
     private final static String BUNDLE_AVAILABILITY = "availability";
     
-    public interface SearchInputFragmentContainter {
+    public interface SearchInputFragmentContainer {
         void startSearch(SearchContainer s) ;
     }
     
     AmuleRemoteApplication mApp;
     
-    EditText mFileNameEdit;
-    Button mGoButton;
-    View mAdvancedParamsLayout;
-    Spinner mTypeSpinner;
-    Spinner mFileTypeSpinner;
-    EditText mExtensionEdit;
-    EditText mMinSizeEdit;
-    Spinner mMinSizeDimSpinner;
-    EditText mMaxSizeEdit;
-    Spinner mMaxSizeDimSpinner;
-    EditText mAvailabilityEdit;
+    @InjectView(R.id.search_file_name)EditText mFileNameEdit;
+    @InjectView(R.id.search_button_go) Button mGoButton;
+    @InjectView(R.id.search_layout_advanced) View mAdvancedParamsLayout;
+    @InjectView(R.id.search_search_type) Spinner mTypeSpinner;
+    @InjectView(R.id.search_file_type) Spinner mFileTypeSpinner;
+    @InjectView(R.id.search_extension) EditText mExtensionEdit;
+    @InjectView(R.id.search_min_size) EditText mMinSizeEdit;
+    @InjectView(R.id.search_min_size_dim) Spinner mMinSizeDimSpinner;
+    @InjectView(R.id.search_max_size) EditText mMaxSizeEdit;
+    @InjectView(R.id.search_max_size_dim) Spinner mMaxSizeDimSpinner;
+    @InjectView(R.id.search_availability) EditText mAvailabilityEdit;
     
     MenuItem mShowAdvancedItem;
     MenuItem mHideAdvancedItem;
@@ -117,24 +121,18 @@ public class SearchInputFragment extends Fragment {
             // the view hierarchy; it would just never be used.
             //return null;
         }
-        
+
+
         if (DEBUG) Log.d(TAG, "SearchInputFragment.onCreateView: Inflating view");
         View v = inflater.inflate(R.layout.frag_search_input, container, false);
         if (DEBUG) Log.d(TAG, "SearchInputFragment.onCreateView: Inflated view");
-        
-        mFileNameEdit = (EditText) v.findViewById(R.id.search_file_name);
-        mTypeSpinner = (Spinner) v.findViewById(R.id.search_search_type);
-        
-        mFileTypeSpinner = (Spinner) v.findViewById(R.id.search_file_type);
-        mExtensionEdit = (EditText) v.findViewById(R.id.search_extension);
-        mMinSizeEdit = (EditText) v.findViewById(R.id.search_min_size);
-        mMinSizeDimSpinner = (Spinner) v.findViewById(R.id.search_min_size_dim);
-        mMaxSizeEdit = (EditText) v.findViewById(R.id.search_max_size);
-        mMaxSizeDimSpinner = (Spinner) v.findViewById(R.id.search_max_size_dim);
-        mAvailabilityEdit = (EditText) v.findViewById(R.id.search_availability);
-        
-        mGoButton = (Button) v.findViewById(R.id.search_button_go);
-        mAdvancedParamsLayout = v.findViewById(R.id.search_layout_advanced);
+
+        ButterKnife.inject(this, v);
+
+        mTypeSpinner.setAdapter(createSpinerAdapter(R.array.search_search_type_description));
+        mFileTypeSpinner.setAdapter(createSpinerAdapter(R.array.search_file_type));
+        mMinSizeDimSpinner.setAdapter(createSpinerAdapter(R.array.search_size_dim_description));
+        mMaxSizeDimSpinner.setAdapter(createSpinerAdapter(R.array.search_size_dim_description));
 
         if (savedInstanceState != null) {
             
@@ -154,92 +152,18 @@ public class SearchInputFragment extends Fragment {
             showAdvancedParams(false);
             mTypeSpinner.setSelection((int) mApp.mSettings.getLong(AmuleRemoteApplication.AC_SETTING_SEARCH_TYPE, 0));
         }
-        
-        
-        mGoButton.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                
-                if (DEBUG) Log.d(TAG, "SearchInputFragment.goButton.onClick: Fetching search parameters");
-                
-                SearchContainer s = new SearchContainer();
-                s.mFileName = mFileNameEdit.getText().toString();
-                s.mSearchType = (byte) mTypeSpinner.getSelectedItemPosition();
 
-                /* From include/tags/FileTags.h   
-                // Media values for FT_FILETYPE
-                   #define ED2KFTSTR_AUDIO                 wxT("Audio")    
-                   #define ED2KFTSTR_VIDEO                 wxT("Video")    
-                   #define ED2KFTSTR_IMAGE                 wxT("Image")    
-                   #define ED2KFTSTR_DOCUMENT              wxT("Doc")      
-                   #define ED2KFTSTR_PROGRAM               wxT("Pro")      
-                   #define ED2KFTSTR_ARCHIVE               wxT("Arc")      // *Mule internal use only
-                   #define ED2KFTSTR_CDIMAGE               wxT("Iso")      // *Mule internal use only
-                   
-                   */
-
-                switch (mFileTypeSpinner.getSelectedItemPosition()) {
-                case 1:
-                    s.mType = "Arc";
-                    break;
-                case 2:
-                    s.mType = "Audio";
-                    break;
-                case 3:
-                    s.mType = "Iso";
-                    break;
-                case 4:
-                    s.mType = "Image";
-                    break;
-                case 5:
-                    s.mType = "Pro";
-                    break;
-                case 6:
-                    s.mType = "Doc";
-                    break;
-                case 7:
-                    s.mType = "Video";
-                    break;
-                }
-                
-                String extension = mExtensionEdit.getEditableText().toString();
-                if (extension.length() > 0) s.mExtension = extension;
-
-                long minSize;
-                long maxSize;
-                long availability;
-                try {
-                    minSize = Long.parseLong(mMinSizeEdit.getEditableText().toString());
-                    for (int i = 0; i < mMinSizeDimSpinner.getSelectedItemPosition(); i++) minSize *= 1024L;
-                    if (minSize > 0L) s.mMinSize = minSize;
-                } catch (NumberFormatException e) {
-                    // Do Nothing
-                }
-                try {
-                    maxSize = Long.parseLong(mMaxSizeEdit.getEditableText().toString());
-                    for (int i = 0; i < mMaxSizeDimSpinner.getSelectedItemPosition(); i++) maxSize *= 1024L;
-                    if (maxSize > 0) s.mMaxSize = maxSize;
-                } catch (NumberFormatException e) {
-                    // Do Nothing
-                }
-                try {
-                    availability = Long.parseLong(mAvailabilityEdit.getEditableText().toString());
-                    if (availability > 0) s.mAvailability = availability;
-                } catch (NumberFormatException e) {
-                    // Do Nothing
-                }
-    
-                // Hide softkeyboard on click
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(mFileNameEdit.getWindowToken(), 0);
-                
-                if (DEBUG) Log.d(TAG, "SearchInputFragment.goButton.onClick: Starting search");
-                ((SearchInputFragmentContainter) getActivity()).startSearch(s);
-            }
-        });
-        
-        
         return v;
-        
+    }
+
+    private ArrayAdapter<String> createSpinerAdapter(int valueResource)  {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                mApp,
+                R.layout.part_spinner_text,
+                getResources().getStringArray(valueResource)
+        );
+        adapter.setDropDownViewResource(R.layout.part_spinner_text_dropdown);
+        return adapter;
     }
     
     @Override
@@ -287,7 +211,89 @@ public class SearchInputFragment extends Fragment {
         mAdvancedParamsLayout.setVisibility(show ? View.VISIBLE : View.GONE);
         getActivity().supportInvalidateOptionsMenu();
     }
-    
+
+
+    @OnClick (R.id.search_button_go)
+    public void doSearch() {
+        if (DEBUG) Log.d(TAG, "SearchInputFragment.doSearch: Fetching search parameters");
+
+        SearchContainer s = new SearchContainer();
+        s.mFileName = mFileNameEdit.getText().toString();
+        s.mSearchType = (byte) mTypeSpinner.getSelectedItemPosition();
+
+                /* From include/tags/FileTags.h
+                // Media values for FT_FILETYPE
+                   #define ED2KFTSTR_AUDIO                 wxT("Audio")
+                   #define ED2KFTSTR_VIDEO                 wxT("Video")
+                   #define ED2KFTSTR_IMAGE                 wxT("Image")
+                   #define ED2KFTSTR_DOCUMENT              wxT("Doc")
+                   #define ED2KFTSTR_PROGRAM               wxT("Pro")
+                   #define ED2KFTSTR_ARCHIVE               wxT("Arc")      // *Mule internal use only
+                   #define ED2KFTSTR_CDIMAGE               wxT("Iso")      // *Mule internal use only
+
+                   */
+
+        switch (mFileTypeSpinner.getSelectedItemPosition()) {
+            case 1:
+                s.mType = "Arc";
+                break;
+            case 2:
+                s.mType = "Audio";
+                break;
+            case 3:
+                s.mType = "Iso";
+                break;
+            case 4:
+                s.mType = "Image";
+                break;
+            case 5:
+                s.mType = "Pro";
+                break;
+            case 6:
+                s.mType = "Doc";
+                break;
+            case 7:
+                s.mType = "Video";
+                break;
+        }
+
+        String extension = mExtensionEdit.getEditableText().toString();
+        if (extension.length() > 0) s.mExtension = extension;
+
+        long minSize;
+        long maxSize;
+        long availability;
+        try {
+            minSize = Long.parseLong(mMinSizeEdit.getEditableText().toString());
+            for (int i = 0; i < mMinSizeDimSpinner.getSelectedItemPosition(); i++) minSize *= 1024L;
+            if (minSize > 0L) s.mMinSize = minSize;
+        } catch (NumberFormatException e) {
+            // Do Nothing
+        }
+        try {
+            maxSize = Long.parseLong(mMaxSizeEdit.getEditableText().toString());
+            for (int i = 0; i < mMaxSizeDimSpinner.getSelectedItemPosition(); i++) maxSize *= 1024L;
+            if (maxSize > 0) s.mMaxSize = maxSize;
+        } catch (NumberFormatException e) {
+            // Do Nothing
+        }
+        try {
+            availability = Long.parseLong(mAvailabilityEdit.getEditableText().toString());
+            if (availability > 0) s.mAvailability = availability;
+        } catch (NumberFormatException e) {
+            // Do Nothing
+        }
+
+        // Hide softkeyboard on click
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mFileNameEdit.getWindowToken(), 0);
+
+        if (DEBUG) Log.d(TAG, "SearchInputFragment.doSearch: Starting search");
+        ((SearchInputFragmentContainer) getActivity()).startSearch(s);
+    }
+
+
+
     public void setInputFields(SearchContainer s) {
         if (s != null) {
             int minSizeDim = 0;

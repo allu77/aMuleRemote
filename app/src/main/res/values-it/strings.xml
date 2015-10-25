@@ -137,8 +137,8 @@ ACRA (http://acra.googlecode.com/).\n
 	<string name="menu_opt_search">"Cerca"</string>
 	<string name="search_label_file_type">"Tipo di file"</string>
 	<string name="search_label_extension">"Estensione"</string>
-	<string name="search_label_min_size">"Dimensione minima"</string>
-	<string name="search_label_max_size">"Dimensione massima"</string>
+	<string name="search_label_min_size">"Dim min"</string>
+	<string name="search_label_max_size">"Dim max"</string>
 	<string name="search_label_availability">"Disponibilità"</string>
 	<string name="dialog_add_search_file">"Aggiungi il file %s alla coda di download?"</string>
 	<string name="stats_status_not_connected">"Non connessso"</string>

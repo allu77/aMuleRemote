@@ -31,12 +31,12 @@ import com.iukonline.amule.android.amuleremote.helpers.ec.tasks.SearchAsyncTask;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment;
 import com.iukonline.amule.android.amuleremote.helpers.gui.dialogs.AlertDialogFragment.AlertDialogListener;
 import com.iukonline.amule.android.amuleremote.search.SearchContainer.ECSearchStatus;
-import com.iukonline.amule.android.amuleremote.search.SearchInputFragment.SearchInputFragmentContainter;
+import com.iukonline.amule.android.amuleremote.search.SearchInputFragment.SearchInputFragmentContainer;
 import com.iukonline.amule.android.amuleremote.search.SearchResultsListFragment.SearchResultsListFragmentContainter;
 
 import java.util.ArrayList;
 
-public class SearchActivity extends AppCompatActivity implements AlertDialogListener, RefreshingActivity, SearchInputFragmentContainter, SearchResultsListFragmentContainter, ClientStatusWatcher, ECSearchListWatcher {
+public class SearchActivity extends AppCompatActivity implements AlertDialogListener, RefreshingActivity, SearchInputFragmentContainer, SearchResultsListFragmentContainter, ClientStatusWatcher, ECSearchListWatcher {
 
     private final static String TAG = AmuleRemoteApplication.AC_LOGTAG;
     private final static boolean DEBUG = BuildConfig.DEBUG;
@@ -69,6 +69,7 @@ public class SearchActivity extends AppCompatActivity implements AlertDialogList
         if (DEBUG) Log.d(TAG, "SearchActivity.onCreate: Back from setContentView");
 
         getSupportActionBar().setTitle(R.string.search_title);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mFragManager = getSupportFragmentManager();
 
         AdView adView = (AdView)this.findViewById(R.id.adView);

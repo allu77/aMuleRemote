@@ -139,8 +139,8 @@
 	<string name="menu_opt_search">Search</string>
 	<string name="search_label_file_type">File type</string>
 	<string name="search_label_extension">Extension</string>
-	<string name="search_label_min_size">Minimum size</string>
-	<string name="search_label_max_size">Maximum size</string>
+	<string name="search_label_min_size">Min size</string>
+	<string name="search_label_max_size">Max size</string>
 	<string name="search_label_availability">Availability</string>
 	<string name="dialog_add_search_file">Add file %s to download queue?</string>
 	<string name="stats_status_not_connected">Not Connected</string>

@@ -5,6 +5,7 @@
   ~ Unauthorized copying of this file, via any medium is strictly prohibited
   ~ Proprietary and confidential
   -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.iukonline.amule.android.amuleremote"
@@ -53,8 +54,19 @@
         </activity>
         <activity
             android:name=".search.SearchActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".search.SearchDetailsActivity" />
+            android:windowSoftInputMode="stateHidden"
+            android:parentActivityName=".dlqueue.DlQueueActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.iukonline.amule.android.amuleremote.dlqueue.DlQueueActivity" />
+        </activity>
+        <activity
+            android:name=".search.SearchDetailsActivity">
+            android:parentActivityName=".search.SearchActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.iukonline.amule.android.amuleremote.search.SearchActivity" />
+        </activity>
         <activity
             android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"

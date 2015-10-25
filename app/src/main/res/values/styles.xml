@@ -12,5 +12,28 @@
     <style name="RobotoButtonStyle" parent="Widget.AppCompat.Button">
     </style>
 
+    <style name="TextAppearence.AmuleRemote.TextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/accent</item>
+    </style>
+
+    <style name="TextAppearence.AmuleRemote.SpinnerLabel" parent="@android:style/TextAppearance">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextAppearance.AmuleRemote.SpinnerText" parent="@android:style/TextAppearance">
+        <item name="android:textSize">@dimen/abc_text_size_medium_material</item>
+        <item name="android:textColor">@color/primary_text</item>
+    </style>
+
+    <style name="TextAppearance.AmuleRemote.SpinnerText.DropDown" parent="@android:style/TextAppearance">
+        <item name="android:textSize">@dimen/abc_text_size_medium_material</item>
+        <item name="android:textColor">@color/secondary_text</item>
+    </style>
+
+
+    <style name="Widget.AppCompat.Spinner.Underlined.AmuleRemote" parent="Widget.AppCompat.Spinner.Underlined">
+        <item name="android:background">@drawable/spinner_background</item>
+    </style>
+
 
 </resources>

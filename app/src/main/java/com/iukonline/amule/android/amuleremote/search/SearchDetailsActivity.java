@@ -64,6 +64,7 @@ public class SearchDetailsActivity extends AppCompatActivity implements AlertDia
         mPosition = getIntent().getExtras().getInt(BUNDLE_PARAM_POSITION);
         mSearch = mApp.mECHelper.getSearchItem(mPosition);
         if (mSearch != null) getSupportActionBar().setTitle(mSearch.mFileName);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         
         if (savedInstanceState == null) {
             SearchResultDetailsFragment f = new SearchResultDetailsFragment();
