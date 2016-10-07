@@ -50,8 +50,8 @@ import de.keyboardsurfer.android.widget.crouton.Style;
                 reportType = Type.JSON,
                 formUri = "http://amuleremote.iriscouch.com/acra-amuleremote/_design/acra-storage/_update/report",
                 formUriBasicAuthLogin = "amuleremote-reporter",
-                formUriBasicAuthPassword = "***REMOVED***",
-                //formKey = "***REMOVED***",
+                formUriBasicAuthPassword = "** REMOVED **",
+                //formKey = "** REMOVED **",
                 mode = ReportingInteractionMode.DIALOG,
                 customReportContent = {
                     ReportField.APP_VERSION_CODE,

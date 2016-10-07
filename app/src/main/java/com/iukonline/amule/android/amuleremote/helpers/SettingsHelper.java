@@ -31,19 +31,6 @@ public class SettingsHelper {
     public static final String SETTING_LECAGY_SERVER_PASSWORD   = "amule_server_password";
     public static final String SETTING_LEGACY_SERVER_VERSION    = "amule_server_version";
 
-
-    /*public static String TEST_SERVER = "{\n" +
-            "\tservers: [\n" +
-            "\t\t{\n" +
-            "\t\t\tname: \"Esterno\",\n" +
-            "\t\t\thost: \"***REMOVED***\",\n" +
-            "\t\t\tport: 4712,\n" +
-            "\t\t\tversion: \"V204\",\n" +
-            "\t\t\tpassword: \"***REMOVED***\"\n" +
-            "\t\t}\n" +
-            "\t]\n" +
-            "}";*/
-
     private JSONArray jsonServers;
     private ArrayList<ServerSettings> mServerList;
     private int mCurrentServer = 0;
